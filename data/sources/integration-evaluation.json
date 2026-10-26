@@ -1,0 +1,307 @@
+[
+  {
+    "id": "int-client-loop",
+    "name": "Anthropic: How tool use works",
+    "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works",
+    "section": "The agentic loop",
+    "accessedAt": "2026-10-26",
+    "version": "Unversioned documentation snapshot; accessed 2026-10-26",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: User-defined tools and Anthropic-schema client tools execute in the application, not inside the model. Server tools execute on Anthropic infrastructure.",
+      "Documented fact [COI: Anthropic]: The canonical client-tool loop sends tools and messages, receives stop_reason=tool_use and one or more tool_use blocks, executes the tools, appends the assistant response and a user message containing tool_result blocks, and repeats while stop_reason is tool_use.",
+      "Documented fact [COI: Anthropic]: A non-tool_use stop reason does not necessarily mean successful completion; max_tokens and refusal are among the other reasons applications must handle.",
+      "Documented fact [COI: Anthropic]: Server-side tool loops can return pause_turn when the iteration limit is reached; the application resends the conversation including the paused response to continue. A mixed client/server-tool group can hand control back before the server tool runs."
+    ]
+  },
+  {
+    "id": "int-client-results",
+    "name": "Anthropic: Handle tool calls",
+    "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
+    "section": "Handle tool calls",
+    "accessedAt": "2026-10-26",
+    "version": "Unversioned documentation snapshot; accessed 2026-10-26",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: A client tool_use block contains id, name, and input; the corresponding user-message tool_result uses tool_use_id to identify the call.",
+      "Documented fact [COI: Anthropic]: The user message with results must immediately follow the assistant tool-use message, and tool_result blocks must precede other user text. In a mixed turn with an unresolved server tool, that user message must contain only tool_result blocks.",
+      "Documented fact [COI: Anthropic]: Client tool execution failures can be returned with is_error=true and an informative content message.",
+      "Documented fact [COI: Anthropic]: Tool results can contain attacker-controlled content. The documentation recommends keeping untrusted content in tool_result blocks rather than system prompts or plain user text."
+    ]
+  },
+  {
+    "id": "int-mcp-auth",
+    "name": "MCP specification: Authorization",
+    "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization",
+    "section": "Authorization",
+    "accessedAt": "2026-10-26",
+    "version": "MCP 2026-07-28; current published specification checked on 2026-10-26",
+    "evidence": [
+      "Documented normative fact: Authorization is OPTIONAL for MCP implementations. When supported, HTTP-based implementations SHOULD conform to this authorization specification; STDIO implementations SHOULD NOT use this HTTP authorization flow and should retrieve credentials from the environment.",
+      "Documented normative fact: In the protected-resource authorization flow, MCP servers MUST implement RFC 9728 OAuth 2.0 Protected Resource Metadata, and clients MUST use that metadata for authorization-server discovery.",
+      "Documented normative fact: MCP clients MUST include the resource parameter in both authorization and token requests, identifying the MCP server with its canonical URI. Bearer authorization must accompany every HTTP client-to-server request; tokens MUST NOT be put in URI query strings.",
+      "Documented normative fact: Servers MUST validate that access tokens were issued specifically for them, MUST only accept tokens valid for their own resources, and MUST NOT accept or transit other tokens. Invalid or expired tokens receive HTTP 401; insufficient permission is distinguished with HTTP 403.",
+      "Documented normative fact: Clients SHOULD request only necessary scopes. Initial scope selection prioritizes scope in the WWW-Authenticate challenge; absent that, the specified fallback uses scopes_supported from Protected Resource Metadata. Clients MUST NOT assume a set relationship between a challenge's scopes and scopes_supported.",
+      "Documented normative fact: Dynamic Client Registration is MAY-level support and is deprecated for compatibility; OAuth Client ID Metadata Documents are SHOULD-level support."
+    ]
+  },
+  {
+    "id": "int-mcp-security",
+    "name": "MCP specification: Authorization Security Considerations",
+    "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations",
+    "section": "Access Token Privilege Restriction",
+    "accessedAt": "2026-10-26",
+    "version": "MCP 2026-07-28",
+    "evidence": [
+      "Documented normative fact: MCP servers MUST validate token audience or otherwise verify that they are the intended recipient, and MUST reject tokens intended for another resource.",
+      "Documented normative fact: An MCP server calling an upstream API can act as an OAuth client to that API, but the upstream access token is separate and issued by the upstream authorization server. The server MUST NOT pass through the MCP client's token.",
+      "Documented normative fact: MCP clients MUST implement PKCE and verify authorization-server PKCE support before proceeding; technically capable clients MUST use S256. Absent code_challenge_methods_supported metadata requires refusing to proceed.",
+      "Documented normative fact: Authorization-server endpoints MUST use HTTPS; redirect URIs must use HTTPS or localhost. Secure token storage is required, and exact registered redirect URI validation is required.",
+      "Documented normative fact: MCP proxy servers using static client IDs MUST obtain consent for each dynamically registered client before forwarding to third-party authorization servers. The document also identifies SSRF risk when authorization servers fetch Client ID Metadata Documents."
+    ]
+  },
+  {
+    "id": "int-mcp-transports",
+    "name": "MCP specification: Transport overview",
+    "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports",
+    "section": "Transport overview",
+    "accessedAt": "2026-10-26",
+    "version": "MCP 2026-07-28",
+    "evidence": [
+      "Documented normative fact: The standard bindings are stdio, using newline-delimited messages over a client-launched subprocess's standard streams, and Streamable HTTP, using an HTTP POST for each message with a JSON-object or request-scoped SSE reply.",
+      "Documented normative fact: Messages use UTF-8 JSON-RPC, and transport bindings do not change core protocol semantics.",
+      "Documented normative fact: In MCP 2026-07-28, requests carry protocol version and client capabilities in _meta.io.modelcontextprotocol/* body fields. An HTTP binding may mirror selected fields to headers; the body remains the source of truth.",
+      "Documented normative fact: Earlier revisions used a connection-scoped initialize handshake and allowed server-initiated JSON-RPC requests. The current transport overview explicitly describes backward compatibility with those earlier revisions rather than treating that session model as current."
+    ]
+  },
+  {
+    "id": "int-tool-search",
+    "name": "Anthropic: Tool search tool",
+    "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool",
+    "section": "Deferred tool loading",
+    "accessedAt": "2026-10-26",
+    "version": "tool_search_tool_regex_20251119 and tool_search_tool_bm25_20251119; documentation snapshot 2026-10-26",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: Tool search discovers tools on demand and loads matching definitions into the context rather than loading every definition initially.",
+      "Documented fact [COI: Anthropic]: defer_loading controls model-context loading, not request transport: every full deferred definition must still be supplied in the tools array on every request in the documented standard pattern.",
+      "Documented fact [COI: Anthropic]: The search tool must remain non-deferred. Search results contain tool_reference blocks, which the API expands automatically; discovered client tools still require ordinary client tool execution and tool_result handling.",
+      "Documented fact [COI: Anthropic]: Built-in regex search uses Python regular expressions; BM25 search uses natural-language queries. Search covers names, descriptions, argument names, and argument descriptions.",
+      "Documented fact [COI: Anthropic]: Deferred definitions are excluded from the initial system-prompt prefix and discovered references are appended inline, preserving prefix caching. Deferral is not described as an authorization mechanism.",
+      "Documented fact [COI: Anthropic]: The page recommends standard tool calling for small, compact, frequently used tool libraries, and recommends keeping frequently used tools non-deferred. These are implementation guidelines, not universal cutoffs."
+    ]
+  },
+  {
+    "id": "int-advanced-tools",
+    "name": "Anthropic Engineering: Introducing advanced tool use",
+    "url": "https://www.anthropic.com/engineering/advanced-tool-use",
+    "section": "When to use the Tool Search Tool",
+    "accessedAt": "2026-10-26",
+    "version": "Published 2025-11-24; historical feature-release article, not the current API compatibility reference",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: Large upfront tool definitions consume context and can cause wrong-tool selection and parameter mistakes, especially with similar tool names.",
+      "Documented fact [COI: Anthropic]: Tool search adds a search step before invocation; the article recommends it when context savings and accuracy gains outweigh added latency.",
+      "Documented fact [COI: Anthropic]: Programmatic Tool Calling can execute orchestration in code and filter or aggregate intermediate results before they enter the model's context; simple single-tool lookups benefit less.",
+      "Documented fact [COI: Anthropic]: The Programmatic Tool Calling setup guidance explicitly lists independent operations that can run in parallel and operations safe to retry, identified as idempotent.",
+      "Documented fact [COI: Anthropic]: Tool use examples can communicate domain conventions and optional-parameter patterns that structural JSON Schema alone does not express. Historical performance percentages in this article are vendor-internal results, not universal guarantees."
+    ]
+  },
+  {
+    "id": "int-contextual-retrieval",
+    "name": "Anthropic Engineering: Introducing Contextual Retrieval",
+    "url": "https://www.anthropic.com/news/contextual-retrieval",
+    "section": "Implementing Contextual Retrieval",
+    "accessedAt": "2026-10-26",
+    "version": "Published 2024-09-19; primary report of Anthropic's Contextual Retrieval experiments",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: The described RAG pipeline chunks documents, embeds chunks into a vector index, retrieves relevant chunks for the query, and adds retrieved chunks to the generation prompt.",
+      "Documented fact [COI: Anthropic]: Embeddings support semantic matching, while BM25 supports lexical matching and is particularly useful for unique identifiers and technical terms. The article's example contrasts an exact TS-999 error-code query with generic semantic error-code matches.",
+      "Documented fact [COI: Anthropic]: The hybrid pipeline retrieves with both embeddings and BM25, combines and deduplicates results with rank fusion, and supplies top-K chunks to generation.",
+      "Documented fact [COI: Anthropic]: Contextual Retrieval prepends chunk-specific explanatory context before BOTH embedding the chunk and creating the BM25 index. The explanation is generated using the whole document and the individual chunk.",
+      "Documented fact [COI: Anthropic]: Chunk size, boundaries, overlap, embedding model, contextualizer prompt, and number of retrieved chunks are implementation variables to evaluate, not fixed universal settings.",
+      "Documented fact [COI: Anthropic]: Reranking scores an initial candidate set against the query and passes a smaller relevant set to generation. It adds a runtime step and can add latency even while reducing generation-context cost.",
+      "Documented fact [COI: Anthropic; unverified single-source performance claim]: The reported evaluation metric is 1 minus recall@20. The article reports top-20 retrieval failure changing from 5.7% to 2.9% with Contextual Embeddings plus Contextual BM25 and to 1.9% with reranking. These are retrieval results from the reported setup, not answer-accuracy guarantees."
+    ]
+  },
+  {
+    "id": "int-latency",
+    "name": "Anthropic: Reducing latency",
+    "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency",
+    "section": "How to measure latency",
+    "accessedAt": "2026-10-26",
+    "version": "Unversioned documentation snapshot; accessed 2026-10-26",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: Time to first token measures time from sending the prompt to generation of the first response token and is relevant to streaming responsiveness.",
+      "Documented fact [COI: Anthropic]: Streaming sends output before the complete response is finished and improves perceived responsiveness; it is not documented as a guarantee that total completion time decreases.",
+      "Documented fact [COI: Anthropic]: Model selection and reducing unnecessary input and output tokens are latency controls, subject to maintaining output quality.",
+      "Documented fact [COI: Anthropic]: max_tokens is a hard output limit that can cut an answer off mid-sentence or mid-word; it is a blunt control rather than a guarantee of a complete concise answer.",
+      "Documented fact [COI: Anthropic]: The page recommends first establishing a prompt that works, then applying latency optimizations so premature constraints do not hide achievable quality."
+    ]
+  },
+  {
+    "id": "int-streaming",
+    "name": "Anthropic: Streaming messages",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/streaming",
+    "section": "Streaming messages",
+    "accessedAt": "2026-10-26",
+    "version": "Messages API streaming documentation snapshot; accessed 2026-10-26; recovery rules are model-version-specific",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: stream=true uses server-sent events. The normal flow includes message_start, indexed content-block start/delta/stop events, message_delta, and message_stop; ping and error events can also occur.",
+      "Documented fact [COI: Anthropic]: usage values in message_delta are cumulative, so summing successive usage snapshots overcounts tokens.",
+      "Documented fact [COI: Anthropic]: Tool-input input_json_delta values are partial JSON strings; applications can accumulate them and parse at content_block_stop or use SDK streaming helpers.",
+      "Documented fact [COI: Anthropic]: Unknown future event types should be handled gracefully. Overload can appear as an error event after streaming has begun.",
+      "Documented fact [COI: Anthropic]: The documented interrupted-stream recovery strategy differs for Claude 4.5 and earlier versus Claude 4.6 and later. Tool-use and thinking blocks cannot be partially recovered; recovery resumes from a text block."
+    ]
+  },
+  {
+    "id": "int-errors",
+    "name": "Anthropic: Claude API errors",
+    "url": "https://platform.claude.com/docs/en/api/errors",
+    "section": "Request ID",
+    "accessedAt": "2026-10-26",
+    "version": "Unversioned documentation snapshot; accessed 2026-10-26",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: HTTP 400 invalid_request_error, 401 authentication_error, 403 permission_error, 429 rate_limit_error, 500 api_error, 504 timeout_error, and 529 overloaded_error represent distinct failure classes.",
+      "Documented fact [COI: Anthropic]: Official SDKs retry transient failures with exponential backoff twice by default and honor retry-after when present; retry configuration can be changed or disabled.",
+      "Documented fact [COI: Anthropic]: A usage-tier spend-cap 429 has no retry-after and keeps failing until access resumes, so not every 429 is merely a short-lived throughput limit.",
+      "Documented fact [COI: Anthropic]: Every API response has a request-id header. JSON error bodies include request_id, and Python and TypeScript top-level response objects expose _request_id.",
+      "Documented fact [COI: Anthropic]: An SSE response can fail after HTTP 200 has already been returned. Standard status-code-only handling does not detect these mid-stream errors.",
+      "Documented fact [COI: Anthropic]: The page documents preserving returned thinking/redacted_thinking blocks unchanged in tool-use continuations; reconstructing or filtering them can trigger validation errors."
+    ]
+  },
+  {
+    "id": "int-a2a",
+    "name": "A2A Protocol: v1.0 release announcement",
+    "url": "https://a2a-protocol.org/latest/blog/2026/03/12/a2a-protocol-ships-v10-production-ready-standard-for-agent-to-agent-communication/",
+    "section": "Complementary to MCP",
+    "accessedAt": "2026-10-26",
+    "version": "A2A v1.0 release announcement, published 2026-03-12; not a claim that v1.0 is the latest future revision",
+    "evidence": [
+      "Documented primary-project fact: A2A addresses communication and interoperability between agents across technology stacks and organizational boundaries.",
+      "Documented primary-project fact: The announcement describes JSON+HTTP, gRPC, and JSON-RPC bindings and polling, streaming, or webhooks for consuming task updates and responses.",
+      "Documented primary-project fact: The project explicitly distinguishes MCP as tool/context integration at an individual-agent level from A2A as communication and coordination between agents; the two can be used together.",
+      "Documented primary-project fact: The v1.0 announcement describes protocol changes and backward-compatible Agent Card advertising of both v0.3 and v1.0 support."
+    ]
+  },
+  {
+    "id": "int-api-version",
+    "name": "Anthropic: Migrating to API version 2026-10-21",
+    "url": "https://platform.claude.com/docs/en/api/migration-2026-10-21",
+    "section": "Sampling parameters are removed",
+    "accessedAt": "2026-10-26",
+    "version": "Claude API 2026-10-21 versus 2023-06-01; Python SDK 2.0.0 and TypeScript SDK 1.0.0 are the first listed new-version releases",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: API version 2026-10-21 removes temperature, top_p, and top_k; supplying any of them returns HTTP 400, even at a default value. The previous API version remains the option for requests requiring supported non-default sampling behavior.",
+      "Documented fact [COI: Anthropic]: The first SDK releases using the new API version include Python 2.0.0 and TypeScript 1.0.0. SDK major versions determine the default anthropic-version sent.",
+      "Documented fact [COI: Anthropic]: New SDK/CLI versions send API keys using Authorization: Bearer instead of X-Api-Key, while the Claude API accepts either header. Gateways and log-redaction code that assume only X-Api-Key must be updated.",
+      "Documented fact [COI: Anthropic]: New SDK MessageParam types are role-specific unions; literal user/assistant message dictionaries retain the same wire fields.",
+      "Documented fact [COI: Anthropic]: The migration guide instructs testing integrations against 2026-10-21 before releasing the upgrade and notes platform/model availability exceptions."
+    ]
+  },
+  {
+    "id": "eval-criteria",
+    "name": "Anthropic: Define success criteria and build evaluations",
+    "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+    "section": "Define your success criteria",
+    "accessedAt": "2026-10-26",
+    "version": "Unversioned documentation snapshot; accessed 2026-10-26",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: Good success criteria are specific, measurable, achievable, and relevant; most use cases require multidimensional evaluation.",
+      "Documented fact [COI: Anthropic]: Examples include accuracy, precision, recall, F1, response time, uptime, privacy preservation, latency, and price. The page's numeric thresholds are illustrative use-case criteria rather than certification-wide requirements.",
+      "Documented fact [COI: Anthropic]: Evaluation data should mirror real-world task distribution and include edge cases such as nonexistent, irrelevant, long, harmful, or ambiguous inputs.",
+      "Documented fact [COI: Anthropic]: The guide provides held-out-test-set examples, automated exact-match checks for categorical tasks, and model-based rubric or binary graders for nuanced behaviors.",
+      "Documented fact [COI: Anthropic]: A/B testing compares performance with a baseline model or an earlier version. User task completion and edge-case success are also listed as measurement methods."
+    ]
+  },
+  {
+    "id": "eval-agent-evals",
+    "name": "Anthropic Engineering: Demystifying evals for AI agents",
+    "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+    "section": "Demystifying evals for AI agents",
+    "accessedAt": "2026-10-26",
+    "version": "Published 2026-01-09",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: A task defines inputs and success criteria, a trial is one attempt, a transcript records the trajectory, and an outcome is the final environment state. A claimed booking is not equivalent to a booking present in the database.",
+      "Documented fact [COI: Anthropic]: Code-based, model-based, and human graders have different strengths; model graders require calibration against human experts, and code graders are preferable where suitable.",
+      "Documented fact [COI: Anthropic]: Capability evaluations measure what the agent can do; regression evaluations protect previously successful behavior. Successful capability cases can graduate into a continuously run regression suite.",
+      "Documented fact [COI: Anthropic]: The roadmap recommends realistic user failures, unambiguous tasks with working reference solutions, balanced should/should-not cases, and clean isolated environments for each trial.",
+      "Documented fact [COI: Anthropic]: The guide recommends checking transcripts and grader correctness, warning that ambiguous tasks, grading bugs, and harness constraints can produce apparent agent failures.",
+      "Documented fact [COI: Anthropic]: pass@k measures success at least once across k attempts, while pass^k measures success in all k trials; they answer different reliability questions.",
+      "Documented fact [COI: Anthropic]: Offline evals complement production monitoring, A/B testing on real traffic, user feedback, transcript review, and systematic human studies. A/B tests measure real outcomes but need enough traffic and give less explanation of why metrics changed.",
+      "Documented fact [COI: Anthropic]: Static task banks can track latency, tokens, cost per task, and error rates. The illustrative agent metrics distinguish time to first token, output tokens per second, and time to last token."
+    ]
+  },
+  {
+    "id": "eval-otel",
+    "name": "Anthropic: OpenTelemetry tracing for the Claude API",
+    "url": "https://platform.claude.com/docs/en/manage-claude/opentelemetry",
+    "section": "Counting tokens",
+    "accessedAt": "2026-10-26",
+    "version": "OpenTelemetry export beta; documentation snapshot accessed 2026-10-26",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: The Claude API and SDK can trace Messages requests, tool use, and Managed Agents sessions using OpenTelemetry, linking steps to an application's existing traces.",
+      "Documented fact [COI: Anthropic]: Metadata-only is the default content mode and includes identifiers, timings, status, token counts, and chosen descriptive text. Full-content mode adds prompts and responses; destination access and retention settings therefore matter.",
+      "Documented fact [COI: Anthropic]: API tracing covers server-side tools, while SDK tracing covers client tools run by the tool runner; using both provides complementary visibility.",
+      "Documented fact [COI: Anthropic]: To avoid counting tokens twice, aggregate one source and one appropriate span level per request, not both SDK/client and API/server spans or both parent and child model-request totals.",
+      "Documented fact [COI: Anthropic]: gen_ai.usage.input_tokens already includes cache-read and cache-write tokens, unlike the Messages API usage.input_tokens breakdown. Do not add cache attributes to the OpenTelemetry total.",
+      "Documented fact [COI: Anthropic]: Spans can be delivered more than once and should be deduplicated by trace ID and span ID if the destination does not do so. Export is best effort and can be sampled or lost; the Usage API is the documented alternative for accounting requests missing from traces."
+    ]
+  },
+  {
+    "id": "eval-pricing",
+    "name": "Anthropic: Pricing",
+    "url": "https://platform.claude.com/docs/en/about-claude/pricing",
+    "section": "Pricing",
+    "accessedAt": "2026-10-26",
+    "version": "USD pricing snapshot accessed 2026-10-26; prices, models, and platform terms may change",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: Pricing distinguishes base input, cache writes, cache reads, and output tokens; MTok means one million tokens, and prices are stated in USD.",
+      "Documented fact [COI: Anthropic]: Tool use adds token costs for tool definitions, tool_use blocks, tool_result blocks, and the enabling tool-use system prompt. Some server tools have additional usage-based charges.",
+      "Documented fact [COI: Anthropic]: Batch processing is asynchronous and offers a stated 50 percent input/output token discount; the page recommends it for non-time-sensitive work.",
+      "Documented fact [COI: Anthropic]: The general cache-read multiplier has per-model exceptions, and model/platform/data-residency/speed settings can change applicable prices. A single universal cached-input or context-window price rule is not valid.",
+      "Documented fact [COI: Anthropic]: The cost-optimization guidance combines appropriate model choice, prompt caching for reused context, batching, and usage monitoring."
+    ]
+  },
+  {
+    "id": "eval-cache",
+    "name": "Anthropic: Prompt caching",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+    "section": "Tracking cache performance",
+    "accessedAt": "2026-10-26",
+    "version": "Unversioned documentation snapshot; accessed 2026-10-26; platform/model exceptions apply",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: Prompt caching reuses processed prompt prefixes, with tools, system, and messages contributing to the prefix in that order. Static reusable content should precede the varying suffix.",
+      "Documented fact [COI: Anthropic]: Automatic caching uses a top-level cache_control; explicit caching marks content blocks. A varying suffix can require an explicit breakpoint at the end of the stable prefix rather than relying on the last varying block.",
+      "Documented fact [COI: Anthropic]: Cache hits require identical prefix content and sufficient model-specific token length. Too-short cache-marked prompts can be processed without caching and without an error.",
+      "Documented fact [COI: Anthropic]: Caching does not change output generation or remove the cached material from the model's context; it optimizes prompt processing. The page explicitly states that output generation is unchanged.",
+      "Documented fact [COI: Anthropic]: In Messages response usage, total input equals input_tokens plus cache_creation_input_tokens plus cache_read_input_tokens; input_tokens alone is the uncached portion.",
+      "Documented fact [COI: Anthropic]: Cache duration is five minutes by default with a one-hour option at additional cost; hits refresh the cache. Minimum lengths and some support details depend on model and platform."
+    ]
+  },
+  {
+    "id": "eval-usage-cost",
+    "name": "Anthropic: Usage and Cost API",
+    "url": "https://platform.claude.com/docs/en/manage-claude/usage-cost-api",
+    "section": "Usage and Cost API",
+    "accessedAt": "2026-10-26",
+    "version": "Admin API documentation snapshot accessed 2026-10-26; platform availability exceptions apply",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: The Usage and Cost Admin API exposes historical organizational usage and billing-related cost data for tracking, optimization, and reconciliation.",
+      "Documented fact [COI: Anthropic]: Usage can be bucketed by minute, hour, or day and filtered/grouped by dimensions including API key, workspace, model, and service tier; the token breakdown separates uncached input, cache reads, cache creation, and output.",
+      "Documented fact [COI: Anthropic]: The cost endpoint uses daily buckets and returns USD amounts as decimal strings in the lowest units, cents. Priority Tier costs are not included in that endpoint.",
+      "Documented fact [COI: Anthropic]: The endpoints require an Admin API credential; workspace API keys do not work. Access is not limited solely to a literal Admin API key: the current page also lists org:admin OAuth and eligible unscoped personal/service credentials.",
+      "Documented fact [COI: Anthropic]: Responses are paginated using has_more and next_page. Data commonly appears within five minutes of completion but may be delayed longer; it is not a guaranteed real-time transaction ledger.",
+      "Documented fact [COI: Anthropic]: API availability differs across Claude Platform on AWS and Anthropic-managed Google Cloud; the page distinguishes these API-usage reports from Claude Enterprise Analytics."
+    ]
+  },
+  {
+    "id": "eval-hallucinations",
+    "name": "Anthropic: Reduce hallucinations",
+    "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations",
+    "section": "Reduce hallucinations",
+    "accessedAt": "2026-10-26",
+    "version": "Unversioned documentation snapshot; accessed 2026-10-26",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: The guide recommends explicitly allowing uncertainty and requesting direct quotes to ground document-based answers.",
+      "Documented fact [COI: Anthropic]: It recommends verifying each claim against a supporting source or quote and retracting unsupported claims, plus restricting answers to provided documents when appropriate.",
+      "Documented fact [COI: Anthropic]: Multiple runs and follow-up verification can expose inconsistencies, but these techniques do not eliminate hallucinations; critical information still needs validation."
+    ]
+  }
+]
