@@ -1,0 +1,384 @@
+[
+  {
+    "id": "gov-prompt-injection",
+    "name": "Anthropic: Mitigate jailbreaks and prompt injections",
+    "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
+    "section": "Indirect prompt injection",
+    "accessedAt": "2026-10-26",
+    "version": "Unversioned live Claude Platform documentation retrieved 2026-10-26",
+    "evidence": [
+      "[COI: Anthropic] Distinguishes malicious application users conducting direct attacks from trusted users encountering adversarial instructions inside third-party webpages, emails, documents, OCR output, and tool results.",
+      "[COI: Anthropic] Recommends delivering third-party content inside tool_result blocks, describing its provenance, and explicitly treating tool/document/search content as untrusted data rather than instructions.",
+      "[COI: Anthropic] Recommends JSON encoding untrusted strings, least privilege, sandboxing, screening tool outputs, red-teaming, and continuing output monitoring.",
+      "[COI: Anthropic] In its screening examples, a classifier refusal supplies no usable verdict and is handled as harmful or suspected injection rather than approval."
+    ],
+    "verification": "Full primary-source page fetched directly.",
+    "caveats": [
+      "Vendor technical guidance, not an independent attack-resistance evaluation. Single-source implementation details have low independent corroboration.",
+      "A role label, JSON delimiter, prompt, or model-based screen is not an authorization boundary and does not establish immunity from injection.",
+      "Live examples name current model versions. Do not turn those names into timeless exam requirements."
+    ]
+  },
+  {
+    "id": "gov-hallucinations",
+    "name": "Anthropic: Reduce hallucinations",
+    "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations",
+    "section": "Reduce hallucinations",
+    "accessedAt": "2026-10-26",
+    "version": "Unversioned live Claude Platform documentation retrieved 2026-10-26",
+    "evidence": [
+      "[COI: Anthropic] Recommends allowing uncertainty or abstention, extracting direct quotes to ground analysis, and checking claims against supporting sources.",
+      "[COI: Anthropic] Lists repeated generation, iterative refinement, and restriction to supplied knowledge as mitigation techniques.",
+      "[COI: Anthropic] Explicitly states these techniques do not eliminate hallucinations and critical information must be validated, especially for high-stakes decisions."
+    ],
+    "verification": "Full primary-source page fetched directly.",
+    "caveats": [
+      "Vendor COI applies. The limitation statement cuts against an interpretation that the vendor guarantees correctness.",
+      "No calibrated meaning for a self-reported confidence score or quantified effectiveness guarantee is established by this page.",
+      "Agreement across repeated outputs is not independent factual verification."
+    ]
+  },
+  {
+    "id": "gov-api-data-retention",
+    "name": "Anthropic: API and data retention",
+    "url": "https://platform.claude.com/docs/en/manage-claude/api-and-data-retention",
+    "section": "API and data retention",
+    "accessedAt": "2026-10-26",
+    "version": "Unversioned live documentation and eligibility table retrieved 2026-10-26",
+    "evidence": [
+      "[COI: Anthropic] Zero data retention is enabled per organization and applies to eligible endpoints, models, and features; it does not automatically extend to another organization or third-party integrations.",
+      "[COI: Anthropic] Retained data is not used for training without express permission; not using data for training is a different commitment from not retaining it.",
+      "[COI: Anthropic] The current HIPAA-readiness path requires a signed BAA and a HIPAA-enabled organization with eligible API features. The page says this arrangement does not also require ZDR.",
+      "[COI: Anthropic] The signed BAA is the source of truth for feature coverage; consumer products, Console processing, and external integrations are not included in API HIPAA readiness.",
+      "[COI: Anthropic] The feature table marks Files API, message batches, managed agents, code execution, and the server-side MCP connector as ineligible for both listed arrangements at retrieval.",
+      "[COI: Anthropic] Under ZDR the API does not automatically block ineligible features; using them steps outside that arrangement for that data. Some client-side tools can be accepted by HIPAA-enabled API requests while remaining outside HIPAA readiness.",
+      "[COI: Anthropic] PHI must not appear in JSON schema definitions, including property names, enum/const values, and patterns, because schema grammars are cached separately from message content.",
+      "[COI: Anthropic] Processor and compliance responsibilities vary by deployment route; Anthropic-managed APIs must not be conflated with cloud-provider-managed Bedrock or Google-managed offerings."
+    ],
+    "verification": "Full primary-source page retrieved directly, including the feature table. Long response saved by tool.",
+    "caveats": [
+      "Single-vendor, dynamic eligibility information; low independent corroboration. Verify the signed contract, exact model, organization, endpoint, feature, hosting route, and date before using it in a keyed scenario.",
+      "The vendor page loosely describes PHI as individually identifiable health information. HHS supplies the controlling covered-entity/business-associate context; not every health-related datum is necessarily HIPAA PHI.",
+      "HIPAA readiness, ZDR, successful API acceptance, no-training commitments, and end-to-end legal compliance are different properties."
+    ]
+  },
+  {
+    "id": "gov-commercial-retention",
+    "name": "Anthropic Privacy Center: How long do you store my organization's data?",
+    "url": "https://privacy.claude.com/en/articles/7996866-how-long-do-you-store-my-organization-s-data",
+    "section": "How long do you store my organization's data?",
+    "accessedAt": "2026-10-26",
+    "version": "Article displays July 1, 2026; content retrieved 2026-10-26",
+    "evidence": [
+      "[COI: Anthropic] Describes standard API backend deletion within 30 days, subject to service-specific longer retention, another agreement, usage-policy enforcement, and legal obligations.",
+      "[COI: Anthropic] Commercial product interfaces that save conversations retain them to provide product functionality; deleting a conversation removes it from history immediately but backend deletion can take up to 30 days.",
+      "[COI: Anthropic] Data associated with feedback submissions such as thumbs-up/down or bug reports is retained for five years under the stated feedback policy.",
+      "[COI: Anthropic] Additional exceptions apply to Covered Models and flagged usage-policy violations."
+    ],
+    "verification": "Full primary-source page fetched directly.",
+    "caveats": [
+      "All retention durations are attributed, single-vendor policy statements with low independent corroboration, not independently tested deletion guarantees.",
+      "Do not treat the standard policy as overriding a negotiated arrangement or feature-specific eligibility table.",
+      "Feedback is a separate data flow, not automatically governed by the retention assumption for ordinary inference requests."
+    ]
+  },
+  {
+    "id": "gov-nist-rmf-core",
+    "name": "NIST AI Risk Management Framework 1.0: Core",
+    "url": "https://airc.nist.gov/airmf-resources/airmf/5-sec-core/",
+    "section": "GOVERN; MAP; MEASURE; MANAGE",
+    "accessedAt": "2026-10-26",
+    "version": "AI RMF 1.0 (2023), official HTML excerpt; page says revision is in progress",
+    "evidence": [
+      "The four functions are GOVERN, MAP, MEASURE, and MANAGE; governance is cross-cutting. They are not a checklist or necessarily sequential steps, and risk management continues throughout the lifecycle.",
+      "GOVERN 2.1 documents roles, responsibilities, and communication lines; GOVERN 2.3 assigns executive responsibility for AI risk decisions; GOVERN 3.2 differentiates human-AI oversight responsibilities.",
+      "GOVERN 5.1 and 5.2 require processes for collecting, considering, prioritizing, and incorporating adjudicated external feedback.",
+      "MAP 1.1 documents intended use, users, context, assumptions, limitations, and metrics; MAP 1.4 documents business value; MAP 1.5 documents risk tolerances; MAP 1.6 elicits requirements from relevant actors.",
+      "MAP 3.1 through 3.5 address benefits, monetary and non-monetary error costs, application scope, operator proficiency, and human oversight.",
+      "MEASURE 1.1 documents risks that cannot be measured; MEASURE 1.3 supports assessors independent of frontline development; MEASURE 2.3 evaluates conditions similar to deployment; MEASURE 2.11 evaluates and documents fairness and bias.",
+      "MEASURE 3.3 establishes user and impacted-community mechanisms to report problems and appeal outcomes; MANAGE 1.4 documents residual risks for downstream users.",
+      "MANAGE 2.1 considers viable non-AI alternatives; MANAGE 2.4 assigns responsibility to supersede, disengage, or deactivate inappropriate systems; MANAGE 4.1 covers monitoring, appeal/override, decommissioning, incident response, recovery, and change management.",
+      "Both the framework and companion playbook are voluntary."
+    ],
+    "verification": "Full official framework excerpt fetched directly.",
+    "caveats": [
+      "Primary normative framework evidence, not a claim of demonstrated control effectiveness or certification.",
+      "Individual category wording has one authoritative source; low independent corroboration should not be mistaken for doubt that the document says it.",
+      "These are official NIST identifiers, unrelated to the project's ordinal exam-objective labels."
+    ]
+  },
+  {
+    "id": "gov-nist-playbook-govern",
+    "name": "NIST AI RMF Playbook: Govern",
+    "url": "https://airc.nist.gov/airmf-resources/playbook/govern/",
+    "section": "GOVERN 1.1-1.7; GOVERN 2.1-2.3",
+    "accessedAt": "2026-10-26",
+    "version": "Living AI RMF 1.0 playbook retrieved 2026-10-26; notice says update follows framework revision",
+    "evidence": [
+      "GOVERN 1.1 explains that legal requirements differ by application and context, and that disparate-impact analysis and demographic-based debiasing can raise different legal considerations.",
+      "GOVERN 1.4 suggests documentation covering business justification, scope, assumptions, limitations, alternatives, testing, upstream/downstream dependencies, deployment, monitoring, change management, and stakeholder engagement.",
+      "GOVERN 1.5 suggests monitoring and incident-response ownership, mechanisms for impacted people to provide feedback, recourse to contest outcomes, and opt-out mechanisms.",
+      "GOVERN 1.7 warns that indiscriminate deletion during decommissioning can increase risk, including regulatory retention, dependencies, and future investigations.",
+      "GOVERN 2.1 suggests separating development management from testing, managing conflicts of interest, and defining oversight responsibilities and delegated authorities.",
+      "GOVERN 2.3 pairs delegated risk-management authority with resources and executive responsibility."
+    ],
+    "verification": "Full official Govern playbook content fetched directly; long response saved by tool.",
+    "caveats": [
+      "Suggested implementation practices, not a mandatory universal checklist or legal safe harbor.",
+      "Same institutional source as the framework; does not count as independent corroboration of NIST's own categories.",
+      "The page does not prescribe a universal statistical fairness threshold."
+    ]
+  },
+  {
+    "id": "gov-nist-genai-profile",
+    "name": "NIST AI 600-1: Generative Artificial Intelligence Profile",
+    "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+    "section": "Sections 2.2, 2.4, 2.6-2.9, 2.12; Section 3",
+    "accessedAt": "2026-10-26",
+    "version": "Final July 2024, NIST AI 600-1, DOI 10.6028/NIST.AI.600-1",
+    "evidence": [
+      "Section 2.2 describes confidently presented false content and fabricated logic or citations that can mislead people into trusting incorrect output.",
+      "Section 2.4 addresses exposure and inference of sensitive information, including harmful inferences that are inaccurate.",
+      "Section 2.6 identifies unequal performance across subgroups, languages, and dialects, along with harms from assuming equal performance across all groups.",
+      "Section 2.7 describes automation bias as excessive deference to automated systems and explains that it can exacerbate confabulation and harmful bias.",
+      "Section 2.9 distinguishes direct and indirect prompt injection; Section 2.12 highlights third-party component and data risks, difficult attribution, and even erroneous benchmark labels.",
+      "Section 3 states that not every suggested action is relevant to every AI actor; applicability differs for developers and deployers.",
+      "GV-1.3-002 establishes minimum performance or assurance thresholds for deployment approval; GV-1.3-007 plans for halting deployment that poses unacceptable risk.",
+      "GV-1.5-002 calls for after-action review of incident response and disclosure; GV-1.5-003 retains evaluation and provenance history; GV-1.6-003 includes underlying model versions, access modes, known issues, and oversight roles in inventories.",
+      "GV-3.2-001 supports independent evaluations proportional to risk; GV-3.2-004 defines user feedback and recourse mechanisms."
+    ],
+    "verification": "Web fetch could not render PDF; downloaded final PDF directly with HTTP 200 and extracted full text using pdftotext. Capture: /tmp/opencode/ccarp-gov-nist-genai.txt.",
+    "caveats": [
+      "Use the final profile, not the withdrawn April 2024 initial public draft.",
+      "A voluntary companion profile, not a replacement for legal requirements or a certification.",
+      "Citations and apparent reasoning can themselves be wrong. The profile supplies no universally calibrated meaning for model self-reported confidence."
+    ]
+  },
+  {
+    "id": "gov-gdpr-eurlex",
+    "name": "EUR-Lex: Regulation (EU) 2016/679, General Data Protection Regulation",
+    "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679",
+    "section": "Recital 26; Articles 5, 6, 9, 17, 22, 25, 28, 32, 35, 44-49",
+    "accessedAt": "2026-10-26",
+    "version": "Original Official Journal text, Regulation of 27 April 2016, OJ L 119, 4 May 2016; not a representation of all subsequent case law or local rules",
+    "evidence": [
+      "Article 5 requires purpose limitation, data minimization, accuracy, storage limitation, integrity/confidentiality, and controller accountability; Article 6 specifies lawful bases rather than requiring consent in every case.",
+      "Recital 26 distinguishes truly anonymous information from pseudonymized personal data that can be attributed to a person with additional information.",
+      "Article 9 has additional conditions for special categories of personal data; Article 25 requires data protection by design and default; Article 28 governs processor contracts and obligations.",
+      "Article 22(1) concerns decisions based solely on automated processing that produce legal or similarly significant effects, not every automated suggestion. Article 22(2) contains exceptions, and Article 22(3) requires safeguards including human intervention, expression of the person's view, and contesting the decision for the specified exceptions.",
+      "Article 32 requires risk-appropriate technical and organizational security measures, including resilience, restoration, and evaluation of safeguards.",
+      "Article 35 requires a prior data protection impact assessment for processing likely to result in high risk to rights and freedoms, including specified high-risk situations.",
+      "Article 17 includes grounds and exceptions for erasure; Chapter V, Articles 44-49, governs international transfers rather than imposing a universal EU-only hosting rule."
+    ],
+    "verification": "Direct EUR-Lex requests returned empty HTTP 202 responses. Full EUR-Lex source text retrieved through https://r.jina.ai/https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679, identifying the original URL as URL Source.",
+    "caveats": [
+      "Primary legislative content obtained via a third-party text proxy, not direct full-text retrieval or independent corroboration. Provenance caveat applies.",
+      "Legal applicability depends on facts, jurisdiction, current law, and counsel. No legal advice or exhaustive compliance assessment is provided.",
+      "An EU region, a processor agreement, encryption, or a human-review checkbox alone does not establish compliance."
+    ]
+  },
+  {
+    "id": "gov-hipaa-hhs-cloud",
+    "name": "HHS OCR: Guidance on HIPAA & Cloud Computing",
+    "url": "https://www.hhs.gov/hipaa/for-professionals/special-topics/health-information-technology/cloud-computing/index.html",
+    "section": "Introduction; Questions 1-5, 8-11",
+    "accessedAt": "2026-10-26",
+    "version": "HHS guidance published October 6, 2016; full rendered text retrieved 2026-10-26",
+    "evidence": [
+      "The introduction defines PHI in the covered-entity/business-associate context and says a cloud service provider creating, receiving, maintaining, or transmitting ePHI on behalf of such an entity is a business associate, even when it lacks a decryption key.",
+      "Question 1 permits cloud use with a HIPAA-compliant BAA and otherwise complying with HIPAA; covered entities and business associates must conduct their own risk analyses and risk management.",
+      "Question 1 explains SLAs can address availability, recovery, return of data, security responsibilities, and use/retention/disclosure restrictions, and must remain consistent with the BAA and HIPAA.",
+      "Question 2 states that encryption alone does not satisfy integrity, availability, administrative safeguards, and other applicable requirements.",
+      "Question 4 states that OCR does not endorse, certify, or recommend particular technologies or products.",
+      "Question 8 says HIPAA generally does not require a business associate to keep ePHI after services end; feasible return/destruction and continued protections when infeasible are addressed through the BAA.",
+      "Question 9 allows overseas processing if applicable requirements are met while requiring location-specific risk analysis; Question 10 distinguishes HIPAA requirements from additional contractual audit assurances.",
+      "Question 11 excludes information de-identified in accordance with HIPAA processes from PHI treatment; it does not say that arbitrary removal of names constitutes de-identification."
+    ],
+    "verification": "Direct web and HTTP fetches returned 403. Full source text retrieved through https://r.jina.ai/https://www.hhs.gov/hipaa/for-professionals/special-topics/health-information-technology/cloud-computing/index.html, identifying the HHS source URL and publication timestamp.",
+    "caveats": [
+      "Primary agency guidance obtained via a third-party text proxy; no independent validation of current legal applicability.",
+      "A signed BAA is necessary where applicable but not sufficient for end-to-end compliance. Neither encryption nor ZDR grants HIPAA compliance.",
+      "Do not confuse retention of required compliance documentation with a blanket requirement to retain all patient payloads for the same period."
+    ]
+  },
+  {
+    "id": "gov-fedramp-scope",
+    "name": "FedRAMP: Scope of FedRAMP, Consolidated Rules for 2026",
+    "url": "https://www.fedramp.gov/2026/scope",
+    "section": "Scope of FedRAMP",
+    "accessedAt": "2026-10-26",
+    "version": "2026 consolidated guidance in optional early-adoption period; read with gov-fedramp-timeline",
+    "evidence": [
+      "Only a federal agency determines whether its specific use of a cloud service falls within FedRAMP scope; a service is not automatically always in or out of scope.",
+      "Quotes OMB M-24-15 scope covering cloud services processing federal information on behalf of agencies, subject to specified exclusions.",
+      "Contrasts AI coding on private, strictly controlled repositories with AI coding on entirely public repositories that exposes no sensitive pre-decisional information.",
+      "Distinguishes internal data search and privileged internal monitoring from public-information search and external public-endpoint monitoring."
+    ],
+    "verification": "Full official guidance fetched directly.",
+    "caveats": [
+      "Do not state that the consolidated 2026 rules are universally mandatory on 2026-10-26; timeline sets mandatory adoption for 2027-01-01 subject to applicability and effective-date exceptions.",
+      "The public/private distinction is a scoped example, not a complete agency risk or authorization determination.",
+      "No claim about a specific Claude product's marketplace status, impact level, region, or authorization boundary was verified."
+    ]
+  },
+  {
+    "id": "gov-fedramp-agency-use",
+    "name": "FedRAMP: Using a FedRAMP Certified Cloud Service",
+    "url": "https://www.fedramp.gov/2026/agencies/use",
+    "section": "Using a FedRAMP Certified Cloud Service",
+    "accessedAt": "2026-10-26",
+    "version": "2026 consolidated guidance in optional early-adoption period; read with gov-fedramp-timeline",
+    "evidence": [
+      "FedRAMP certification is reusable evidence about a cloud service offering; the agency authorizing official still accepts risk for the agency's specific system use, configuration, integrations, and customer-operated controls.",
+      "Agencies should confirm use of the certified service version and review the package, inherited controls, provider responsibilities, secure configuration guidance, and ongoing information.",
+      "The agency authorization documents what it implements, configures, operates, or inherits, rather than copying the provider's package as though it were the agency system.",
+      "Agencies configure identity, logging, monitoring, privacy, incident response, and other applicable controls; complete their own authorization before use; and monitor the service over time."
+    ],
+    "verification": "Full official guidance fetched directly.",
+    "caveats": [
+      "The page uses the 2026 term Certified. Do not silently apply new terminology or dates to every legacy authorization scenario.",
+      "Cloud-provider authorization/certification does not automatically cover a custom application, arbitrary integrations, or a different product boundary.",
+      "Mandatory adoption date and rule-specific exceptions must be checked."
+    ]
+  },
+  {
+    "id": "gov-fedramp-timeline",
+    "name": "FedRAMP: Important Dates for the Consolidated Rules for 2026",
+    "url": "https://www.fedramp.gov/2026/timeline/",
+    "section": "Important Dates for the Consolidated Rules for 2026",
+    "accessedAt": "2026-10-26",
+    "version": "Official live 2026 transition schedule retrieved 2026-10-26",
+    "evidence": [
+      "Lists optional early adoption beginning July 4, 2026.",
+      "Lists January 1, 2027 as mandatory adoption for all stakeholders, subject to overall applicability and specific effective dates.",
+      "Lists June 11, 2027 as the end of applications for new Rev5 certifications."
+    ],
+    "verification": "Full official timeline fetched directly.",
+    "caveats": [
+      "Single-authority schedule, not independently corroborated; use attribution for dates and recheck before publication.",
+      "On the requested research date the consolidated guidance must not be presented as an already universal replacement for every applicable legacy requirement."
+    ]
+  },
+  {
+    "id": "life-official-prep-path",
+    "name": "Anthropic Partner Academy: Claude Certified Architect Professional Prep Course",
+    "url": "https://anthropic-partners.skilljar.com/path/claude-certified-architect-professional",
+    "section": "Learning objectives",
+    "accessedAt": "2026-10-26",
+    "version": "Unversioned public course landing page retrieved 2026-10-26",
+    "evidence": [
+      "[COI: Anthropic] Course objectives cover translating ambiguous business problems to scoped solutions, budgets for cost/latency/reliability, and enterprise-acceptable integrations.",
+      "[COI: Anthropic] Describes input screening, output screening, and tool-call authorization so controls fail closed.",
+      "[COI: Anthropic] Calls for evaluations as acceptance criteria and a gate before model or architecture changes.",
+      "[COI: Anthropic] Routes decisions based on confidence, reversibility, and cost; maps compliance obligations to a named control, owner, and evidence artifact.",
+      "[COI: Anthropic] Calls for structured discovery, actionable stakeholder trade-offs, durable handoffs, and enabling teams to operate a live system without depending on its original architect."
+    ],
+    "verification": "Full public landing-page content fetched directly, without enrollment or access to private lessons.",
+    "caveats": [
+      "Vendor-authored curriculum description, not independent evidence that course completion predicts exam success.",
+      "Learning objectives are not leaked exam questions or an exact exam-item distribution.",
+      "The word confidence is not defined here as a calibrated numerical probability."
+    ]
+  },
+  {
+    "id": "gov-official-safety-course",
+    "name": "Anthropic Partner Academy: Responsible AI, Safety & Risk for Architects",
+    "url": "https://anthropic-partners.skilljar.com/path/claude-certified-architect-professional/responsible-ai-safety-risk-for-architects",
+    "section": "Responsible AI, Safety & Risk for Architects",
+    "accessedAt": "2026-10-26",
+    "version": "Unversioned public module page retrieved 2026-10-26",
+    "evidence": [
+      "[COI: Anthropic] Separates what model training reduces from what the application layer must still enforce.",
+      "[COI: Anthropic] Places input, output, and tool-call controls along the request path and contrasts model-based and deterministic checks with fail-closed behavior.",
+      "[COI: Anthropic] Identifies unequal outcomes and the explanations required for users, regulators, and debugging teams.",
+      "[COI: Anthropic] Allocates human review using confidence, reversibility, and wrong-answer cost, and maps compliance obligations to controls, owners, and evidence."
+    ],
+    "verification": "Full public module description fetched directly. Gated lesson contents not accessed.",
+    "caveats": [
+      "Same vendor as parent course; not independent corroboration of it.",
+      "No universal fairness metric, human-review threshold, or numerical confidence calibration is specified."
+    ]
+  },
+  {
+    "id": "life-official-stakeholder-course",
+    "name": "Anthropic Partner Academy: Stakeholder Engagement, Lifecycle & GTM",
+    "url": "https://anthropic-partners.skilljar.com/path/claude-certified-architect-professional/stakeholder-engagement-lifecycle-gtm",
+    "section": "Stakeholder Engagement, Lifecycle & GTM",
+    "accessedAt": "2026-10-26",
+    "version": "Unversioned public module page retrieved 2026-10-26",
+    "evidence": [
+      "[COI: Anthropic] Structured discovery with non-technical stakeholders should produce architectural requirements and documented assumptions traceable to the business case.",
+      "[COI: Anthropic] A decision-ready trade-off pairs each option with cost, risk, and what reversing it would take.",
+      "[COI: Anthropic] Lifecycle feedback loops name review triggers, actions required after an SLA breach, and when to iterate versus re-architect, with governance checkpoints in the loop.",
+      "[COI: Anthropic] Cross-platform selection compares direct API, Bedrock, Vertex, and third-party routes on latency, compliance, and cost, and produces an outcome document intelligible to a non-technical sponsor."
+    ],
+    "verification": "Full public module description fetched directly. Gated lesson contents not accessed.",
+    "caveats": [
+      "Vendor course description; low independent corroboration for exact curriculum claims.",
+      "GTM is the course's go-to-market content, not an additional numbered exam objective in the supplied guide.",
+      "No source-specific ROI result, standard handoff checklist, or mandated discovery template is established."
+    ]
+  },
+  {
+    "id": "life-success-evaluations",
+    "name": "Anthropic: Define success criteria and build evaluations",
+    "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+    "section": "Define your success criteria",
+    "accessedAt": "2026-10-26",
+    "version": "Unversioned live documentation retrieved 2026-10-26; former define-success URL resolved to this content",
+    "evidence": [
+      "[COI: Anthropic] Success criteria should be specific, measurable using quantitative metrics or defined qualitative scales, achievable, and relevant to the application and users.",
+      "[COI: Anthropic] Lists task fidelity, consistency, privacy, context use, latency, and price among dimensions requiring evaluation.",
+      "[COI: Anthropic] Recommends real-task-distribution evaluation, including edge cases, and comparisons against a baseline or prior version.",
+      "[COI: Anthropic] Examples combine held-out task metrics, safety outcomes, severity distinctions, and response-time thresholds rather than a single generic accuracy number."
+    ],
+    "verification": "Full documentation returned by the official define-success URL with canonical URL develop-tests in page metadata; long response saved by tool.",
+    "caveats": [
+      "Illustrative vendor thresholds are examples, not acceptance standards, fairness guarantees, or predicted Claude production performance.",
+      "A toxicity classifier flag is a measured proxy, not a direct measure of all harm; automated grading has its own error.",
+      "The page's generic preference for evaluation volume is not a license to replace expert adjudication or representative sampling for consequential decisions."
+    ]
+  },
+  {
+    "id": "life-google-slos",
+    "name": "Google SRE Workbook: Implementing SLOs",
+    "url": "https://sre.google/workbook/implementing-slos/",
+    "section": "Implementing SLOs",
+    "accessedAt": "2026-10-26",
+    "version": "The Site Reliability Workbook, Chapter 2, 2018; online text retrieved 2026-10-26",
+    "evidence": [
+      "[COI: Google] An SLO specifies a target level of service reliability; useful adoption requires stakeholder approval, feasibility agreement by operators, an error-budget policy, and a refinement process.",
+      "[COI: Google] Recommends good-events/total-events SLIs and distinguishes user-relevant SLI specification from its actual instrumentation, including coverage blind spots.",
+      "[COI: Google] Specifies targets, measurement windows, and user-centric critical journeys; a successful backend request alone may not capture user experience.",
+      "[COI: Google] A written error-budget policy defines actions and owners, including prioritizing reliability work or limiting changes after budget exhaustion.",
+      "[COI: Google] SLO documentation records authors, technical reviewers, business approvers, approval/review dates, objectives, SLI implementations, error-budget calculation, and rationale/evidence for thresholds.",
+      "[COI: Google] Feedback from tickets and user satisfaction is used to refine SLIs and SLOs when measured performance fails to capture user-facing problems."
+    ],
+    "verification": "Full primary practitioner chapter fetched directly; long response saved by tool.",
+    "caveats": [
+      "Vendor-authored practice guidance, not an AI-specific standard or legal requirement.",
+      "An availability error budget does not authorize privacy violations or illegal actions.",
+      "Do not promote the chapter's example targets or suggested window to universal requirements."
+    ]
+  },
+  {
+    "id": "life-google-production-handoff",
+    "name": "Google SRE: The Evolving SRE Engagement Model",
+    "url": "https://sre.google/sre-book/evolving-sre-engagement-model/",
+    "section": "The Evolving SRE Engagement Model",
+    "accessedAt": "2026-10-26",
+    "version": "Site Reliability Engineering, Chapter 32, online edition copyright 2017; retrieved 2026-10-26",
+    "evidence": [
+      "[COI: Google] Production readiness review assesses service-specific reliability needs and readiness before an SRE team accepts production responsibility.",
+      "[COI: Google] The engagement model covers architecture/dependencies, monitoring, emergency response, capacity, change management, and performance.",
+      "[COI: Google] Training includes documentation, design and request-flow overviews, production setup, and hands-on operational exercises.",
+      "[COI: Google] Onboarding progressively transfers operations, change management, access rights, and ownership; developers remain available to back up the receiving team during transition.",
+      "[COI: Google] Early engagement brings production and reliability considerations into design and implementation rather than discovering them only at final handoff."
+    ],
+    "verification": "Full primary practitioner chapter fetched directly.",
+    "caveats": [
+      "Google-specific operational practice; adapt to team scale and application risk rather than requiring an SRE department in every scenario.",
+      "Applying this model to prompt versions, retrieval indexes, evaluation artifacts, and AI risk ownership is an explicit architectural inference, not wording copied from this chapter."
+    ]
+  }
+]
