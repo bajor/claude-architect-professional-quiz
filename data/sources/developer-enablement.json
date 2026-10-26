@@ -1,0 +1,172 @@
+[
+  {
+    "id": "code-memory",
+    "name": "How Claude remembers your project",
+    "url": "https://code.claude.com/docs/en/memory",
+    "section": "How CLAUDE.md files load",
+    "accessedAt": "2026-10-26",
+    "version": "Rolling official documentation retrieved 2026-10-26; no immutable documentation release declared. The page separately documents version-qualified features, including direct AGENTS.md support at v2.1.277+; do not treat the entire page as a v2.1.304 specification.",
+    "evidence": [
+      "[COI: Anthropic; unverified independently; single-vendor evidence] CLAUDE.md and auto memory are model context, not enforced configuration. Managed settings and client permission rules are the technical enforcement layer.",
+      "Managed CLAUDE.md provides organization guidance but is distinct from managed permissions.deny, sandbox policy, and other client-enforced settings.",
+      "Ancestor and project instruction files concatenate into context rather than replacing each other; within a directory CLAUDE.local.md follows CLAUDE.md, and nested instructions load on relevant file access.",
+      "The recommendation to target under 200 lines per CLAUDE.md is not a universal truncation limit. Imported content loads with its parent and still consumes context.",
+      "Use path-scoped .claude/rules files for file-specific guidance and skills for procedures that should not always occupy context.",
+      "Use /context to verify startup memory files; lazy nested files need not appear in that list. InstructionsLoaded hooks can record when and why instruction files load."
+    ]
+  },
+  {
+    "id": "code-settings",
+    "name": "Settings files and precedence",
+    "url": "https://code.claude.com/docs/en/settings",
+    "section": "Settings precedence",
+    "accessedAt": "2026-10-26",
+    "version": "Rolling official documentation retrieved 2026-10-26; no fixed page version declared. General stack has key-specific, security, list, flag, and environment-variable exceptions documented on the page.",
+    "evidence": [
+      "[COI: Anthropic; unverified independently; single-vendor evidence] User settings are ~/.claude/settings.json, team-shared settings are committed .claude/settings.json, personal project overrides are .claude/settings.local.json, and managed settings carry organization policy.",
+      "General precedence is managed settings > command-line --settings > project local > shared project > user. Environment variables and dedicated flags have per-key behavior rather than a universal position in that stack.",
+      "Lists such as permissions.allow merge across scopes rather than replacing each other. An allow saved locally does not outrank a project or managed ask rule.",
+      "allowManagedPermissionRulesOnly can constrain accepted permission rules to managed policy. Some security-sensitive keys preserve restrictive values from lower scopes.",
+      "Committed allow rules wait for interactive workspace trust, while deny and ask rules apply immediately. A repository-tracked settings.local.json also follows repository trust rules.",
+      "Claude Code excludes settings.local.json from git when it writes the file; manually created personal settings should be explicitly gitignored.",
+      "/status reports active setting sources, not per-key provenance. In -p mode broken settings or individual invalid values may be skipped without a dialog; documented managed-document exceptions apply."
+    ]
+  },
+  {
+    "id": "code-hooks",
+    "name": "Hooks reference",
+    "url": "https://code.claude.com/docs/en/hooks",
+    "section": "Exit code output",
+    "accessedAt": "2026-10-26",
+    "version": "Rolling official documentation retrieved 2026-10-26. onFailure: block requires v2.1.295+; documented per-hook timing lines require v2.1.296+. Agent hooks are explicitly experimental. Newer platform-specific details on the page are separately version-qualified.",
+    "evidence": [
+      "[COI: Anthropic; unverified independently; single-vendor evidence] Command hooks run scripts at lifecycle events; prompt hooks call an LLM for a single-turn JSON decision; agent hooks can inspect files with tools and are experimental.",
+      "With plain or empty stdout, exit 0 succeeds, exit 2 blocks on block-capable events, and other nonzero exits normally report non-blocking errors. Valid JSON decision output and per-event exceptions affect this simplified rule.",
+      "PreToolUse exit 2 blocks a tool call. PostToolUse cannot undo the executed tool and returns feedback. Stop exit 2 continues the conversation. PermissionRequest has a separate decision contract.",
+      "A valid JSON blocking decision can block on exit 0. For ordinary non-fail-closed hooks, valid JSON can also be honored despite another nonzero exit, while exit 2 cannot be overridden by JSON allow.",
+      "For supported command/HTTP events, onFailure: block blocks on crashes, missing executables, invalid output, or timeouts. It has no effect on Stop, SubagentStop, TaskCompleted, TeammateIdle, or background command hooks.",
+      "Prompt hooks return ok and a reason when false; their effect depends on event and continueOnBlock. Prompt-hook ok:false has no effect on PermissionRequest.",
+      "async:true command hooks provide later feedback and cannot control the already-completed action through decision, permissionDecision, or continue.",
+      "Command hooks execute with full user access and outside the Bash sandbox. A -p/SDK session treats the folder as trusted for hooks in settings files, so review repository hooks or constrain automatic customization loading.",
+      "Debug details go to --debug-file or ~/.claude/debug/<session-id>.txt. --debug does not print the debug log to the terminal."
+    ]
+  },
+  {
+    "id": "code-skills",
+    "name": "Extend Claude with skills",
+    "url": "https://code.claude.com/docs/en/skills",
+    "section": "Control who invokes a skill",
+    "accessedAt": "2026-10-26",
+    "version": "Rolling official documentation retrieved 2026-10-26. Ignoring non-managed skill grants under allowManagedPermissionRulesOnly is documented for v2.1.282+. Some page features require versions beyond local CLI 2.1.304, including added-directory command-name qualification in v2.1.309+ and doctor usage analysis in v2.1.305+.",
+    "evidence": [
+      "[COI: Anthropic; unverified independently; single-vendor evidence] Normal skill discovery supplies names/descriptions; the SKILL.md body loads when invoked; linked supporting references load only when needed. Preloaded subagent skills are an exception to description-only startup.",
+      "disable-model-invocation:true makes a skill user-controlled and removes its description from the model listing; user-invocable:false hides direct user invocation while allowing model invocation.",
+      "Skill instructions can persist across turns, but allowed-tools pre-approval applies only to the invoking turn and clears on the next user message.",
+      "allowed-tools is a permission grant, not an exclusive list of available tools; other tools remain governed by ordinary permission settings. Managed-only permission policy can ignore non-managed skill grants.",
+      "The resolve-skills table identifies /review as a bundled alias of /code-review; a project code-review override does not replace the bundled alias.",
+      "The current page distinguishes interactive /doctor, which diagnoses and can propose confirmed fixes, from terminal claude doctor, which performs read-only installation diagnostics."
+    ]
+  },
+  {
+    "id": "code-mcp",
+    "name": "Connect Claude Code to tools via MCP",
+    "url": "https://code.claude.com/docs/en/mcp",
+    "section": "MCP installation scopes",
+    "accessedAt": "2026-10-26",
+    "version": "Rolling official documentation retrieved 2026-10-26; no immutable page version declared. Managed-provided server precedence is documented for v2.1.259+; discovery-cache support for v2.1.221+; several other features are individually version/rollout-qualified.",
+    "evidence": [
+      "[COI: Anthropic; unverified independently; single-vendor evidence] Verify that you trust an MCP server before connecting it; servers retrieving external content can expose the agent to prompt injection.",
+      "Project MCP configuration is shared through root .mcp.json. Local/project-private and user-wide MCP configuration live in ~/.claude.json, unlike general local settings in .claude/settings.local.json.",
+      "For duplicate ordinary server names, local scope outranks project and project outranks user; the entire server entry is selected, not field-merged. Managed-provided server definitions have separately documented higher priority.",
+      "Interactive sessions ask approval for project servers. -p and SDK sessions load them without that prompt. --strict-mcp-config selects only supplied MCP configuration, with managed MCP policy qualifications.",
+      "The PostgreSQL example explicitly recommends a read-only database user when queries must not modify data.",
+      "Added means configuration was saved, not that credentials or transport work. /mcp, claude mcp list, and claude mcp get expose connection/authentication/approval status.",
+      "A cached remote tool list can be available before a live connection; the server connects on first use. Failure details avoid expanded credential-bearing URLs."
+    ]
+  },
+  {
+    "id": "code-sandboxing",
+    "name": "Configure the sandboxed Bash tool",
+    "url": "https://code.claude.com/docs/en/sandboxing",
+    "section": "What runs outside the sandbox",
+    "accessedAt": "2026-10-26",
+    "version": "Rolling official documentation retrieved 2026-10-26; no immutable page version declared. Platform support and strict-mode behavior are qualified by the current page. Credential file masking is documented for v2.1.221+ with different Linux/WSL2 and macOS behavior.",
+    "evidence": [
+      "[COI: Anthropic; unverified independently; single-vendor evidence] The OS-enforced Bash sandbox wraps shell commands and their child processes, not the whole Claude Code process.",
+      "Built-in file/web tools, command hooks, local MCP servers, and helper processes run outside that sandbox. Sandbox denyRead does not stop Read, and sandbox allowedDomains does not constrain WebFetch.",
+      "Default writes are limited to working directories and a per-user temporary directory, with protected configuration paths still denied. Reads remain broad and can include credential files; inherited environment secrets need explicit protection.",
+      "Network access passes through an allowed-domain proxy. Filesystem isolation and network isolation are separate controls.",
+      "Excluded commands and unsandboxed retries can leave the boundary. allowUnsandboxedCommands:false disables the retry but does not by itself eliminate excludedCommands.",
+      "By default an unavailable sandbox can result in unsandboxed execution; failIfUnavailable:true makes startup fail instead.",
+      "Credential deny/mask entries must be configured explicitly; the page states there is no built-in credential deny list. Enclosing containers/VMs can provide a broader boundary covering processes the Bash sandbox does not."
+    ]
+  },
+  {
+    "id": "code-headless",
+    "name": "Run Claude Code programmatically",
+    "url": "https://code.claude.com/docs/en/headless",
+    "section": "Basic usage",
+    "accessedAt": "2026-10-26",
+    "version": "Rolling official documentation retrieved 2026-10-26. --permission-prompts requires v2.1.259+; mcp_server_errors requires v2.1.219+. Manual is the documented unset -p starting mode on v2.1.302+. The page says bare mode is recommended now and a future -p default, not the current default.",
+    "evidence": [
+      "[COI: Anthropic; unverified independently; single-vendor evidence] claude -p runs the agent non-interactively with text, JSON, or stream-json output; skills/custom commands can expand from the prompt.",
+      "Without bare mode, -p can discover repository/user customizations and run project settings hooks and MCP servers without showing workspace trust dialogs.",
+      "--bare skips automatic customizations and accepts explicitly supplied context/configuration. It does not read Anthropic subscription OAuth/keychain credentials; use ANTHROPIC_API_KEY or an apiKeyHelper supplied through --settings. Third-party providers retain their own credential mechanisms.",
+      "--allowedTools auto-approves named tools rather than removing unlisted tools. Unlisted operations that need no approval can still run. dontAsk denies unresolved prompts, with documented mod/hook qualifications.",
+      "--permission-prompts none prevents waiting on an absent permission host; earlier permission rules, hooks, and the selected mode still decide calls first.",
+      "Run failures have a nonzero process exit; invalid flags are reported to stderr before execution, while failures inside a run can appear as results on stdout. structured_output is not guaranteed to be present if no valid structured result was produced.",
+      "system/init reports model/tools/plugins/MCP status. Invalid --mcp-config entries may be skipped while the run continues; mcp_server_errors and plugin_errors support explicit CI failure gates.",
+      "system/api_retry reports category, attempt, delay, and retry limit. JSON cost is an estimate and a resumed conversation's total includes preceding runs."
+    ]
+  },
+  {
+    "id": "code-github-actions",
+    "name": "Claude Code GitHub Actions",
+    "url": "https://code.claude.com/docs/en/github-actions",
+    "section": "Protect your credentials",
+    "accessedAt": "2026-10-26",
+    "version": "Rolling official documentation retrieved 2026-10-26. Examples target anthropics/claude-code-action@v1, a mutable major reference rather than a pinned action commit. Federation/app-permission claims describe the retrieved page, not a fixed July 2026 exam snapshot.",
+    "evidence": [
+      "[COI: Anthropic; unverified independently; single-vendor evidence] Never commit API keys or OAuth tokens; put them in GitHub Secrets, grant only needed workflow permissions, and review Claude's changes before merging.",
+      "For organization-shared authentication, the page recommends a Console API key rather than a person's subscription OAuth token. It also documents service-account workload identity federation using GitHub OIDC to avoid a long-lived secret.",
+      "The official GitHub App serves multiple Claude products and has one combined permission set; GitHub does not allow arbitrary subset acceptance. The page describes a custom app when an organization needs only the action's narrower required set.",
+      "The action checks triggering write access and bot actors. GitHub/workflow permissions and model tool permissions are separate controls.",
+      "Use max-turns, workflow timeouts, and concurrency limits to bound automation; review examples separately grant only the tools needed to post findings.",
+      "Commits made through the default GITHUB_TOKEN do not trigger subsequent workflows. The guide recommends GitHub App/custom app authentication and checking CI event triggers when Claude's commits do not start CI."
+    ]
+  },
+  {
+    "id": "code-best-practices",
+    "name": "Best practices for Claude Code",
+    "url": "https://code.claude.com/docs/en/best-practices",
+    "section": "Give Claude a way to verify its work",
+    "accessedAt": "2026-10-26",
+    "version": "Rolling official recommendations retrieved 2026-10-26; no immutable page version declared. These are vendor workflow recommendations, not an independently measured productivity/quality benchmark.",
+    "evidence": [
+      "[COI: Anthropic; unverified independently; single-vendor evidence] Give the agent runnable tests, build exits, lint checks, fixtures, or screenshots so it can evaluate and iterate on the result; require actual evidence rather than a success assertion.",
+      "Separate exploration and planning from implementation for uncertain or multi-file work, but skip planning overhead for small, clear changes.",
+      "Specify symptoms, relevant files, constraints, and acceptance conditions; the bug-fix examples call for a failing test reproducer and verification after the fix.",
+      "A writer/reviewer pattern uses a fresh session/context for review so the reviewer does not inherit the implementation reasoning; bundled /code-review also uses fresh subagent review context.",
+      "Scope reviews to correctness and stated requirements. A reviewer asked for gaps may report some even when code is sound, so do not blindly expand implementation to satisfy every stylistic suggestion.",
+      "Treat AI review as a second opinion alongside executable verification and existing human/CI controls; the page explicitly warns against shipping unverifiable plausible implementations."
+    ]
+  },
+  {
+    "id": "code-monitoring",
+    "name": "Monitoring",
+    "url": "https://code.claude.com/docs/en/monitoring-usage",
+    "section": "Tool result event",
+    "accessedAt": "2026-10-26",
+    "version": "Rolling official documentation retrieved 2026-10-26. Traces are labeled beta. Tool-result/tool-decision request_id and event agent ancestry fields require v2.1.310+, newer than the installed 2.1.304. Do not assume every documented field is present locally.",
+    "evidence": [
+      "[COI: Anthropic; unverified independently; single-vendor evidence] OpenTelemetry needs CLAUDE_CODE_ENABLE_TELEMETRY=1 plus selected exporters and their endpoint/protocol configuration. Check claude_code.session.count for metrics or claude_code.user_prompt for logs-only export.",
+      "Third-party exporter failures appear as [3P telemetry] in the debug log; [Anthropic telemetry] belongs to a separate telemetry path.",
+      "api_request captures request duration/cost/tokens, api_error captures error/status/attempts, tool_result captures executed tools, and tool_decision captures permission decisions. Rejected calls do not emit tool_result.",
+      "prompt.id correlates the work initiated by one prompt; tool_use_id correlates tool events with hook input. request_id on tool_result/tool_decision requires v2.1.310+.",
+      "Beta distributed traces separate API time, tool permission wait, and tool execution; detailed hook spans require additional detailed-beta configuration beyond basic trace enablement.",
+      "Prompt and tool content/details are disabled by default, but standard attributes can include user.email and account/session identifiers. OTEL_LOG_RAW_API_BODIES can expose the whole conversation.",
+      "Repository settings cannot enable or redirect telemetry exporter variables. Configure the export through user/shell or managed settings; managed OTLP endpoint/credential settings remove conflicting developer destination variables as documented.",
+      "Telemetry/transcript joins and some correlation fields are version-sensitive, and trace content schemas include explicitly unstable detailed-beta attributes."
+    ]
+  }
+]
