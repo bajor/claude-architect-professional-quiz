@@ -1,0 +1,275 @@
+[
+  {
+    "id": "agents",
+    "name": "Building effective agents",
+    "url": "https://www.anthropic.com/research/building-effective-agents",
+    "section": "What are agents?",
+    "accessedAt": "2026-10-26",
+    "version": "Article published 2024-12-19; live page includes a later tooling-update notice",
+    "evidence": [
+      "Documented fact [COI: Anthropic]: Workflows orchestrate LLMs and tools through predefined code paths; agents let LLMs dynamically direct their own processes and tool usage. Section: What are agents?",
+      "Documented recommendation [COI: Anthropic]: Start with the simplest solution; many applications need only a single call with retrieval and in-context examples. Agentic complexity can add latency and cost. Section: When (and when not) to use agents.",
+      "Documented patterns [COI: Anthropic]: An augmented LLM adds retrieval, tools, and memory. Chaining handles fixed sequential subtasks with possible programmatic gates; routing directs classified inputs to specialized paths; parallelization includes independent sectioning and multiple-attempt voting.",
+      "Documented patterns [COI: Anthropic]: Orchestrator-workers dynamically determines subtasks; evaluator-optimizer loops require clear evaluation criteria and measurable improvement. Sections: Workflow: Orchestrator-workers; Workflow: Evaluator-optimizer.",
+      "Documented recommendation [COI: Anthropic]: Agents need ground truth from tool results or code execution, human checkpoints when appropriate, stopping conditions, sandbox testing, and guardrails. Section: Agents.",
+      "Version caveat [COI: Anthropic]: The article carries an explicit notice that the tooling landscape has changed since December 2024; historical tooling examples are not a current feature matrix."
+    ]
+  },
+  {
+    "id": "multiagent",
+    "name": "How we built our multi-agent research system",
+    "url": "https://www.anthropic.com/research/multi-agent-research-system",
+    "section": "How we built our multi-agent research system",
+    "accessedAt": "2026-10-26",
+    "version": "Article published 2025-06-13; implementation account, not a current API specification",
+    "evidence": [
+      "Documented implementation [COI: Anthropic]: Research uses a lead agent with an orchestrator-worker architecture and parallel subagents with separate context windows. Sections: Benefits of a multi-agent system; Architecture overview for Research.",
+      "Documented recommendation [COI: Anthropic]: Give each delegated task an objective, output format, tool/source guidance, and clear boundaries; vague delegation caused duplicate work and coverage gaps. Section: Prompt engineering and evaluations for research agents.",
+      "Documented limitation [COI: Anthropic]: Heavy inter-agent dependencies or a need to share all context make some tasks poorer multi-agent fits; economic viability depends on task value covering added token use. Section: Benefits of a multi-agent system.",
+      "Documented implementation [COI: Anthropic]: Reliable long-running agents need resumption, checkpoints, retry safeguards, tracing, and deployments that preserve in-progress sessions. Synchronous coordination can bottleneck; asynchronous coordination adds state-consistency and error-propagation complexity. Section: Production reliability and engineering challenges.",
+      "Documented technique [COI: Anthropic]: Specialized agents can persist artifacts and return lightweight references rather than copying every result through the coordinator. Section: Appendix.",
+      "Version caveat [COI: Anthropic]: Numerical performance/token multipliers and the diagram's historical context-limit behavior describe this system and evaluation, not universal guarantees or current API limits."
+    ]
+  },
+  {
+    "id": "model-choice",
+    "name": "Choosing the right model",
+    "url": "https://platform.claude.com/docs/en/about-claude/models/choosing-a-model",
+    "section": "Choosing the right model",
+    "accessedAt": "2026-10-26",
+    "version": "rolling docs",
+    "evidence": [
+      "Documented selection criteria [COI: Anthropic]: Consider capability, speed, cost, and effort. Effort can change the intelligence/latency/cost trade-off within a supported model. Section: Establish key criteria.",
+      "Documented alternatives [COI: Anthropic]: Efficiency-first starts with a faster, lower-cost model and upgrades for measured gaps; capability-first establishes task performance first and optimizes efficiency later. Section: Choose the best model to start with.",
+      "Documented recommendation [COI: Anthropic]: Build use-case-specific benchmarks, test actual prompts and data, compare accuracy/response quality/edge cases, and weigh performance against cost. Section: Decide whether to upgrade or change models.",
+      "Documented patterns [COI: Anthropic]: Multi-model strategies include executor escalation to an advisor and orchestration of bulk work by lower-cost workers. Section: Combine models.",
+      "Version caveat [COI: Anthropic]: Named starting models, effort defaults, availability, prices, and migration restrictions are mutable; no fixed model name or price is necessary to test the documented decision process."
+    ]
+  },
+  {
+    "id": "prompt-overview",
+    "name": "Prompt engineering overview",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
+    "section": "Before prompt engineering",
+    "accessedAt": "2026-10-26",
+    "version": "rolling docs",
+    "evidence": [
+      "Documented prerequisites [COI: Anthropic]: Define clear success criteria, establish empirical tests against them, and have a first prompt before optimizing prompting. Section: Before prompt engineering.",
+      "Documented limitation [COI: Anthropic]: Not every success criterion or failing evaluation is best addressed by prompting; model choice may improve latency/cost more directly. Section: When to prompt engineer.",
+      "Documented currency guidance [COI: Anthropic]: Prompting best practices is the living reference. The linked interactive prompting tutorial was written for Claude 3 models; follow the current best-practices page where they differ. Sections: How to prompt engineer; Prompt engineering tutorial."
+    ]
+  },
+  {
+    "id": "prompting",
+    "name": "Prompting best practices",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices",
+    "section": "Prompting best practices",
+    "accessedAt": "2026-10-26",
+    "version": "rolling docs",
+    "evidence": [
+      "Documented guidance [COI: Anthropic]: Make instructions/output constraints explicit, use clear sequential steps when order matters, use descriptive tags to separate instructions/context/examples/variable inputs, and set a role in the system prompt. Sections: Be clear and direct; Structure prompts with XML tags; Give Claude a role.",
+      "Documented guidance [COI: Anthropic]: Few-shot/multishot examples should be relevant, diverse, and structured so the model does not confuse them with instructions or learn incidental patterns. The suggested example count is advice, not a universal correctness threshold. Section: Use examples effectively.",
+      "Documented guidance [COI: Anthropic]: For long-document tasks, place long data before the query and ground analysis in relevant quotes. Section: Long context prompting. Architecture inference: content organization is not a universal security boundary.",
+      "Documented guidance [COI: Anthropic]: Worked examples can guide thinking; general reasoning instructions may outperform a prescribed plan. Manual chain-of-thought prompting is a fallback when thinking is off, and some newer models can decline requests to write private reasoning into the answer. Section: Leverage thinking and interleaved thinking capabilities.",
+      "Documented use case [COI: Anthropic]: Explicit prompt chaining remains useful for inspecting intermediate outputs or enforcing a pipeline; separate draft/review/refine calls permit logging, evaluation, and branching. Section: Chain complex prompts.",
+      "Wording conflict to preserve [COI: Anthropic]: Overthinking and excessive thoroughness calls manual budgets a hard ceiling on thinking costs, but the specialized Extended thinking page says the budget is a target rather than a strict cap. Do not base a universal hard-cap answer on this general page."
+    ]
+  },
+  {
+    "id": "extended-thinking",
+    "name": "Extended thinking",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
+    "section": "Budget rules and tuning",
+    "accessedAt": "2026-10-26",
+    "version": "rolling docs",
+    "evidence": [
+      "Documented compatibility [COI: Anthropic]: Manual extended thinking uses thinking.type enabled with budget_tokens. The current warning says it is deprecated but accepted on 4.6 models, unsupported/rejected on 4.7 and later, and the only available thinking mode on supporting earlier models. Prefer adaptive thinking where both are available. Opening warning; Migrating to adaptive thinking.",
+      "Documented budget semantics [COI: Anthropic]: The budget is a target rather than a strict cap; max_tokens is the hard total-output ceiling. Thinking uses output budget and must leave room for the final response. Section: Budget rules and tuning.",
+      "Documented exception [COI: Anthropic]: The usual budget_tokens less than max_tokens constraint has an interleaved-manual-thinking exception; do not state the inequality as universally applicable. Section: Budget rules and tuning.",
+      "Documented cache interaction [COI: Anthropic]: Changing budget_tokens changes rendered prompt configuration and invalidates message-level cache breakpoints; tool/system effects are model-dependent. Section: Prompt caching in manual mode.",
+      "Version caveat [COI: Anthropic]: A beta header being accepted does not prove manual interleaved thinking takes effect on a given model/platform. Section: Interleaved thinking in manual mode."
+    ]
+  },
+  {
+    "id": "thinking",
+    "name": "Thinking",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+    "section": "Thinking",
+    "accessedAt": "2026-10-26",
+    "version": "rolling docs",
+    "evidence": [
+      "Documented output semantics [COI: Anthropic]: Thinking blocks are separated from canonical response text. Visible text is a summary, never raw chain of thought; display can return summarized or omitted thinking according to supported model configuration. Sections: How thinking works; Controlling thinking display.",
+      "Documented cost semantics [COI: Anthropic]: Omitting visible thinking does not remove thinking-token charges; it can improve streaming time to final text. Section: Controlling thinking display.",
+      "Documented round-trip requirement [COI: Anthropic]: Within a tool-use turn, return thinking blocks complete and unmodified with their tool-use context; do not rearrange, edit, or partially drop the generated sequence. Sections: Thinking with tool use; Preserving thinking blocks.",
+      "Documented token semantics [COI: Anthropic]: Current-turn thinking counts toward max_tokens, output billing, and context. Prior-turn preservation and input billing depend on the model; do not assume all prior thinking is always stripped. Section: Thinking and the context window.",
+      "Version caveat [COI: Anthropic]: Thinking defaults, allowed modes, forced-tool-use compatibility, display defaults, and preservation behavior vary across models. Consult the selected model rather than generalizing one example."
+    ]
+  },
+  {
+    "id": "caching",
+    "name": "Prompt caching",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+    "section": "Prompt caching",
+    "accessedAt": "2026-10-26",
+    "version": "rolling docs",
+    "evidence": [
+      "Documented mechanism [COI: Anthropic]: Caching reuses prompt prefixes in tools, system, messages order, including the marked block. Place static instructions/context/examples before a variable suffix. Sections: How prompt caching works; Structuring your prompt.",
+      "Documented matching behavior [COI: Anthropic]: Prefix hashes are cumulative; changes at or before the breakpoint change the hash. Reads find entries earlier requests actually wrote, not arbitrary stable text that never had a cache write. Section: How automatic prefix checking works.",
+      "Documented automatic behavior [COI: Anthropic]: Top-level automatic caching moves the breakpoint to the last cacheable block. For unrelated requests with a changing suffix, an explicit breakpoint at the end of the stable prefix can be needed; automatic caching does not infer and write that boundary for you. Sections: Automatic caching; How automatic prefix checking works.",
+      "Documented limits [COI: Anthropic]: A minimum cacheable length applies by model/platform; a cache entry is available after the first response starts. The default lifetime is five minutes with a one-hour option; reuse refreshes lifetime. Sections: Cache limitations; How prompt caching works.",
+      "Documented usage reporting [COI: Anthropic]: Total input is cache_read_input_tokens plus cache_creation_input_tokens plus input_tokens; input_tokens alone excludes cache reads/writes. Section: Tracking cache performance.",
+      "Version caveat [COI: Anthropic]: Model-specific cache price exceptions and platform integration differences exist. Architecture inference from the documented prefix-reuse mechanism: caching is not output-response memoization, model training, or a larger context window."
+    ]
+  },
+  {
+    "id": "context-windows",
+    "name": "Context windows",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+    "section": "Context windows",
+    "accessedAt": "2026-10-26",
+    "version": "rolling docs",
+    "evidence": [
+      "Documented accounting [COI: Anthropic]: The context window includes system instructions, message history, tool definitions/results, images/documents, and generated output. A larger window does not automatically improve accuracy/recall. Section: How the context window works.",
+      "Documented distinction [COI: Anthropic]: Cached prompt prefixes still occupy the context window; caching changes payment/processing rather than whether the tokens count. Section: Manage context with compaction.",
+      "Documented management [COI: Anthropic]: Server-side compaction summarizes earlier history; context editing can clear old tool results or thinking blocks. Section: Manage context with compaction.",
+      "Documented overflow behavior [COI: Anthropic]: Input alone exceeding the context window returns an error on every model. Handling input plus requested maximum output exceeding capacity is model-version dependent, including model_context_window_exceeded termination. Section: Context window overflow behavior.",
+      "Version caveat [COI: Anthropic]: Window sizes, output limits, tokenizer ratios, previous-thinking retention, and injected context-awareness support are model-specific and mutable; historical chat/product truncation behavior must not be assumed for the API."
+    ]
+  },
+  {
+    "id": "context-engineering",
+    "name": "Effective context engineering for AI agents",
+    "url": "https://www.anthropic.com/research/effective-context-engineering-for-ai-agents",
+    "section": "Effective context engineering for AI agents",
+    "accessedAt": "2026-10-26",
+    "version": "Article published 2025-09-29; design guidance, not a versioned API contract",
+    "evidence": [
+      "Documented distinction [COI: Anthropic]: Prompt engineering organizes instructions; context engineering curates the entire inference-time state, including instructions, tools, external data, and history. Section: Context engineering vs. prompt engineering.",
+      "Documented recommendation [COI: Anthropic]: Use the smallest sufficient high-signal context; organize system prompts into distinct sections and avoid both brittle exhaustive rules and vague assumed context. Start with a minimal prompt and add instructions/examples for observed failures. Section: The anatomy of effective context.",
+      "Documented technique [COI: Anthropic]: Just-in-time retrieval keeps lightweight paths/links/queries and loads needed data via tools rather than placing every full object in context. Runtime exploration can be slower than precomputed retrieval, and hybrid strategies exist. Section: Context retrieval and agentic search.",
+      "Documented trade-off [COI: Anthropic]: Compaction summarizes prior history but aggressive compression can lose critical details. Structured notes persist outside context and can be retrieved later. Focused subagents isolate detailed work and return condensed results. Section: Context engineering for long-horizon tasks.",
+      "Version caveat [COI: Anthropic]: Historical Claude Code file-retention examples, memory launch status, and observed performance are not current universal API or SDK guarantees."
+    ]
+  },
+  {
+    "id": "context-editing",
+    "name": "Context editing",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/context-editing",
+    "section": "Context editing",
+    "accessedAt": "2026-10-26",
+    "version": "rolling docs",
+    "evidence": [
+      "Documented mechanism [COI: Anthropic]: Context editing selectively clears specific history, including tool results or earlier thinking; it differs from summarizing the conversation. Sections: Overview; Server-side strategies.",
+      "Documented tool-result behavior [COI: Anthropic]: The clearing strategy removes oldest tool results chronologically and substitutes placeholders; clearing tool inputs as well is optional. Section: Tool result clearing.",
+      "Documented state distinction [COI: Anthropic]: Editing occurs server-side before the prompt reaches Claude; clients can retain their full unmodified conversation history. Section: Context editing occurs server-side.",
+      "Documented cache interaction [COI: Anthropic]: Clearing tool results or thinking invalidates affected cached prefixes; minimum clearing and retention settings balance recovered context against cache costs. Section: Context editing and prompt caching.",
+      "Version caveat [COI: Anthropic]: This is beta. Thinking-retention defaults vary by model, and server-side editing is not equivalent to arbitrary client-side history rewriting. Sections: Server-side strategies; Thinking block clearing; Context editing occurs server-side."
+    ]
+  },
+  {
+    "id": "compaction",
+    "name": "Compaction overview",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/compaction",
+    "section": "Choose how to compact",
+    "accessedAt": "2026-10-26",
+    "version": "rolling docs",
+    "evidence": [
+      "Documented mechanism [COI: Anthropic]: Compaction replaces older conversation turns with a server-written summary to keep active context manageable. Opening overview.",
+      "Documented alternatives [COI: Anthropic]: On-demand compaction is requested by the application; threshold compaction is triggered by input size during ordinary requests. Both differ from a client-owned summarizer. Section: Choose how to compact.",
+      "Documented compatibility distinction [COI: Anthropic]: On-demand and threshold approaches differ in how history/returned blocks are sent back, background operation, preserved-thinking handling, parameters, headers, and platform availability. Section: Choose how to compact.",
+      "Version caveat [COI: Anthropic]: Both server-side approaches are beta at access time. Follow each approach's compatibility page for implementation; this overview is not evidence that one header supports every approach/platform."
+    ]
+  },
+  {
+    "id": "skills",
+    "name": "Agent Skills",
+    "url": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+    "section": "Agent Skills",
+    "accessedAt": "2026-10-26",
+    "version": "rolling docs",
+    "evidence": [
+      "Documented mechanism [COI: Anthropic]: Skills are reusable filesystem resources containing instructions, metadata, and optional scripts/templates/resources that specialize agent behavior. Section: Why use Skills.",
+      "Documented progressive disclosure [COI: Anthropic]: Metadata is loaded for discovery, SKILL.md instructions are read when triggered, and resources are read as needed. Executed script output enters context without loading all source code; metadata still occupies context. Section: How Skills work.",
+      "Documented API prerequisite [COI: Anthropic]: API Skills require the code execution tool and run in its container. Custom API Skills are workspace-wide. Section: Claude API.",
+      "Documented surface distinction [COI: Anthropic]: Custom Skills do not automatically sync among API, Claude Code, and claude.ai; sharing/runtime/network constraints vary. The API sandbox has no network access or runtime package installation, unlike the broader capabilities of some other surfaces. Section: Limitations and constraints.",
+      "Documented risk [COI: Anthropic]: Treat Skills like installed software, audit bundled files, and use trusted sources because malicious instructions/code can misuse available tools or data. Section: Security considerations.",
+      "Version caveat [COI: Anthropic]: Platform availability, sharing, retention, prerequisites, and runtime constraints must be checked for the intended surface. Architecture inference from the documented packaging/security model: Skill packaging is not an independent security boundary or model-weight update."
+    ]
+  },
+  {
+    "id": "structured",
+    "name": "Structured outputs",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+    "section": "Structured outputs",
+    "accessedAt": "2026-10-26",
+    "version": "rolling docs",
+    "evidence": [
+      "Documented distinction [COI: Anthropic]: JSON outputs use output_config.format for direct response structure; strict tool use uses strict: true for tool names/inputs. They can be used independently or together. Opening overview; Using both features together.",
+      "Documented schema limits [COI: Anthropic]: JSON Schema support is a subset. Most SDK helpers can remove unsupported constraints and optionally validate the original constraints client-side; not every helper performs response validation. Sections: How SDK transformation works; Using a raw JSON schema; JSON Schema limitations.",
+      "Documented exceptions [COI: Anthropic]: Refusal and max_tokens termination can produce output not matching the schema. The current page also documents enum/const capitalization deviations without a special stop reason. Section: Invalid outputs.",
+      "Documented performance [COI: Anthropic]: A new schema incurs grammar-compilation latency; compiled-grammar caching is separate from prompt-prefix caching. Section: Grammar compilation and caching.",
+      "Documented compatibility [COI: Anthropic]: JSON outputs are incompatible with citations and assistant prefilling; grammar applies to direct output, not tool results or thinking. Section: Feature compatibility.",
+      "Version caveat [COI: Anthropic]: The API field moved from output_format to output_config.format; legacy beta headers and SDK helper parameter names must not be mixed with current wire-format examples. Section: Migrating from the beta."
+    ]
+  },
+  {
+    "id": "deployment",
+    "name": "Hosting the Agent SDK",
+    "url": "https://code.claude.com/docs/en/agent-sdk/hosting",
+    "section": "Hosting the Agent SDK",
+    "accessedAt": "2026-10-26",
+    "version": "rolling docs",
+    "evidence": [
+      "Documented architecture [COI: Anthropic]: The Agent SDK supervises a claude CLI subprocess over stdio with a working directory and session transcripts on local disk; self-hosting is not a stateless API wrapper. Section: The subprocess model.",
+      "Documented persistence limit [COI: Anthropic]: Local disk can be lost on restart or rescheduling. SessionStore mirrors transcripts, not working-directory artifacts or memory files; mirror delivery can fail and requires monitoring. Section: Session and state persistence.",
+      "Documented deployment responsibilities [COI: Anthropic]: Put inbound authentication ahead of the agent, protect outbound tool credentials, export telemetry appropriately, and measure representative per-session memory for concurrency planning. Sections: Observability; Auth and secrets; Scaling and concurrency.",
+      "Documented isolation risk [COI: Anthropic]: Shared settings, memory, configuration, working directories, and outbound policy can leak tenant context; isolate these inputs per tenant. Section: Multi-tenant isolation.",
+      "Documented runtime limit [COI: Anthropic]: No top-level session timeout is provided; maxTurns bounds tool-use round trips, not elapsed runtime. Large parallel fanouts can hit rate limits. Section: Known limitations.",
+      "Version/scope caveat [COI: Anthropic]: This page covers self-hosted Agent SDK infrastructure and mentions Managed Agents as an alternative. Its container/process requirements do not apply to every direct Messages API application."
+    ]
+  },
+  {
+    "id": "api-overview",
+    "name": "API overview",
+    "url": "https://platform.claude.com/docs/en/api/overview",
+    "section": "Claude API versus cloud platforms",
+    "accessedAt": "2026-10-26",
+    "version": "rolling docs",
+    "evidence": [
+      "Documented access options [COI: Anthropic]: Claude can be accessed through the direct API or cloud platforms; selection depends on infrastructure, feature availability, compliance requirements, and pricing preferences. Section: Claude API versus cloud platforms.",
+      "Documented platform distinction [COI: Anthropic]: Cloud-provider integration can consolidate IAM and billing, but feature availability varies by platform and operating provider. Section: Cloud platform APIs.",
+      "Documented service constraints [COI: Anthropic]: API spend limits and request/token rate limits are separate controls, organized by usage tier. Request-body size limits are distinct from token-window capacity. Sections: Rate limits; Request size limits.",
+      "Version caveat [COI: Anthropic]: Provider names, operator arrangements, feature availability, limits, and access methods are rolling details, not evidence that every platform supports the same feature at the same time."
+    ]
+  },
+  {
+    "id": "guardrails",
+    "name": "Mitigate jailbreaks and prompt injections",
+    "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
+    "section": "Indirect prompt injection",
+    "accessedAt": "2026-10-26",
+    "version": "rolling docs",
+    "evidence": [
+      "Documented threat distinction [COI: Anthropic]: Direct attacks come from adversarial user inputs; indirect injection comes from third-party webpages, documents, emails, or tool outputs processed for a trusted user. Opening overview.",
+      "Documented handling [COI: Anthropic]: Put third-party content in tool_result blocks rather than trusted instructions; identify its source, state the untrusted-data policy in the system prompt, and JSON-encode strings where possible. Section: Indirect prompt injection.",
+      "Documented defense in depth [COI: Anthropic]: Limit sensitive data/action access, sandbox tools, scope permissions narrowly, screen tool outputs, and red-team with malicious documents/tool responses. Prompt instructions alone are not the complete control set. Section: Indirect prompt injection.",
+      "Documented monitoring [COI: Anthropic]: Analyze outputs for successful injection and refine prompts, validation, and filtering. Section: Continuous monitoring.",
+      "Documented distinction [COI: Anthropic]: Current guidance distinguishes trusted application instructions from untrusted tool-result data. Architecture inference: using XML tags for readability is not equivalent to permission enforcement or an injection-proof boundary."
+    ]
+  },
+  {
+    "id": "token-counting",
+    "name": "Token counting",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/token-counting",
+    "section": "How to count message tokens",
+    "accessedAt": "2026-10-26",
+    "version": "rolling docs",
+    "evidence": [
+      "Documented purpose [COI: Anthropic]: Count before sending to estimate input size, manage cost/rate limits, route between models, and fit a target prompt length. Opening overview.",
+      "Documented uncertainty [COI: Anthropic]: The returned token count is an estimate and may differ slightly from actual Messages input usage. Counts can include system-added tokens for which the user is not billed. Section: How to count message tokens.",
+      "Documented input limits [COI: Anthropic]: The endpoint accepts structured system prompts, supported tools, base64 images, and PDFs, but currently rejects most server tools, the MCP connector, and URL/file document or image sources that Messages can accept. Section: How to count message tokens.",
+      "Documented model dependence [COI: Anthropic]: Tokenizer changes mean the same input can produce different token counts across models; recount against the model to be used. Section: Supported models.",
+      "Version caveat [COI: Anthropic]: Do not assert exact counts, fixed word-to-token ratios, or complete feature parity with Messages; input coverage and tokenizer details are rolling."
+    ]
+  }
+]
