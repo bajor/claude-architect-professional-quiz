@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-5.5-aggregate-hides-routing-harm",
+    "domain": 5, "objectiveId": "5.5",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A multilingual request-routing assistant meets its aggregate accuracy target. Complaints indicate that urgent requests written in one dialect are often sent to the slow queue. Which evaluation is most relevant before claiming that the system performs fairly across its users?",
+    "answers": [
+      { "text": "Increase the overall accuracy target and retain the same pooled test set, without separately examining urgent dialect-specific requests.", "explanation": "A higher aggregate target can still conceal concentrated errors in a smaller group. It does not directly measure the reported harm of delaying urgent requests." },
+      { "text": "Compare overall accuracy by dialect and treat similar subgroup averages as sufficient, without separating missed urgent cases from harmless routing mistakes.", "explanation": "Subgroup accuracy is informative but can combine errors with very different consequences and urgency distributions. Similar averages do not resolve the reported harmful missed escalations." },
+      { "text": "Measure harmful routing errors by relevant dialect, urgency, and context, documenting sample limitations and uncertainty.", "explanation": "Disaggregating the relevant error type tests the reported subgroup harm rather than assuming aggregate performance applies equally. Uncertainty matters when subgroup evidence is limited." },
+      { "text": "Confirm all dialects use the same model and prompt, then attribute any remaining difference to user writing styles.", "explanation": "A shared implementation does not establish equal performance across languages or dialects. Assigning blame without examining errors ignores a known source of subgroup disparities." }
+    ],
+    "correct": 2,
+    "tags": ["fairness", "subgroup-performance", "dialect", "harm-metrics"],
+    "sourceIds": ["gov-nist-genai-profile", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-5.5-proxy-features-after-removal",
+    "domain": 5, "objectiveId": "5.5",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "An optional skills-course recommender no longer receives an explicit age field. It still uses graduation year, historical course participation, and manager ratings. Older workers receive fewer suitable recommendations in a reviewed sample. The team claims age-related bias is now impossible. What is the best next step?",
+    "answers": [
+      { "text": "Assess proxy inputs and label quality against job-relevant criteria; test subgroup errors and mitigations in this deployment.", "explanation": "Removing an explicit attribute does not remove correlated inputs or biased upstream labels. Contextual analysis can distinguish legitimate task information from mechanisms producing unfair recommendations." },
+      { "text": "Remove age labels from evaluation records as well, making the training and evaluation pipelines equally blind to the attribute.", "explanation": "Eliminating evaluation visibility does not establish that proxies have no effect. It can prevent the team from detecting and measuring the reported disparity." },
+      { "text": "Drop every feature statistically correlated with age and declare the remaining system fair without further outcome evaluation.", "explanation": "Correlation alone does not determine task relevance or capture every source of disparity. A blanket feature-removal rule is not evidence that the resulting recommendations are fair." },
+      { "text": "Attribute the disparity to manager ratings and retain them unchanged, treating human-produced ratings as inherently neutral evidence.", "explanation": "Human-produced labels can reflect historical selection or assessment bias. Their origin does not establish neutrality or remove the need to examine recommendation errors." }
+    ],
+    "correct": 0,
+    "tags": ["proxy-bias", "historical-labels", "fairness-evaluation"],
+    "sourceIds": ["gov-nist-genai-profile", "gov-nist-rmf-core", "gov-nist-playbook-govern"]
+  },
+  {
+    "id": "ccarp-5.5-small-subgroup-uncertainty",
+    "domain": 5, "objectiveId": "5.5",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A community information service proposes adding a minority language. Eight reviewed cases in that language contain no harmful missed escalations, while thousands of majority-language cases meet the release criterion. Policy requires demonstrated escalation performance for each supported language; a human-assisted route may remain available. Which three responses are justified? Select 3 answers.",
+    "answers": [
+      { "text": "Obtain appropriately collected, representative labeled cases with qualified language reviewers, including difficult dialect and mixed-context requests.", "explanation": "Representative evidence and qualified labels address the limited coverage of eight cases. Additional majority-language examples would not establish performance for the proposed language." },
+      { "text": "Report language-specific error estimates with their uncertainty and the high-severity cases that remain untested.", "explanation": "No observed harm in a small sample does not establish equivalent performance or satisfy every release criterion. Explicit uncertainty prevents absence of observations from becoming a fairness assurance." },
+      { "text": "Pool all languages and apply the precise overall error estimate to the minority language, since no minority-language failure was observed.", "explanation": "The pooled estimate is dominated by majority-language data and does not resolve the small subgroup's uncertainty. It can hide precisely the disparity the policy requires the team to assess." },
+      { "text": "Keep the proposed language on the disclosed human-assisted route until its release evidence is sufficient, while preserving feedback and escalation access.", "explanation": "A bounded supported route respects the stated per-language evidence requirement without silently granting unvalidated autonomous operation. Users retain a path to service and reporting while evidence is gathered." }
+    ],
+    "correctIndices": [0, 1, 3],
+    "tags": ["subgroup-uncertainty", "language-coverage", "fairness", "bounded-rollout"],
+    "sourceIds": ["gov-nist-rmf-core", "gov-nist-genai-profile"]
+  },
+  {
+    "id": "ccarp-5.5-trace-versus-generated-rationale",
+    "domain": 5, "objectiveId": "5.5",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "An auditor investigates an incorrect AI-generated eligibility summary. The assistant can produce a persuasive explanation now, but the policy corpus has changed since the original response. The organization needs a verifiable decision trace under an approved data-minimization and retention policy. Which transparency artifact is most useful?",
+    "answers": [
+      { "text": "A newly generated explanation of the original answer, accepted as a faithful account because it is detailed and internally consistent.", "explanation": "Post hoc generated explanations can fabricate logic and citations. They do not establish what sources or controls actually informed the historical response." },
+      { "text": "A link to the current policy search page and a statement that the model was instructed to follow the organization's rules.", "explanation": "Current search results may differ from the historical evidence, and an instruction does not show compliance with it. The artifact cannot reconstruct the actual versioned decision context." },
+      { "text": "A request for the model's hidden chain of thought, used in place of recording source versions and actual application decisions.", "explanation": "Hidden reasoning is not an auditable substitute for evidence and control records. A generated account cannot prove which data, approvals, or actions the application actually used." },
+      { "text": "A minimally sufficient record of source and policy versions, supporting evidence, applicable control and reviewer decisions, and the actual response and outcome.", "explanation": "Versioned evidence and recorded application events allow the auditor to check the historical decision against its real context. Retention should preserve justified traceability rather than indiscriminately retain every payload." }
+    ],
+    "correct": 3,
+    "tags": ["transparency", "provenance", "audit-evidence", "explanation-limitations"],
+    "sourceIds": ["gov-nist-genai-profile", "gov-nist-rmf-core", "gov-gdpr-eurlex"]
+  },
+  {
+    "id": "ccarp-5.5-contextual-fairness-criteria",
+    "domain": 5, "objectiveId": "5.5",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "An AI-assisted moderation service flags posts for human review. Missed abusive posts expose users to harm, while unnecessary flags delay legitimate speech and consume a constrained review queue. User groups have different observed abuse rates and sample sizes. Equal flagging rates still leave different harmful-error rates. Demographic-specific thresholds require separate policy and privacy approval. What should guide fairness acceptance?",
+    "answers": [
+      { "text": "Require identical overall flagging rates and automatically apply group-specific thresholds until that parity measure is achieved.", "explanation": "Equal flagging rates do not resolve different rates of missed abuse or unnecessary restrictions. Automatically changing group-specific thresholds also bypasses the stated approval requirement." },
+      { "text": "Approve context-specific trade-offs using subgroup harm and uncertainty evidence, review burdens, and evaluated mitigations.", "explanation": "Fairness depends on the decision context, affected people, error costs, and applicable constraints. Documented criteria and authorized trade-offs are more defensible than treating one parity result as universal proof." },
+      { "text": "Choose the configuration with the highest overall classification accuracy and treat its pooled score as the fairness acceptance criterion.", "explanation": "Overall accuracy can prefer a configuration that concentrates harmful errors in a smaller group. It does not resolve missed abuse, delayed legitimate speech, or the distribution of review burdens." },
+      { "text": "Equalize false-alarm rates and treat that parity result as sufficient, even if missed abusive posts remain concentrated in one group.", "explanation": "False-alarm parity addresses one relevant burden but does not establish fairness across all stated harms. Acceptance must also consider missed abuse, uncertainty, context, and authorized trade-offs." }
+    ],
+    "correct": 1,
+    "tags": ["contextual-fairness", "metric-tradeoffs", "subgroup-errors", "policy-approval"],
+    "sourceIds": ["gov-nist-playbook-govern", "gov-nist-rmf-core", "gov-nist-genai-profile"]
+  },
+  {
+    "id": "ccarp-5.5-actionable-user-recourse",
+    "domain": 5, "objectiveId": "5.5",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A scheduling assistant excludes some workers from preferred shifts because source availability records are outdated. The interface discloses AI use, but affected workers cannot see the relevant reason or challenge the record. Policy requires a usable correction and contest process before the next schedule is finalized. Which governance design best meets that requirement?",
+    "answers": [
+      { "text": "Give case-specific reasons and a tracked appeal to an empowered reviewer, with record and outcome correction before schedule finalization.", "explanation": "Notice becomes actionable when affected people can challenge the relevant evidence and someone has authority to change the result in time. Tracking resolution supports accountability and detection of recurring source errors." },
+      { "text": "Publish a model description and aggregate fairness dashboard, directing individual workers to wait for the next monthly metrics update.", "explanation": "System-level transparency does not correct an individual's outdated record or provide timely contest. The monthly cycle can miss the policy's next-schedule deadline." },
+      { "text": "Offer a rerun button that asks the same assistant to reconsider using the unchanged records, without allowing staff to alter the result.", "explanation": "Repetition with the same incorrect evidence can reproduce the exclusion. Without source correction or outcome authority, the process does not provide meaningful recourse." },
+      { "text": "Add a feedback mailbox for usability comments and close cases once an automated acknowledgement has been sent to the worker.", "explanation": "Acknowledgement is not adjudication or correction. A mailbox without decision ownership, remedial authority, and resolution before finalization cannot fulfill the contest requirement." }
+    ],
+    "correct": 0,
+    "tags": ["recourse", "transparency", "appeals", "data-correction"],
+    "sourceIds": ["gov-nist-rmf-core", "gov-nist-playbook-govern", "gov-nist-genai-profile"]
+  }
+]
