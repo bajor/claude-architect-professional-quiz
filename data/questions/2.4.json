@@ -1,0 +1,86 @@
+[
+  {
+    "id": "ccarp-2.4-cached-input-still-counts",
+    "domain": 2, "objectiveId": "2.4", "difficulty": "foundational", "type": "single",
+    "prompt": "An assistant resends a large cached policy collection on every turn. The team measures substantial cache reads, but the next request's input alone exceeds the selected model's context window. They cannot change models. Which response addresses the capacity problem?",
+    "answers": [
+      { "text": "Extend cache lifetime so that policy tokens stop occupying active context.", "explanation": "Lifetime controls how long a cached prefix can be reused. Cached tokens still occupy the model's context window." },
+      { "text": "Split the policy across cache breakpoints and budget each segment against its own independent context allowance.", "explanation": "Breakpoints control prefix reuse, not separate context windows. Splitting cache positions does not reduce the combined input size." },
+      { "text": "Reduce max_tokens while retaining the oversized input unchanged.", "explanation": "Input alone already exceeds capacity, so reducing the output allowance cannot make this request valid. The application must reduce what enters context." },
+      { "text": "Select task-relevant policy evidence; keep the complete collection outside active context.", "explanation": "Selecting relevant evidence reduces active input size. Caching changes processing and billing but does not provide extra context capacity." }
+    ],
+    "correct": 3,
+    "tags": ["context-capacity", "prompt-caching", "context-curation"],
+    "sourceIds": ["context-windows", "context-engineering"]
+  },
+  {
+    "id": "ccarp-2.4-model-specific-token-preflight",
+    "domain": 2, "objectiveId": "2.4", "difficulty": "intermediate", "type": "multiple",
+    "prompt": "A request builder combines system instructions, tool definitions, message history, and a supported document input. It must avoid filling the selected model's window before a substantive answer can be generated. The token-counting endpoint supports this request's input types. Which two preflight measures are appropriate? Select 2 answers.",
+    "answers": [
+      { "text": "Estimate the assembled structured input against the intended model, including the system, tools, history, and document.", "explanation": "These components all consume input context. Model-specific counting avoids assuming that another tokenizer or text-only approximation accounts for the actual request." },
+      { "text": "Count only the latest user message, because system instructions and tool definitions are configuration rather than context.", "explanation": "System content and tool definitions occupy the context window even though they are application configuration. Omitting them understates input size." },
+      { "text": "Reserve capacity for generated output, including any current-turn thinking, and allow for the input count being an estimate.", "explanation": "Input counting does not reserve generation space. Thinking and final text also consume capacity, and estimated counts can differ slightly from actual usage." },
+      { "text": "Reuse a count from another candidate model whenever the request's visible text is identical.", "explanation": "Tokenization can differ across models even for identical content. A count for another model is not a reliable capacity check for the selected model." }
+    ],
+    "correctIndices": [0, 2],
+    "tags": ["token-counting", "input-accounting", "output-headroom"],
+    "sourceIds": ["token-counting", "context-windows"]
+  },
+  {
+    "id": "ccarp-2.4-just-in-time-evidence",
+    "domain": 2, "objectiveId": "2.4", "difficulty": "intermediate", "type": "single",
+    "prompt": "An investigation assistant loads every diagnostic file before each analysis, although most tasks inspect only a few files. Irrelevant material reduces retrieval focus within the prompt. A read tool can fetch exact file sections from durable storage, and a small amount of extra tool latency is acceptable. Which context strategy best matches these constraints?",
+    "answers": [
+      { "text": "Keep loading all files and move the instructions to the end so irrelevant content no longer consumes context.", "explanation": "Prompt order can affect attention but does not remove irrelevant tokens. It leaves the full-corpus loading cost and context occupancy unchanged." },
+      { "text": "Keep file references and metadata in context; fetch exact sections when the investigation needs them.", "explanation": "Just-in-time retrieval defers detailed content until it is relevant. Durable references preserve access to exact evidence while accepting some runtime retrieval latency." },
+      { "text": "Replace the files with one short permanent summary and remove the read tool to eliminate retrieval overhead.", "explanation": "A fixed summary can omit details required by a later investigation. Removing the read tool also removes the stated route back to exact source evidence." },
+      { "text": "Cache the unchanged full file collection and keep sending the same complete context on every request.", "explanation": "Caching can reduce repeated processing but does not remove irrelevant material from the model's context. It does not address the observed loss of focus." }
+    ],
+    "correct": 1,
+    "tags": ["just-in-time-context", "lightweight-references", "context-relevance"],
+    "sourceIds": ["context-engineering"]
+  },
+  {
+    "id": "ccarp-2.4-application-scheduled-compaction",
+    "domain": 2, "objectiveId": "2.4", "difficulty": "advanced", "type": "single",
+    "prompt": "A review application has predictable idle intervals between operator batches. It needs server-written summaries to control growing history, but ordinary interactive requests must not pause for summary generation. Its selected model and platform support both cited beta compaction approaches, and the idle interval can accommodate a summary request. Which integration gives the application the required timing control?",
+    "answers": [
+      { "text": "Request on-demand compaction during an idle interval and install the returned block before the next operator batch.", "explanation": "On-demand compaction lets the application choose when it requests the server-written summary and replaces the summarized messages. Scheduling that work in the supplied idle interval avoids initiating summary generation inside an interactive request." },
+      { "text": "Lower the automatic compaction threshold so ordinary requests initiate smaller summaries more frequently throughout the working batch.", "explanation": "Threshold compaction runs inside the ordinary request that reaches its trigger. Smaller, more frequent summaries still leave interactive requests responsible for that work." },
+      { "text": "Raise the automatic threshold near the context limit and assume summary generation then moves outside interactive requests.", "explanation": "Changing the trigger changes when the threshold is reached, not where compaction executes. A triggering interactive request can still pause for its summary." },
+      { "text": "Keep the full growing history but cache it during idle intervals to prevent later requests from needing compaction.", "explanation": "Caching reuses prefix processing without reducing active history size. It does not prevent the growing conversation from reaching the context limit." }
+    ],
+    "correct": 0,
+    "tags": ["compaction", "application-scheduling", "interactive-latency"],
+    "sourceIds": ["compaction", "context-windows"]
+  },
+  {
+    "id": "ccarp-2.4-server-clearing-state-and-cache",
+    "domain": 2, "objectiveId": "2.4", "difficulty": "advanced", "type": "multiple",
+    "prompt": "A tool-heavy assistant has a durable client-side audit transcript but sends many obsolete tool results back on each request. The chosen model and platform support the cited beta server-side tool-result clearing strategy. Which expectations should guide its use to recover active context? Select 2 answers.",
+    "answers": [
+      { "text": "Each removed result will be replaced by a semantic summary that retains all its important facts.", "explanation": "Tool-result clearing replaces removed content with placeholders, not guaranteed semantic summaries. Facts still needed later require deliberate retention or retrieval." },
+      { "text": "The client can retain the full unmodified transcript while the server clears eligible content before the model receives it.", "explanation": "Server-side editing changes model-visible context without requiring the client to overwrite its audit history. Client retention and active-context selection are separate concerns." },
+      { "text": "The client must overwrite its stored transcript with the placeholders to keep future requests synchronized.", "explanation": "The documented strategy does not require synchronization to an edited client copy. Rewriting the audit record would unnecessarily discard the original tool evidence." },
+      { "text": "Clearing can invalidate affected cached prefixes, so the team should balance recovered context against fresh cache writes.", "explanation": "Removing content changes the reusable prefix from the affected position. Recovered capacity can be worthwhile, but cache-processing savings are not preserved automatically." }
+    ],
+    "correctIndices": [1, 3],
+    "tags": ["context-editing", "tool-result-clearing", "cache-invalidation"],
+    "sourceIds": ["context-editing"]
+  },
+  {
+    "id": "ccarp-2.4-overflow-version-aware-handling",
+    "domain": 2, "objectiveId": "2.4", "difficulty": "advanced", "type": "single",
+    "prompt": "A request builder supports two model versions with different documented behavior when input plus requested maximum output exceeds context capacity. One rejects that configuration; the other can accept it and stop generation when the window fills. The application must not publish an incomplete report. Which handling is most robust across both contracts?",
+    "answers": [
+      { "text": "Rely on request rejection as the only overflow signal, then publish every successfully returned response.", "explanation": "An accepted request can still terminate at the context limit on the second version. Successful transport does not establish that the report is complete." },
+      { "text": "Check only that input fits and assume the service silently drops old history to make room for the requested output.", "explanation": "Input fitting does not reserve sufficient generation space, and automatic history truncation is not a universal Messages API contract. Dropping history can also change the evidence available for the report." },
+      { "text": "Budget input and output for the selected version, curate or compact when needed, and check termination before accepting a complete report.", "explanation": "Capacity planning reduces both rejected requests and truncated generation. Version-aware termination handling prevents an accepted but context-limited response from being treated as complete." },
+      { "text": "Retry the same input with a larger max_tokens whenever a report stops early.", "explanation": "A larger requested output cannot enlarge the context window. Without reducing or managing active input, it can repeat rejection or context-limit termination." }
+    ],
+    "correct": 2,
+    "tags": ["context-overflow", "stop-reasons", "model-versioning"],
+    "sourceIds": ["context-windows", "token-counting"]
+  }
+]
