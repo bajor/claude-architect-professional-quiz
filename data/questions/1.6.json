@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-1.6-cost-per-accepted-outcome",
+    "domain": 1, "objectiveId": "1.6",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A document-processing pilot reduces model charges per response, but staff spend more time correcting rejected records. The sponsor wants lower operating cost for successfully processed documents. Which metric best matches that value objective?",
+    "answers": [
+      { "text": "Average inference charge per generated response, measured before any downstream record validation or human correction occurs.", "explanation": "This measures only model expenditure on an attempt. It can improve while rejection and correction costs make the business outcome more expensive." },
+      { "text": "Total generated records per hour, counting accepted records and records that require repeated processing as equal outputs.", "explanation": "Attempt throughput does not measure cost per successful outcome. Counting rework as additional output can make a deteriorating process appear more productive." },
+      { "text": "The percentage of the model's token allowance used, averaged across documents regardless of whether processing ultimately succeeds.", "explanation": "Token utilization is an implementation measure, not the sponsor's cost unit. It omits both acceptance and the human work required to achieve it." },
+      { "text": "Total cost per accepted document, including inference, infrastructure, review, rework, and failed processing attempts.", "explanation": "This uses the successful business outcome as the denominator and includes work shifted out of model generation. It can reveal whether lower inference charges produce actual operating savings." }
+    ],
+    "correct": 3,
+    "tags": ["total-operating-cost", "business-outcomes", "cost-units"],
+    "sourceIds": ["gov-nist-rmf-core", "model-choice"]
+  },
+  {
+    "id": "ccarp-1.6-realized-productive-capacity",
+    "domain": 1, "objectiveId": "1.6",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "An analyst assistant generates assessment drafts four times faster. The business goal is more completed assessments with the same team, not a staffing reduction. Analysts still gather evidence, review drafts, and obtain approval. Which measurement best tests whether the pilot delivers the intended productivity gain?",
+    "answers": [
+      { "text": "Approved assessments completed per analyst hour at the required quality, compared with the existing process.", "explanation": "This measures realized capacity across the whole human workflow. It accounts for evidence collection, review, and approval rather than assuming faster drafting translates directly into more completed work." },
+      { "text": "Drafts generated per model request, compared with the previous prompt template and token allowance.", "explanation": "More draft output can increase review work without increasing approved assessments. The unit does not represent the team's completed business work." },
+      { "text": "Time until the first generated paragraph appears, averaged across all analyst sessions using the assistant.", "explanation": "Early text latency measures responsiveness, not the analyst effort or approval throughput needed to establish productive capacity." },
+      { "text": "The fraction of analysts who open the assistant each week, compared with the rollout adoption target.", "explanation": "Adoption indicates usage but not whether users complete more quality-assured assessments with the same effort. It is not a substitute for an outcome measure." }
+    ],
+    "correct": 0,
+    "tags": ["productivity", "baseline-comparison", "human-workflow"],
+    "sourceIds": ["gov-nist-rmf-core", "life-success-evaluations"]
+  },
+  {
+    "id": "ccarp-1.6-user-journey-latency",
+    "domain": 1, "objectiveId": "1.6",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A service agreement requires 95% of eligible requests to return a usable answer within four seconds, including failures in the eligible denominator. The model's average response time is one second, yet users experience queueing and retrieval delays. Which indicator should guide the architecture's latency decisions?",
+    "answers": [
+      { "text": "The fraction of successful model calls completed within four seconds, timed from model dispatch to final model token.", "explanation": "This excludes queueing, retrieval, and failed eligible requests. It can meet its target while the contracted user journey still misses the deadline." },
+      { "text": "Eligible journeys delivering a usable answer within four seconds divided by all eligible journeys, timed end to end.", "explanation": "This measures the actual contractual event and denominator. End-to-end timing captures delays outside inference that the architecture must also control." },
+      { "text": "The mean model response time plus the mean retrieval time, excluding requests rejected by a dependency.", "explanation": "Averages do not establish the required fraction of timely journeys, and excluding failures changes the stated denominator. Queueing and other path segments may also be omitted." },
+      { "text": "The percentage of requests receiving an HTTP success response from the application gateway within four seconds of arrival.", "explanation": "Gateway success can acknowledge a request before a usable answer reaches the user. It measures transport behavior rather than the completion event promised in the agreement." }
+    ],
+    "correct": 1,
+    "tags": ["performance-sla", "end-to-end-latency", "service-indicators"],
+    "sourceIds": ["life-google-slos", "life-success-evaluations"]
+  },
+  {
+    "id": "ccarp-1.6-transformation-design-and-evidence",
+    "domain": 1, "objectiveId": "1.6",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A public-service program defines its transformation goal as enabling eligible rural residents to complete an intake service previously available only through distant in-person offices. Quality and affordability remain mandatory. The sponsor distinguishes this new service capability from merely accelerating staff drafting. Which design-and-measurement choices directly support that stated goal? Select 2 answers.",
+    "answers": [
+      { "text": "Optimize internal draft generation while keeping every resident dependent on the same in-person intake and office hours.", "explanation": "This can improve staff efficiency but leaves the access barrier defining the transformation goal unchanged. Faster internal drafting alone does not enable the new service." },
+      { "text": "Design the complete remote intake journey, including required evidence, authorized decisions, and exception handoff.", "explanation": "A new user-facing capability requires the entire journey to function, not just a text-generation step. Evidence, authority, and exception paths connect the assistant to a usable service." },
+      { "text": "Measure completed eligible rural intakes against prior access, subject to the agreed quality and operating-cost limits.", "explanation": "This links the new capability to the intended population and actual completion. Quality and cost gates prevent increased access volume from hiding an unacceptable service." },
+      { "text": "Use the growth in generated messages as the primary transformation result, regardless of completed intake journeys.", "explanation": "Message volume measures interaction activity, which can rise through confusion or retries. It does not establish that previously underserved residents can complete intake." }
+    ],
+    "correctIndices": [1, 2],
+    "tags": ["business-transformation", "service-design", "value-measurement"],
+    "sourceIds": ["gov-nist-rmf-core", "agents", "life-official-stakeholder-course"]
+  },
+  {
+    "id": "ccarp-1.6-mandatory-constraint-selection",
+    "domain": 1, "objectiveId": "1.6",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A workload has three mandatory acceptance limits: task success of at least 98%, end-to-end 95th-percentile latency of at most five seconds, and total cost of at most $0.10 per accepted task. Representative measurements are sufficient for this decision. Design A achieves 97.6%, three seconds, and $0.06; B achieves 98.5%, 4.5 seconds, and $0.08; C achieves 99.2%, 4.8 seconds, and $0.11; D achieves 98.9%, seven seconds, and $0.09. Which recommendation is supported without changing a design?",
+    "answers": [
+      { "text": "Choose A because its lower cost and faster response compensate for the measured task-success shortfall.", "explanation": "A fails the mandatory quality floor. Better cost and latency cannot compensate for a non-negotiable acceptance constraint." },
+      { "text": "Choose C because its higher task success justifies exceeding the agreed cost limit by a small amount.", "explanation": "C exceeds the stipulated cost ceiling. A quality improvement does not authorize relaxing that mandatory limit." },
+      { "text": "Choose B because it meets all three limits; compare improvements only within the feasible set.", "explanation": "B is the only measured candidate satisfying quality, end-to-end latency, and total cost simultaneously. Preference trade-offs apply after mandatory constraints are met." },
+      { "text": "Choose D because its task success and cost meet their limits, making slower responses an acceptable trade-off.", "explanation": "D violates the mandatory latency ceiling. Meeting the other two limits does not make the user-facing performance requirement optional." }
+    ],
+    "correct": 2,
+    "tags": ["constrained-optimization", "quality-cost-latency", "architecture-selection"],
+    "sourceIds": ["model-choice", "life-success-evaluations", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-1.6-platform-value-feasibility",
+    "domain": 1, "objectiveId": "1.6",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "Procurement prefers a cloud-platform route with consolidated identity management, billing, and a lower quoted token price. A prototype on the direct Claude API uses a capability required for the production workflow; its availability on the proposed cloud route has not been verified. Both routes offer the selected model. What recommendation best aligns platform selection with business value?",
+    "answers": [
+      { "text": "Choose the lower-priced route and treat availability of the same model as the compatibility contract for required capabilities.", "explanation": "Model availability does not establish feature parity across delivery platforms. A cheaper route that cannot implement the required workflow is not a feasible value comparison." },
+      { "text": "Send each request to both routes and accept the first complete response, postponing verification of the platform-specific capability.", "explanation": "Racing providers adds cost without proving that both can execute the required workflow. A complete-looking response does not validate a missing integration capability." },
+      { "text": "Choose the route with the lowest measured inference latency and review integration requirements after signing the platform contract.", "explanation": "Inference speed alone omits feature feasibility, controls, and full-path performance. Deferring a mandatory integration check can commit the business to an unusable route." },
+      { "text": "Verify required capabilities and controls, then compare feasible routes on end-to-end performance and total operating cost.", "explanation": "Delivery routes can differ in features, infrastructure fit, and pricing. Establishing feasibility before comparing full-system economics preserves mandatory requirements while recognizing the cloud route's potential benefits." }
+    ],
+    "correct": 3,
+    "tags": ["platform-selection", "feature-parity", "total-business-value"],
+    "sourceIds": ["api-overview", "model-choice"]
+  }
+]

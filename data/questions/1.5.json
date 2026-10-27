@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-1.5-inspectable-sequential-decomposition",
+    "domain": 1, "objectiveId": "1.5",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "Preparing a maintenance work order requires extracting equipment identifiers, checking them against the asset register, and then drafting instructions for verified equipment. The steps and order are known, and staff must inspect extraction failures before drafting starts. Which decomposition fits?",
+    "answers": [
+      { "text": "Use inspectable extraction, asset-register validation, and drafting stages, stopping before drafting whenever identifier checks require staff resolution.", "explanation": "A fixed prompt chain exposes intermediate artifacts and allows a programmatic or human gate. Invalid identifiers can be stopped before the dependent drafting step." },
+      { "text": "Run extraction and drafting concurrently, then ask a reviewer to reconcile equipment mismatches in the final work order.", "explanation": "Drafting depends on verified identifiers. Running it before validation defeats the required intermediate inspection and can create instructions for the wrong equipment." },
+      { "text": "Ask one response to perform all stages and release its final work order without exposing intermediate results.", "explanation": "A single opaque response does not provide the required inspection boundary between extraction and drafting." },
+      { "text": "Let an autonomous planner decide whether identifier validation is needed based on the apparent simplicity of each request.", "explanation": "The validation step is mandatory and the sequence is already known. Model discretion to omit it violates the stated process rather than improving decomposition." }
+    ],
+    "correct": 0,
+    "tags": ["prompt-chaining", "intermediate-gates", "sequential-dependencies"],
+    "sourceIds": ["agents", "prompting"]
+  },
+  {
+    "id": "ccarp-1.5-sectioning-versus-voting",
+    "domain": 1, "objectiveId": "1.5",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A submission contains four independent technical appendices. The review must cover every appendix, and each can be analyzed without the others. The immediate goal is faster complete coverage, not repeated judgments of the same material. How should the work be parallelized?",
+    "answers": [
+      { "text": "Have four calls review the same appendix and select findings by majority vote.", "explanation": "Voting provides repeated judgments of one task. It leaves the other appendices unreviewed and does not meet the coverage requirement." },
+      { "text": "Assign all appendices to every call and use majority agreement to select the final set of findings.", "explanation": "Repeating the full review duplicates work instead of sectioning it. Majority aggregation can also omit a real finding observed by only one attempt." },
+      { "text": "Classify the submission by its dominant appendix and route it to the corresponding single specialist.", "explanation": "Routing selects a path for a category, but every appendix is mandatory here. A dominant-category choice cannot provide complete coverage." },
+      { "text": "Analyze one appendix per call, then aggregate findings with an explicit four-appendix coverage check.", "explanation": "Sectioning assigns independent parts to parallel calls. Aggregating all parts and checking coverage serves the stated completeness and speed objectives without unnecessary repeated judgments." }
+    ],
+    "correct": 3,
+    "tags": ["parallel-sectioning", "voting", "coverage"],
+    "sourceIds": ["agents"]
+  },
+  {
+    "id": "ccarp-1.5-dependency-aware-scheduling",
+    "domain": 1, "objectiveId": "1.5",
+    "difficulty": "intermediate", "type": "multiple",
+    "prompt": "A restoration-planning workflow first normalizes the site's survey facts. An access assessment and a materials estimate each require only those normalized facts. The proposed restoration method requires both assessments, and the final schedule requires that method. Immediately after normalization, which tasks can start without violating dependencies? Select 2 answers.",
+    "answers": [
+      { "text": "Choose the restoration method from the normalized facts before either assessment finishes.", "explanation": "The method depends on both the access assessment and the materials estimate. Normalization alone does not provide its required inputs." },
+      { "text": "Assess site access using the normalized survey facts as the shared input snapshot.", "explanation": "Access assessment has no dependency on the materials estimate or later stages. It can begin once normalization is complete." },
+      { "text": "Estimate required materials using the same normalized survey facts independently of the access assessment.", "explanation": "The scenario explicitly gives the materials estimate only the normalized facts as prerequisites. It can therefore run alongside access assessment." },
+      { "text": "Generate the final schedule directly from the normalized facts while the method is still undetermined.", "explanation": "The final schedule requires the chosen method, which itself awaits both assessments. Starting it here bypasses two dependency boundaries." }
+    ],
+    "correctIndices": [1, 2],
+    "tags": ["dependency-graphs", "parallel-scheduling", "decomposition"],
+    "sourceIds": ["agents"]
+  },
+  {
+    "id": "ccarp-1.5-mandatory-dimensions-not-routing",
+    "domain": 1, "objectiveId": "1.5",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "Every public notice must pass both privacy and accessibility review. A prototype classifies notices by their apparent main concern and routes each to only one specialist. Each specialist performs well on assigned cases, but release failures occur in the dimension that was not reviewed. What decomposition change addresses the coverage defect?",
+    "answers": [
+      { "text": "Improve the main-concern classifier so each notice reaches the specialist most likely to find a serious issue.", "explanation": "Better classification still selects only one mandatory dimension. The failure is omitted coverage, not merely choosing the less relevant specialist." },
+      { "text": "Run both mandatory reviews independently and combine their outcomes at a release gate that requires both dimensions to pass.", "explanation": "Privacy and accessibility are required dimensions of every notice, not mutually exclusive input categories. Separate reviews with a joint gate preserve both obligations." },
+      { "text": "Run the second specialist only when the first specialist rejects the notice or reports uncertainty about its own review.", "explanation": "A confident pass in one dimension says nothing about the unexamined dimension. Conditional fallback leaves the same coverage gap for accepted notices." },
+      { "text": "Ask two instances of the selected specialist to vote and release notices when both approve that dimension.", "explanation": "Repeated review can improve confidence within one dimension but cannot supply the missing privacy or accessibility assessment." }
+    ],
+    "correct": 1,
+    "tags": ["cross-cutting-requirements", "routing-limitations", "release-composition"],
+    "sourceIds": ["agents"]
+  },
+  {
+    "id": "ccarp-1.5-local-versus-global-validity",
+    "domain": 1, "objectiveId": "1.5",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A museum planning assistant decomposes a new exhibition into departmental proposals. Each proposal passes its local content rubric, but combined proposals can exceed the total installation budget or assign the same gallery twice. Which decomposition controls address the difference between local success and a valid integrated plan? Select 3 answers.",
+    "answers": [
+      { "text": "Retain the total budget and exclusive gallery assignments as explicit integration acceptance constraints.", "explanation": "Cross-department invariants need an owner at the integration boundary. Passing a departmental rubric does not establish compliance with constraints spanning all proposals." },
+      { "text": "Use majority approval from departmental workers as the final test of whether combined proposals fit shared resources.", "explanation": "A vote does not reconcile competing resource commitments. Workers can agree on individually attractive proposals while collectively exceeding the budget or double-booking a gallery." },
+      { "text": "Require proposals to expose resource commitments in a common, checkable output contract.", "explanation": "The integrator needs comparable budget and gallery claims to identify conflicts. Narrative approval alone hides the data necessary to check combined feasibility." },
+      { "text": "Validate the assembled plan and revise conflicting proposals before declaring the overall task complete.", "explanation": "End-state validation checks the actual integrated outcome rather than inferring it from local passes. Revision is needed when otherwise valid parts violate a shared constraint." }
+    ],
+    "correctIndices": [0, 2, 3],
+    "tags": ["global-invariants", "integration-contracts", "end-state-validation"],
+    "sourceIds": ["agents", "multiagent"]
+  },
+  {
+    "id": "ccarp-1.5-lossy-intermediate-contract",
+    "domain": 1, "objectiveId": "1.5",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A three-stage analysis extracts vendor commitments, summarizes them, and recommends a migration sequence. The summary drops conditional exceptions and units that the recommendation stage needs. Repeated downstream revisions cannot recover those details, although the original documents remain available. What should change in the decomposition?",
+    "answers": [
+      { "text": "Increase recommendation-stage iterations while keeping the summary interface unchanged so the downstream model can refine its assumptions.", "explanation": "Iteration over the same insufficient evidence cannot reliably restore discarded exceptions or units. It risks refining an unsupported interpretation." },
+      { "text": "Run several recommendation calls against the same summary and select the migration sequence on which they most often agree.", "explanation": "All attempts inherit the same missing information. Agreement does not recover evidence removed by the intermediate contract." },
+      { "text": "Preserve decision-critical qualifications and source references in the handoff, enabling targeted retrieval of original evidence.", "explanation": "A decomposition boundary must carry the information its dependent stage needs. Structured qualifications and retrievable evidence avoid forcing later stages to infer details lost in compression." },
+      { "text": "Merge extraction and summarization into one larger model call but retain the same shortened handoff to the recommendation stage.", "explanation": "Combining upstream calls does not repair an insufficient output contract. The recommendation still receives a summary that omits the qualifications it needs." }
+    ],
+    "correct": 2,
+    "tags": ["intermediate-contracts", "information-loss", "evidence-preservation"],
+    "sourceIds": ["prompting", "context-engineering", "multiagent"]
+  }
+]
