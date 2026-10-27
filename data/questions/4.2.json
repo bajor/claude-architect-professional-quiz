@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-4.2-match-graders-to-contracts",
+    "domain": 4, "objectiveId": "4.2",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "An incident assistant returns required categorical fields plus a narrative explaining the likely cause. Field validity has exact rules, while narrative adequacy requires technical judgment. Which evaluation design best fits both contracts?",
+    "answers": [
+      { "text": "Grade the fields and narrative by exact match against one reference response.", "explanation": "Exact checks suit the categorical fields, but a valid technical explanation can use different wording. One reference string would reject acceptable narrative alternatives." },
+      { "text": "Check fields in code and grade narratives with an expert-calibrated rubric.", "explanation": "Deterministic checks enforce the exact field contract, while a rubric can assess nuanced explanation quality. Calibrating any model grader against expert judgments checks whether its scores reflect the intended criteria." },
+      { "text": "Ask a model grader for one overall score covering fields and narrative.", "explanation": "A single holistic score can overlook an invalid required field and substitutes variable judgment for an available exact check. It also needs calibration before narrative scores can be trusted." },
+      { "text": "Have experts review narratives and use narrative scores for the whole response.", "explanation": "Expert narrative review does not establish that the categorical fields satisfy their exact rules. The field contract should be checked explicitly rather than inferred from prose quality." }
+    ],
+    "correct": 1,
+    "tags": ["mixed-method-evaluation", "graders"],
+    "sourceIds": ["eval-agent-evals", "eval-criteria"]
+  },
+  {
+    "id": "ccarp-4.2-protect-heldout-incident-families",
+    "domain": 4, "objectiveId": "4.2",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A team builds a final evaluation set from incident reports. Many reports describe the same underlying incident using paraphrases, and some appear in the assistant's few-shot examples. A random row split gives excellent results. What change best tests generalization to unseen incidents?",
+    "answers": [
+      { "text": "Enlarge the random holdout while retaining the current few-shot examples.", "explanation": "More rows do not remove related incidents or prompt examples from the holdout. The evaluation can remain contaminated by material available during development." },
+      { "text": "Remove exact text duplicates after the random split and keep all paraphrases.", "explanation": "Exact deduplication misses reports with different wording but the same incident and solution. Those related cases can still cross the development and evaluation boundary." },
+      { "text": "Tune the few-shot examples on holdout errors, then reuse the holdout for final scoring.", "explanation": "Using holdout errors to improve the prompt turns that set into development data. Its later score no longer provides a protected final comparison." },
+      { "text": "Isolate whole incident families from development data and prompt examples, then lock the holdout.", "explanation": "Group-wise separation prevents paraphrases of an incident from crossing into the final evaluation from any development source. Protecting that holdout also prevents prompt tuning on its errors; no universal split ratio is implied." }
+    ],
+    "correct": 3,
+    "tags": ["heldout-datasets", "evaluation-leakage"],
+    "sourceIds": ["eval-grouped-splits", "eval-criteria", "eval-agent-evals"]
+  },
+  {
+    "id": "ccarp-4.2-representative-and-adversarial-suites",
+    "domain": 4, "objectiveId": "4.2",
+    "difficulty": "intermediate", "type": "multiple",
+    "prompt": "An assistant supports four common workflows and encounters rare but consequential requests that must be rejected. The team needs both an estimate of ordinary production utility and assurance on the rejection boundary. Which dataset choices support those different purposes? Select 2 answers.",
+    "answers": [
+      { "text": "Sample ordinary cases across workflows and report utility with production-representative weights.", "explanation": "A representative workload mix supports an estimate of ordinary production utility. Reporting the weighting makes the denominator explicit rather than letting an artificial case mix imply production accuracy." },
+      { "text": "Make prohibited requests half the bank and report the pooled score as production accuracy.", "explanation": "Oversampling rare hazards can be useful for stress testing, but the unweighted pooled result would misrepresent the stated production mix. It also obscures which boundary failed." },
+      { "text": "Use completed successful sessions as the source for every evaluation case.", "explanation": "Selecting only successes omits realistic failures and cases where the assistant should decline to act. The resulting bank cannot assess the required rejection boundary." },
+      { "text": "Maintain a separately reported hazard suite with explicit should-not-act outcomes.", "explanation": "A targeted negative suite gives rare, consequential behaviors enough coverage without presenting their artificial frequency as ordinary traffic. Explicit expected outcomes make the rejection behavior gradable." }
+    ],
+    "correctIndices": [0, 3],
+    "tags": ["dataset-design", "negative-cases", "evaluation-slices"],
+    "sourceIds": ["eval-criteria", "eval-agent-evals"]
+  },
+  {
+    "id": "ccarp-4.2-isolate-repeated-trial-environments",
+    "domain": 4, "objectiveId": "4.2",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "Repeated trials of an unchanged agent become inconsistent when run concurrently. Trials write to the same scratch filename, leave records for later trials, and share a capped test-tool account. Each task fits its resource allowance when run alone. Which harness change makes comparisons valid?",
+    "answers": [
+      { "text": "Increase the number of concurrent trials to average out the observed failures.", "explanation": "More trials do not remove shared files, persistent state, or resource contention. Greater concurrency can amplify correlated harness failures rather than estimate independent agent variability." },
+      { "text": "Serialize the trials while retaining their shared scratch files and tool records.", "explanation": "Serialization may reduce simultaneous contention, but later trials still inherit artifacts and records. The starting state would remain dependent on previous attempts." },
+      { "text": "Reset isolated files and tool state per trial, with independent or scheduled resource allowances.", "explanation": "Clean trial-specific state prevents cross-trial contamination, while controlled resource allowances avoid introducing failures from shared test limits. Repeated results can then characterize the agent rather than harness interference." },
+      { "text": "Ignore tool failures in grading and score only each trial's final narrative.", "explanation": "Ignoring tool effects hides real task failures and does not repair the contaminated environment. A narrative can claim success even when shared resources prevented the required outcome." }
+    ],
+    "correct": 2,
+    "tags": ["evaluation-harness", "trial-isolation", "repeatability"],
+    "sourceIds": ["eval-agent-evals"]
+  },
+  {
+    "id": "ccarp-4.2-calibrate-model-grader-bias",
+    "domain": 4, "objectiveId": "4.2",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A model grader rewards long explanations even when their central claim is unsupported, and penalizes terse answers that experts consider complete. The candidate assistant is about to be selected using these scores. Which actions address the validity of that selection? Select 2 answers.",
+    "answers": [
+      { "text": "Average more runs of the existing grader on each answer.", "explanation": "Repeated grading can reduce random variation but does not remove a systematic preference for length over correctness. The average can become a more stable estimate of the wrong criterion." },
+      { "text": "Build an expert-adjudicated sample containing concise successes and verbose failures.", "explanation": "Those contrasting examples expose whether grader scores agree with the intended quality judgments. Expert adjudication supplies a calibration reference rather than assuming the model grader is correct." },
+      { "text": "Add a minimum answer length to the candidate's generation prompt.", "explanation": "This optimizes the assistant for the known scoring bias instead of validating the evaluation. It can increase unsupported verbosity without improving factual completeness." },
+      { "text": "Revise the rubric around claim support and completeness, then check expert agreement.", "explanation": "A criterion-specific rubric targets the observed failure instead of rewarding a proxy such as length. Checking agreement on adjudicated examples tests whether the revised grader is suitable for candidate selection." }
+    ],
+    "correctIndices": [1, 3],
+    "tags": ["grader-calibration", "human-evaluation", "rubrics"],
+    "sourceIds": ["eval-agent-evals", "eval-criteria"]
+  },
+  {
+    "id": "ccarp-4.2-grade-required-invariants-not-reference-path",
+    "domain": 4, "objectiveId": "4.2",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A data-migration benchmark requires an approval before any write, correct final records, and a verified row count. A candidate meets all three using an allowed bulk-update API, but the grader fails it for not using the reference solution's row-by-row tool sequence. How should the test framework change?",
+    "answers": [
+      { "text": "Check approval ordering and final-state invariants while allowing valid update strategies.", "explanation": "Approval ordering is a real intermediate business requirement and must remain enforced. The particular update sequence is not required, so the grader should accept any permitted strategy that produces the verified outcome." },
+      { "text": "Require the row-by-row sequence in the agent prompt to align with the reference.", "explanation": "This makes the implementation imitate an unnecessarily rigid grader. It excludes an allowed bulk strategy without improving compliance with the actual migration requirements." },
+      { "text": "Grade only final record equality and remove all intermediate-action checks.", "explanation": "Final-state equality alone would miss writes performed before approval. Intermediate checks are justified when, as here, their ordering is itself a stated safety or business requirement." },
+      { "text": "Accept every trial that invokes the bulk-update API without an exception.", "explanation": "An exception-free call does not prove correct records, verified counts, or approval before writing. Replacing one sequence proxy with another would still fail to grade the full contract." }
+    ],
+    "correct": 0,
+    "tags": ["outcome-graders", "business-invariants", "evaluation-harness"],
+    "sourceIds": ["eval-agent-evals"]
+  }
+]
