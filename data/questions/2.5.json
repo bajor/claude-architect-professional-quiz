@@ -1,0 +1,86 @@
+[
+  {
+    "id": "ccarp-2.5-skill-progressive-loading",
+    "domain": 2, "objectiveId": "2.5", "difficulty": "foundational", "type": "single",
+    "prompt": "An assistant is configured with a collection of reusable Skills containing metadata, SKILL.md instructions, reference files, and helper scripts. Which description matches the progressive-disclosure mechanism in the cited Skills overview?",
+    "answers": [
+      { "text": "All SKILL.md bodies and reference files enter context at startup, while only scripts remain outside it.", "explanation": "This eagerly loads content that the described mechanism defers. Instructions load when a Skill is triggered, and reference resources load when needed." },
+      { "text": "Available Skills have no context cost until execution, including their discovery names and descriptions.", "explanation": "Discovery metadata already occupies context. Progressive loading reduces the upfront cost but does not make available Skills literally zero-token." },
+      { "text": "Load metadata first, instructions when triggered, and resources as needed; helper execution need not load source.", "explanation": "The staged loading separates discovery from detailed procedural context. Script execution can supply deterministic results without placing all implementation code in the prompt." },
+      { "text": "Instructions load on demand, but executing any helper requires placing every bundled script's source into the prompt first.", "explanation": "The documented runtime can execute scripts from the filesystem and return their output. It does not require all bundled source files to become model context." }
+    ],
+    "correct": 2,
+    "tags": ["skills", "progressive-disclosure", "procedural-reuse"],
+    "sourceIds": ["skills"]
+  },
+  {
+    "id": "ccarp-2.5-modular-prompt-ownership",
+    "domain": 2, "objectiveId": "2.5", "difficulty": "intermediate", "type": "single",
+    "prompt": "Three report-generating services copy the same instruction text, and corrections now reach only some copies. Each service also has its own output contract and request-specific evidence. The immediate goal is consistent maintenance, not lower API processing time. Which reuse approach best addresses that goal?",
+    "answers": [
+      { "text": "Version shared instructions centrally; compose each service's output rules and request evidence separately.", "explanation": "Shared ownership removes duplicated maintenance while preserving distinct service contracts and data roles. This is a prompt-management design, not an automatic cache or instruction-following guarantee." },
+      { "text": "Enable prompt caching independently for each copied prompt and use cache hits as proof that policy corrections are synchronized.", "explanation": "Caching reuses exact submitted prefixes; it does not update the source copies. Divergent prompts can each have successful cache hits." },
+      { "text": "Merge every service's output rules into one universal prompt and let the model infer the intended service from the evidence.", "explanation": "This hides the output-contract selection inside inference and can introduce conflicts. Reuse should preserve explicit service-specific requirements instead of relying on incidental request content." },
+      { "text": "Append the newest correction after each service's old instructions without resolving contradictions in the shared policy.", "explanation": "Append-only patches keep multiple competing statements of the policy. They do not establish one maintainable authoritative version across services." }
+    ],
+    "correct": 0,
+    "tags": ["modular-prompts", "template-versioning", "instruction-ownership"],
+    "sourceIds": ["context-engineering", "prompting", "caching"]
+  },
+  {
+    "id": "ccarp-2.5-explicit-stable-prefix-write",
+    "domain": 2, "objectiveId": "2.5", "difficulty": "intermediate", "type": "single",
+    "prompt": "A moderation evaluation sends an identical rubric and demonstrations followed by a different test fragment on every request. Top-level automatic caching places its breakpoint after the fragment. Logs show repeated cache creation but no reads; requests are within cache lifetime. The unchanged rubric-and-demonstrations prefix alone meets the selected model/platform's minimum cacheable length, but no entry was written at that boundary. Which change targets the cause?",
+    "answers": [
+      { "text": "Keep the breakpoint on the changing fragment until automatic caching learns which earlier text is stable.", "explanation": "Automatic prefix checking looks for matching entries previously written at actual breakpoints. It does not learn and create an unwritten stable boundary behind a changing suffix." },
+      { "text": "Choose a longer cache lifetime without changing where the cache entry is written.", "explanation": "The existing entries include different fragments, so their cumulative prefix hashes differ. Longer retention does not make those prefixes match." },
+      { "text": "Mark only the changing fragment as cacheable and treat its block as independent of the preceding rubric.", "explanation": "A cache breakpoint covers the entire prefix through its block, not an isolated text fragment. It still includes the varying content." },
+      { "text": "Write an explicit breakpoint at the end of the unchanged rubric and demonstrations, with each test fragment after it.", "explanation": "This creates an entry at the reusable prefix boundary. Later requests can match that exact written prefix while processing their different fragments separately." }
+    ],
+    "correct": 3,
+    "tags": ["prompt-caching", "automatic-caching", "prefix-breakpoints"],
+    "sourceIds": ["caching"]
+  },
+  {
+    "id": "ccarp-2.5-tool-prefix-cohorts",
+    "domain": 2, "objectiveId": "2.5", "difficulty": "advanced", "type": "single",
+    "prompt": "A service caches its unchanged system instructions, but required customer-specific tool schemas differ in the top-level tools array. The service must keep those schemas distinct and does not use an inline tool-change feature. The team expects one system cache entry to be reusable across all customers because the system text is identical. Which adjustment follows the documented prefix hierarchy?",
+    "answers": [
+      { "text": "Extend the system entry's lifetime and share it across customer schemas, treating longer retention as permission to ignore preceding tools.", "explanation": "Lifetime does not alter the prefix hash. The system cache depends on the earlier tools portion as well as the system text." },
+      { "text": "Group reuse measurements by identical tools-and-system prefixes, retaining distinct required schemas and accounting for separate writes.", "explanation": "The cache hierarchy is tools, then system, then messages. Different top-level tools create different cumulative system prefixes even when system text is unchanged." },
+      { "text": "Serialize system before tools in the request JSON so that the system cache no longer depends on the tools.", "explanation": "Object-key order in the request does not replace the documented cache hierarchy. The effective prefix still includes tools before system content." },
+      { "text": "Mark an earlier system block and expect it to match independently of the tools array.", "explanation": "Moving within the system section can exclude later system text but cannot exclude the preceding tools. It does not create a tool-independent system prefix." }
+    ],
+    "correct": 1,
+    "tags": ["prompt-caching", "tool-schemas", "prefix-hierarchy"],
+    "sourceIds": ["caching"]
+  },
+  {
+    "id": "ccarp-2.5-skill-surface-promotion",
+    "domain": 2, "objectiveId": "2.5", "difficulty": "advanced", "type": "multiple",
+    "prompt": "A custom inspection-report Skill works in Claude Code. Its helper downloads calibration tables and installs a Python package at runtime. The team wants to reuse it in the Claude API and claude.ai. Under the runtime and cross-surface constraints documented in the cited Skills overview, which decisions belong in the promotion plan? Select 3 answers.",
+    "answers": [
+      { "text": "Distribute and track the intended Skill version separately on each surface rather than assuming automatic synchronization.", "explanation": "Custom Skills do not automatically sync among Claude Code, the API, and claude.ai. Deliberate per-surface distribution is needed to keep the intended content available." },
+      { "text": "Enable the API's required code execution environment and redesign the helper around its available dependencies and lack of runtime network access.", "explanation": "The cited API Skills environment requires code execution and cannot download tables or install packages at runtime. Inputs or preprocessing must be supplied through a supported path rather than inherited from Claude Code's environment." },
+      { "text": "Use the successful Claude Code execution as certification that network access, package installation, and sharing behave identically on all surfaces.", "explanation": "The surfaces have different runtime and sharing constraints. Success in the local environment does not establish API or claude.ai compatibility." },
+      { "text": "Audit the instructions, scripts, and referenced resources, and restrict the tools and data available to the Skill.", "explanation": "A Skill carries instructions and potentially executable code, so it requires software-like trust review. Packaging procedural knowledge does not create an independent permission boundary." }
+    ],
+    "correctIndices": [0, 1, 3],
+    "tags": ["skills", "surface-compatibility", "skill-security"],
+    "sourceIds": ["skills", "guardrails"]
+  },
+  {
+    "id": "ccarp-2.5-cache-economics-from-usage",
+    "domain": 2, "objectiveId": "2.5", "difficulty": "advanced", "type": "single",
+    "prompt": "A service has matching cacheable prefixes, but requests arrive in sparse bursts and frequently create entries that are never read again. A longer supported lifetime might capture later reuse but has a different write charge. Management wants evidence of lower input spend, not a headline cache discount. Which analysis best supports the decision?",
+    "answers": [
+      { "text": "Compare only the usage field input_tokens before and after caching and count its reduction as the total input savings.", "explanation": "With caching, input_tokens excludes cache reads and cache creation. Looking only at that field omits billed work and can overstate savings." },
+      { "text": "Combine observed creation, read, and uncached token usage with current model/platform rates and reuse timing, then compare candidate lifetimes with an uncached baseline.", "explanation": "Net savings depend on paid writes being reused enough at the applicable read rate. Arrival times and lifetime determine whether a more expensive write option actually produces additional useful hits." },
+      { "text": "Choose the lifetime producing the highest number of cache reads without including the cost of creating entries.", "explanation": "More hits do not necessarily offset additional or more expensive writes. A read-count objective can prefer a configuration with higher total input spend." },
+      { "text": "Apply a single assumed cache-read discount to every input token and omit creation costs because the prefixes are eligible for caching.", "explanation": "Eligibility does not mean every request reads a live entry. Write costs and model/platform-specific rates must be included rather than replaced by a universal discount." }
+    ],
+    "correct": 1,
+    "tags": ["prompt-caching", "cache-lifetime", "usage-accounting"],
+    "sourceIds": ["caching"]
+  }
+]
