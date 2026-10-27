@@ -1,0 +1,86 @@
+[
+  {
+    "id": "ccarp-2.2-explicit-system-contract",
+    "domain": 2, "objectiveId": "2.2", "difficulty": "foundational", "type": "single",
+    "prompt": "A maintenance assistant receives a different incident description on every request. It must apply the same severity rubric, return named fields, and mark missing evidence as unknown rather than inventing details. Which prompt design most directly establishes this behavior?",
+    "answers": [
+      { "text": "Set an expert-engineer role and leave severity definitions and missing-data behavior implicit.", "explanation": "A role provides perspective but does not define the application's severity boundaries or uncertainty contract. The model would have to infer requirements that should be explicit." },
+      { "text": "Place the incident description in the system prompt and ask the user message to supply whichever rubric seems relevant.", "explanation": "This mixes changing task data with application instructions and makes the supposedly invariant rubric request-dependent. It weakens the intended separation of policy and incident evidence." },
+      { "text": "State the role, severity rules, output fields, and unknown-value behavior explicitly, and supply the incident separately as task data.", "explanation": "Clear application instructions establish the decision and output contract. Separating variable evidence helps distinguish what to analyze from how the analysis must behave." },
+      { "text": "Provide a previous successful response and instruct the model to preserve its values unless the new description explicitly contradicts them.", "explanation": "An example can illustrate structure, but retaining prior values risks carrying facts between unrelated incidents. It also leaves the severity rubric and missing-data rules underspecified." }
+    ],
+    "correct": 2,
+    "tags": ["system-prompts", "output-contract", "uncertainty"],
+    "sourceIds": ["prompting", "context-engineering"]
+  },
+  {
+    "id": "ccarp-2.2-external-data-placement",
+    "domain": 2, "objectiveId": "2.2", "difficulty": "intermediate", "type": "single",
+    "prompt": "A document-analysis application concatenates fetched supplier text inside a <source> element in its system prompt. A supplier document includes closing tags and instructions to change the task. Under the cited indirect-injection guidance, which redesign best preserves the distinction between trusted instructions and external evidence?",
+    "answers": [
+      { "text": "Return an origin-labeled tool_result with JSON-encoded strings and a system-level untrusted-content policy.", "explanation": "The documented pattern keeps third-party payloads out of trusted instructions and makes their provenance explicit. Encoding and policy improve separation but do not replace permission controls." },
+      { "text": "Keep the supplier document in the system prompt, surrounding it with a generated XML tag and a validation warning.", "explanation": "Unusual delimiters can aid parsing, but they do not make third-party text a trusted instruction source. XML structure is not an authorization or injection-proof boundary." },
+      { "text": "Remove recognized attack phrases and then concatenate the remaining document into the system prompt.", "explanation": "A phrase filter can miss paraphrased or novel attacks. Promoting the remainder into trusted instructions preserves the underlying placement problem." },
+      { "text": "Convert the supplier document into a plain user instruction that follows the application's system prompt.", "explanation": "A lower-priority instruction is still the wrong representation for third-party evidence under the cited handling guidance. A source-labeled tool result preserves the intended data role instead." }
+    ],
+    "correct": 0,
+    "tags": ["prompt-injection", "external-data", "trust-boundaries"],
+    "sourceIds": ["guardrails", "prompting"]
+  },
+  {
+    "id": "ccarp-2.2-two-schema-surfaces",
+    "domain": 2, "objectiveId": "2.2", "difficulty": "intermediate", "type": "multiple",
+    "prompt": "An application needs both a schema-constrained final JSON response and schema-constrained arguments for its create_draft tool. The selected model supports both features. Using the direct Messages API fields documented in the cited structured-output reference, which two configurations address the two output surfaces? Select 2 answers.",
+    "answers": [
+      { "text": "Use only a JSON-only instruction and a JSON parser for the final response, treating successful parsing as schema enforcement.", "explanation": "Parsing establishes JSON syntax, not required fields, types, or other schema constraints. A prompt-only instruction is not the documented constrained-decoding configuration." },
+      { "text": "Set output_config.format to the supported JSON schema for the final response.", "explanation": "This feature constrains the direct response structure. It is distinct from constraining the arguments of a tool call." },
+      { "text": "Enable strict: true on the create_draft tool with its supported input schema.", "explanation": "Strict tool use constrains tool names and inputs to their schema. It does not by itself specify the structure of the final response text." },
+      { "text": "Put both schemas only into output_config.format and let its final-response grammar govern tool arguments too.", "explanation": "The final-response grammar does not apply to tool-use blocks. Separate strict tool configuration is needed for the second surface." }
+    ],
+    "correctIndices": [1, 2],
+    "tags": ["structured-outputs", "strict-tool-use", "api-contract"],
+    "sourceIds": ["structured"]
+  },
+  {
+    "id": "ccarp-2.2-validation-after-schema-transform",
+    "domain": 2, "objectiveId": "2.2", "difficulty": "advanced", "type": "single",
+    "prompt": "A reimbursement assistant uses an SDK helper that removes unsupported numeric constraints from the schema sent to the API. This helper does not validate the response against the original constraints; the application only parses JSON. An amount is structurally valid but exceeds the employee's policy allowance. Which change addresses the actual enforcement gap?",
+    "answers": [
+      { "text": "Repeat the allowance in the prompt and continue treating successful JSON parsing as the approval gate.", "explanation": "Prompting may improve compliance, but parsing still does not enforce the removed constraints or the employee-specific business rule. The approval gap remains." },
+      { "text": "Resend the unsupported schema keywords directly and rely on constrained decoding to implement the full policy.", "explanation": "The API supports a subset of JSON Schema, not arbitrary removed keywords or external business logic. Unsupported constraints cannot be made enforceable merely by bypassing the helper." },
+      { "text": "Enable strict tool use on an unrelated lookup tool and retain the current final-response checks.", "explanation": "Strictness governs that tool's inputs. It does not validate a reimbursement amount returned through a separate response surface." },
+      { "text": "Enforce the original schema and employee allowance in application code before approval.", "explanation": "Client validation can enforce constraints absent from the wire schema, while business validation checks the employee-specific policy. Structural conformance alone establishes neither entitlement nor authorization." }
+    ],
+    "correct": 3,
+    "tags": ["schema-validation", "sdk-transformation", "business-rules"],
+    "sourceIds": ["structured", "guardrails"]
+  },
+  {
+    "id": "ccarp-2.2-layered-prompt-guardrails",
+    "domain": 2, "objectiveId": "2.2", "difficulty": "advanced", "type": "multiple",
+    "prompt": "A research assistant already receives source-labeled tool results and a system policy that rejects instructions inside retrieved documents. It can read internal reports, and malicious search content asks it to upload them to an external URL. Which additional measures appropriately complement the prompt policy? Select 3 answers.",
+    "answers": [
+      { "text": "Restrict tool credentials, reachable destinations, and file access to what the authorized task requires.", "explanation": "Least privilege limits the consequences of a successful injection. These application and sandbox controls enforce boundaries outside the model's interpretation of prompt text." },
+      { "text": "Screen returned content for redirection attempts and handle suspicious results without automatically passing them through for action.", "explanation": "Tool-output screening can identify attacks before the acting model consumes them. It is a complementary detection layer, not proof that all accepted content is safe." },
+      { "text": "Allow a safe verdict from the content classifier to grant new upload destinations requested by that content.", "explanation": "A safety verdict does not authorize an external destination. Letting source content expand permissions creates an authorization bypass even when a classifier reports no attack." },
+      { "text": "Test adversarial documents and tool outputs against the complete workflow, including attempted unauthorized uploads.", "explanation": "Adversarial tests check whether the prompt, screening, and action controls work together. Testing only benign summaries would miss the specified exfiltration failure path." }
+    ],
+    "correctIndices": [0, 1, 3],
+    "tags": ["guardrails", "defense-in-depth", "indirect-injection"],
+    "sourceIds": ["guardrails"]
+  },
+  {
+    "id": "ccarp-2.2-right-sized-instructions",
+    "domain": 2, "objectiveId": "2.2", "difficulty": "advanced", "type": "single",
+    "prompt": "A routing assistant's system prompt has grown into hundreds of case-specific rules added after individual failures. Several rules conflict, and new requests with equivalent meanings receive inconsistent routes. The team needs precise routing behavior without enumerating every possible wording. Which revision is most defensible?",
+    "answers": [
+      { "text": "Add a separate rule for each newly observed wording and preserve all older rules in their existing order.", "explanation": "This continues the brittle enumeration that created contradictions. More lexical exceptions do not establish a coherent rule for semantically equivalent new requests." },
+      { "text": "Consolidate precedence and uncertainty rules into a routing rubric; test representative boundary examples.", "explanation": "High-signal instructions at the appropriate abstraction level can resolve conflicts without assuming unstated policy. Boundary examples and evaluation check whether the general rules cover observed failures." },
+      { "text": "Replace the rules with an expert-router persona and let the model infer the organization's routing policy.", "explanation": "A persona removes the contradictions by also removing necessary domain constraints. The model cannot reliably infer organization-specific routing ownership and exception precedence." },
+      { "text": "Move the complete rule list into the user message and keep only the persona in the system prompt.", "explanation": "Changing message placement does not reconcile contradictory rules or excessive case enumeration. The application still supplies an incoherent policy." }
+    ],
+    "correct": 1,
+    "tags": ["system-prompts", "instruction-specificity", "prompt-maintenance"],
+    "sourceIds": ["context-engineering", "prompting"]
+  }
+]

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "ccarp-2.1-measured-task-fit",
+    "domain": 2, "objectiveId": "2.1", "difficulty": "foundational", "type": "single",
+    "prompt": "A service extracts delivery dates from short messages. On representative messages and difficult date formats, both candidate models meet the required accuracy and response-time thresholds. Model A has stronger general benchmark results; Model B has lower measured operating cost for this service, including retries. Which model-selection decision is best supported?",
+    "answers": [
+      { "text": "Choose Model A because its general benchmark advantage outweighs the service-specific results.", "explanation": "A broader benchmark does not establish additional value for this extraction contract. Both candidates already meet the stated task and timing requirements." },
+      { "text": "Choose Model B and continue monitoring the extraction and latency thresholds.", "explanation": "Use-case measurements support the lower-cost candidate when it satisfies the required capability and speed. Continued monitoring can detect changes in input mix or failure rates." },
+      { "text": "Alternate between the models to improve average capability without changing the evaluation.", "explanation": "Alternation introduces a mixed operating policy without evidence that it improves this task. Its combined quality and cost would need evaluation before adoption." },
+      { "text": "Choose Model A and shorten the prompt until its token cost matches Model B.", "explanation": "Shortening the prompt can remove necessary instructions and changes the evaluated configuration. Matching input spend alone does not establish equivalent operating cost or quality." }
+    ],
+    "correct": 1,
+    "tags": ["model-selection", "task-benchmarks", "cost-quality"],
+    "sourceIds": ["model-choice"]
+  },
+  {
+    "id": "ccarp-2.1-effort-before-replacement",
+    "domain": 2, "objectiveId": "2.1", "difficulty": "intermediate", "type": "single",
+    "prompt": "A model meets an engineering-analysis quality threshold but misses the response-time target at the application's explicitly configured high reasoning effort. The selected model supports lower effort settings, which the team has not evaluated. What is the most informative next experiment before replacing the model?",
+    "answers": [
+      { "text": "Change to the lowest-priced candidate and carry forward quality certification from the current model's high-effort evaluation.", "explanation": "Certification of one model and configuration does not transfer to another. The replacement could change handling of the difficult analysis cases." },
+      { "text": "Keep the high-effort setting and ask the model to write a shorter answer.", "explanation": "Shorter final text can reduce generation work but does not directly test whether internal reasoning effort causes the latency gap. The configured effort remains unchanged." },
+      { "text": "Lower effort in production and judge success from average response time alone.", "explanation": "Effort trades capability against latency and cost, so quality must be remeasured. Average latency also cannot establish compliance with a tail-latency target." },
+      { "text": "Benchmark supported effort settings on hard cases against quality, tail-latency, and cost gates.", "explanation": "Effort is a documented within-model trade-off. Testing each configuration against the actual acceptance criteria can reveal whether a model replacement is necessary." }
+    ],
+    "correct": 3,
+    "tags": ["model-selection", "reasoning-effort", "latency"],
+    "sourceIds": ["model-choice"]
+  },
+  {
+    "id": "ccarp-2.1-bounded-escalation-route",
+    "domain": 2, "objectiveId": "2.1", "difficulty": "intermediate", "type": "multiple",
+    "prompt": "A lower-cost model handles routine equipment requests accurately but fails on requests with conflicting specifications. A more capable model handles those conflicts but exceeds the budget if used for every request. The team proposes routing only detected conflicts to it. Which two conditions support deploying this policy? Select 2 answers.",
+    "answers": [
+      { "text": "The tested route detects enough conflicting requests to meet the end-to-end error threshold, including conflicts the smaller model would answer confidently.", "explanation": "Escalation helps only when difficult cases actually reach the stronger model. Measuring missed conflicts avoids treating the smaller model's self-reported confidence as a reliable detector." },
+      { "text": "The smaller model expresses high confidence on most requests, so conflict detection need not be separately evaluated.", "explanation": "Confidence wording is not evidence that the route catches the known failure class. Confident but incorrect routine-path answers would bypass escalation." },
+      { "text": "The measured combined route, including routing and escalated requests, meets the budget and response-time requirements.", "explanation": "A hybrid path adds decision overhead and sometimes additional calls. Its full workload cost and latency, not the routine model's figures alone, determine feasibility." },
+      { "text": "The stronger model passes a conflict-only benchmark, so the routing policy inherits that benchmark's accuracy.", "explanation": "The stronger model's result describes requests it receives. Routing misses and routine-path errors still affect the deployed system's accuracy." }
+    ],
+    "correctIndices": [0, 2],
+    "tags": ["model-routing", "escalation", "measured-tradeoffs"],
+    "sourceIds": ["model-choice", "agents"]
+  },
+  {
+    "id": "ccarp-2.1-capability-first-feasibility",
+    "domain": 2, "objectiveId": "2.1", "difficulty": "advanced", "type": "single",
+    "prompt": "A team is investigating whether Claude can interpret novel combinations of laboratory constraints. No candidate has been tested on the team's hardest cases. Incorrect conclusions are costly, prototype traffic is small, and latency optimization can wait until feasibility is established. Which initial selection strategy best addresses the principal uncertainty?",
+    "answers": [
+      { "text": "Start with the cheapest model and declare the task infeasible if it fails the hardest cases.", "explanation": "Failure by an efficiency-oriented candidate does not establish that a more capable candidate cannot meet the task. It could prematurely reject a feasible solution." },
+      { "text": "Start with the fastest model and use a larger response limit as the substitute for capability testing.", "explanation": "Output capacity does not establish reasoning quality on unfamiliar constraint combinations. Speed is not the prototype's controlling uncertainty." },
+      { "text": "Establish difficult-task quality with a strong candidate, then benchmark cheaper models and effort settings.", "explanation": "A capability-first experiment fits high error cost and unresolved feasibility. Later efficiency changes still require evaluation rather than assuming the strongest candidate is permanently necessary." },
+      { "text": "Choose the candidate with the largest context window and defer task-specific testing until production traffic arrives.", "explanation": "Context capacity and reasoning performance are different properties. Deferring the difficult-case evaluation leaves the central feasibility question unanswered." }
+    ],
+    "correct": 2,
+    "tags": ["model-selection", "capability-first", "feasibility"],
+    "sourceIds": ["model-choice", "prompt-overview"]
+  },
+  {
+    "id": "ccarp-2.1-migration-contract-check",
+    "domain": 2, "objectiveId": "2.1", "difficulty": "advanced", "type": "single",
+    "prompt": "An existing integration uses manual thinking for analysis calls and forced tool selection for separate action calls. A replacement model scores better on the team's answer-quality benchmark, but its published integration contract rejects the old thinking configuration and restricts forced tool selection. The workflow depends on both controls in their respective calls. What should the migration decision require?",
+    "answers": [
+      { "text": "Adapt the workflow to supported controls; retest complete tool behavior, quality, timing, and cost before rollout.", "explanation": "A model migration changes an execution contract as well as answer quality. Unsupported controls require an intentional workflow change, and the changed integration must satisfy the original requirements." },
+      { "text": "A model-ID substitution only, because higher answer quality establishes backward compatibility.", "explanation": "Benchmark performance does not override documented request incompatibilities. The old request can fail before the model produces an answer." },
+      { "text": "Removal of the rejected settings, with rollout based solely on the existing answer-quality score.", "explanation": "Deleting controls may make requests accepted while changing tool behavior and reasoning allocation. The original quality-only benchmark does not certify the modified workflow." },
+      { "text": "Retain the control sequence under its previously accepted beta header, using the answer-quality score as the compatibility gate.", "explanation": "Header acceptance is not evidence that an unsupported capability becomes effective. Compatibility must be checked for the selected model and platform rather than inherited from the old integration." }
+    ],
+    "correct": 0,
+    "tags": ["model-migration", "feature-compatibility", "thinking-modes"],
+    "sourceIds": ["model-choice", "extended-thinking", "thinking"]
+  },
+  {
+    "id": "ccarp-2.1-worker-model-admission",
+    "domain": 2, "objectiveId": "2.1", "difficulty": "advanced", "type": "multiple",
+    "prompt": "A strong coordinator currently extracts records from document packets. The proposed optimization delegates independent document extractions to lower-cost worker models and leaves reconciliation to the coordinator. Required fields include visually encoded annotations. Which findings justify admitting a worker model into this design? Select 2 answers.",
+    "answers": [
+      { "text": "Its input-token price is lower, even though failed extractions require repeated worker calls and coordinator repair.", "explanation": "Unit token price does not capture retries, handoffs, or reconciliation. Lower worker pricing alone can coexist with higher total operating cost." },
+      { "text": "Representative packet and reconciliation tests confirm required input support and faithful annotation handoffs.", "explanation": "The coordinator can only reconcile information that reaches it. Testing the input modality and handoff fidelity addresses capability loss introduced by delegation." },
+      { "text": "The coordinator's benchmark remains unchanged when tested without worker-produced inputs.", "explanation": "That test bypasses the changed part of the design. It cannot detect missing fields or distortions in worker outputs." },
+      { "text": "The complete route passes quality and timing gates more cheaply, counting failures and coordinator work.", "explanation": "Multi-model delegation is justified by the combined system's trade-off. Counting coordination and failure costs avoids attributing component-level savings to the whole workflow." }
+    ],
+    "correctIndices": [1, 3],
+    "tags": ["multi-model", "delegation", "handoff-fidelity"],
+    "sourceIds": ["model-choice", "multiagent"]
+  }
+]
