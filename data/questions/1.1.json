@@ -1,0 +1,107 @@
+[
+  {
+    "id": "ccarp-1.1-outcome-before-interface",
+    "domain": 1, "objectiveId": "1.1",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "An onboarding team asks for a Claude chatbot because reviewers spend too much time returning incomplete applications. The sponsor has not identified which work should change. What should the architect establish before choosing the interaction pattern?",
+    "answers": [
+      { "text": "The conversation screens and message categories needed to replace the existing application portal.", "explanation": "An interface specification commits to a chatbot before establishing whether conversation reduces incomplete applications or reviewer effort." },
+      { "text": "The measurable reduction in incomplete applications and total reviewer effort, subject to agreed quality constraints.", "explanation": "A measurable business outcome and explicit constraints provide a basis for selecting and testing an appropriate solution rather than assuming a particular interface." },
+      { "text": "The context capacity needed to include every onboarding policy in each applicant conversation.", "explanation": "Context sizing is an implementation decision. It does not identify the work causing returns or demonstrate that loading every policy addresses that problem." },
+      { "text": "The specialist agent roles needed to represent each department involved in application review.", "explanation": "Departmental organization does not establish useful computational boundaries. Defining agents first can add coordination without reducing the targeted work." }
+    ],
+    "correct": 1,
+    "tags": ["business-outcomes", "solution-scoping"],
+    "sourceIds": ["prompt-overview", "life-official-stakeholder-course"]
+  },
+  {
+    "id": "ccarp-1.1-live-availability-boundary",
+    "domain": 1, "objectiveId": "1.1",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A distributor wants Claude to suggest compatible replacement parts that can ship today. Compatibility manuals change monthly, but stock changes every minute. An authenticated inventory lookup already exists. Recommendations must not reserve stock or place orders. Which design best translates these requirements?",
+    "answers": [
+      { "text": "Index the manuals and nightly inventory exports together, then generate recommendations from retrieved records without an ordering tool.", "explanation": "The read-only boundary is suitable, but a nightly export cannot support the stated freshness requirement for today's stock." },
+      { "text": "Include the manuals in the prompt and ask Claude to estimate availability from recent order patterns without accessing inventory.", "explanation": "Order patterns are not authoritative current stock. Supplying compatibility knowledge does not supply the changing operational fact needed for the recommendation." },
+      { "text": "Retrieve compatibility rules and expose the ordering endpoint in preview mode so Claude can test whether a part is available.", "explanation": "Using an ordering capability unnecessarily expands the action boundary when a read-only inventory lookup already answers availability." },
+      { "text": "Retrieve relevant compatibility evidence and query live inventory through read-only tools, keeping order placement outside the recommendation task.", "explanation": "Stable documentation and rapidly changing stock need different evidence paths. Read-only tools preserve the requirement that a recommendation cannot create an order or reservation." }
+    ],
+    "correct": 3,
+    "tags": ["data-freshness", "augmented-llm", "action-boundaries"],
+    "sourceIds": ["agents", "guardrails"]
+  },
+  {
+    "id": "ccarp-1.1-language-versus-calculation",
+    "domain": 1, "objectiveId": "1.1",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "Employees submit travel claims as varied free-text descriptions. Finance requires exact reimbursements under a versioned mileage schedule, and an existing calculation service already implements that schedule. Where should Claude's responsibility end?",
+    "answers": [
+      { "text": "Extract and validate claim facts, then have the existing calculation service apply the versioned reimbursement schedule.", "explanation": "Language interpretation benefits from Claude, while the authoritative calculation service preserves the exact, versioned arithmetic requirement. Ambiguous extracted facts can be resolved before calculation." },
+      { "text": "Calculate the final amount directly after seeing worked examples from the current mileage schedule.", "explanation": "Examples can improve responses but do not turn generated arithmetic into the existing authoritative calculation or enforce its versioned rules." },
+      { "text": "Have two model calls calculate independently and accept the amount when their results agree.", "explanation": "Agreement can still reflect a shared interpretation or arithmetic error. It is not equivalent to executing the required calculation service." },
+      { "text": "Retrieve the schedule for each claim and let Claude apply its formulas in the final response.", "explanation": "Retrieval supplies rule text but leaves exact rule execution with the model. The task already has a deterministic implementation that need not be replaced." }
+    ],
+    "correct": 0,
+    "tags": ["task-partitioning", "deterministic-boundaries"],
+    "sourceIds": ["agents", "prompt-overview"]
+  },
+  {
+    "id": "ccarp-1.1-settlement-assistance-scope",
+    "domain": 1, "objectiveId": "1.1",
+    "difficulty": "intermediate", "type": "multiple",
+    "prompt": "An insurer wants to reduce the time adjusters spend locating policy language and drafting settlement recommendations. Adjusters must retain settlement authority, and every recommended clause must be traceable to the applicable signed policy. Which requirements should shape the solution boundary? Select 2 answers.",
+    "answers": [
+      { "text": "Return recommendations with references to the applicable signed policy passages.", "explanation": "The output contract must preserve the evidence needed to check applicability. A generic policy summary cannot establish which signed wording supports a particular recommendation." },
+      { "text": "Allow payout execution when two drafting agents independently agree on the settlement amount.", "explanation": "Agent agreement does not transfer settlement authority from the adjuster. This changes the authorized business process rather than merely assisting search and drafting." },
+      { "text": "Keep settlement approval with the adjuster and expose drafting capabilities without payout authority.", "explanation": "The architecture should assist the specified work while preserving the stated decision owner. Excluding payout authority prevents a drafting feature from becoming an autonomous settlement system." },
+      { "text": "Replace signed policy retrieval with a comprehensive summary approved during the initial project pilot.", "explanation": "A pilot summary can omit exceptions or cease to match a specific signed policy. It does not satisfy claim-level traceability to the applicable document." }
+    ],
+    "correctIndices": [0, 2],
+    "tags": ["business-authority", "evidence-contracts", "solution-scoping"],
+    "sourceIds": ["agents", "gov-official-safety-course", "gov-hallucinations"]
+  },
+  {
+    "id": "ccarp-1.1-missing-evidence-feasibility",
+    "domain": 1, "objectiveId": "1.1",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A manufacturer wants Claude to identify the cause of a machine failure from service tickets. Root-cause measurements are held in offline lab records that the proposed system cannot access, and the tickets contain only symptoms. The business requires evidence-backed diagnoses, not plausible hypotheses. What is the most defensible design response?",
+    "answers": [
+      { "text": "Add independent diagnostic agents and accept a cause when their conclusions converge across the same service tickets.", "explanation": "Additional agents do not create missing measurements. Convergence on the same incomplete evidence cannot establish an evidence-backed root cause." },
+      { "text": "Ask Claude to generate a detailed causal explanation and use its confidence score to decide whether to release the diagnosis.", "explanation": "A detailed rationale or self-reported confidence is not a substitute for unavailable evidence. Confident confabulation remains possible." },
+      { "text": "Expose the required lab evidence or narrow the feature to symptom triage with an explicit diagnostic handoff.", "explanation": "The required outcome depends on an unavailable input. Restoring that evidence path or narrowing the authorized claim resolves the feasibility gap rather than masking it with model complexity." },
+      { "text": "Retrieve more maintenance manuals and treat the most similar documented failure as the confirmed cause for each ticket.", "explanation": "Manuals describe possible mechanisms, not the measurements for this incident. Similarity can support a hypothesis but cannot meet the stipulated confirmation requirement." }
+    ],
+    "correct": 2,
+    "tags": ["feasibility", "evidence-availability", "task-boundaries"],
+    "sourceIds": ["multiagent", "gov-hallucinations", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-1.1-requirements-to-acceptance",
+    "domain": 1, "objectiveId": "1.1",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A sponsor requests an assistant that is 'accurate enough for entitlement decisions and fast enough for the intake desk.' No acceptance definition exists. A design must be selected before funding full implementation. Which actions turn the request into defensible architectural constraints? Select 2 answers.",
+    "answers": [
+      { "text": "Use a general reasoning benchmark as the accuracy gate because entitlement-specific cases are not yet assembled.", "explanation": "A general benchmark does not measure the intended decisions, error consequences, or intake population. It cannot replace use-case-specific acceptance evidence." },
+      { "text": "Define decision-quality criteria, serious errors, and representative entitlement cases with the accountable business owner.", "explanation": "Explicit task criteria and relevant cases make 'accurate enough' testable. Serious-error definitions prevent a favorable aggregate score from hiding unacceptable decisions." },
+      { "text": "Adopt a fixed autonomous-agent design and use its observed response time as the definition of acceptable desk performance.", "explanation": "Defining the requirement from one implementation reverses the decision process. The intake journey should determine the latency constraint, not inherit whatever the chosen design delivers." },
+      { "text": "Specify user-visible timing boundaries and an agreed latency target, then compare candidate designs against those constraints.", "explanation": "A measurable latency requirement needs defined start and end points tied to the intake experience. Candidate architectures can then be assessed against an actual business constraint." }
+    ],
+    "correctIndices": [1, 3],
+    "tags": ["acceptance-criteria", "business-constraints"],
+    "sourceIds": ["prompt-overview", "life-success-evaluations", "life-google-slos"]
+  },
+  {
+    "id": "ccarp-1.1-non-ai-alternative",
+    "domain": 1, "objectiveId": "1.1",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A business unit proposes a Claude agent to assign fixed shipping surcharges. Every input is a structured field, all rules are exhaustive and versioned, and a rules service already passes the required cases within the latency and cost budgets. There is no natural-language interpretation or exception-handling requirement. Which recommendation best fits the business problem?",
+    "answers": [
+      { "text": "Use Claude to call the rules service for every shipment so the existing computation becomes an agentic capability.", "explanation": "An extra model-mediated step adds a dependency without addressing any stated unmet need. Tool access alone does not establish business value for an agent." },
+      { "text": "Keep the existing rules service unless evidence identifies an unmet requirement that benefits from Claude.", "explanation": "The existing solution satisfies the stated outcome and constraints. Considering a viable non-AI alternative avoids adding cost and uncertainty merely to adopt AI." },
+      { "text": "Replace the service with a single prompted model because a smaller architecture should have fewer deployed components.", "explanation": "Reducing the component count does not preserve the exact rules contract. A generated calculation would replace a passing authoritative implementation without a demonstrated benefit." },
+      { "text": "Run the model and service in parallel and send disagreements to staff to create a continuous improvement workflow.", "explanation": "This introduces review work for a process that already meets requirements. A feedback workflow needs a justified objective, not disagreements created by an unnecessary second implementation." }
+    ],
+    "correct": 1,
+    "tags": ["non-ai-alternatives", "business-fit", "architecture-economics"],
+    "sourceIds": ["gov-nist-rmf-core", "agents"]
+  }
+]
