@@ -1,0 +1,107 @@
+[
+  {
+    "id": "ccarp-6.1-maintenance-decision-baseline",
+    "domain": 6, "objectiveId": "6.1",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A railway proposes using Claude to draft inspection reports. The sponsor wants maintenance decisions made sooner, but only report-writing time has been measured. Engineers must still verify findings and authorize work. What should discovery establish before selecting an architecture?",
+    "answers": [
+      { "text": "The fastest model configuration for producing reports of the current average length, using the existing report template.", "explanation": "Generation speed addresses one stage, not the sponsor's elapsed time to an authorized maintenance decision." },
+      { "text": "The current path to an authorized decision, its delays and rework, affected roles, and consequences of incorrect findings.", "explanation": "This establishes the outcome baseline, workflow boundaries, and error costs against which a proposed solution can be assessed." },
+      { "text": "The annual inspection volume multiplied by the demonstrated reduction in drafting time, treated as the expected decision-time improvement.", "explanation": "Drafting-time savings do not establish the effect of verification queues, rework, or authorization on decision time." },
+      { "text": "The reporting features preferred by engineering managers, ranked before examining the verification and authorization stages of the workflow.", "explanation": "Manager preferences are useful inputs but cannot replace discovery of the stages that determine the stated business outcome." }
+    ],
+    "correct": 1,
+    "tags": ["discovery", "business-baseline", "workflow-boundaries"],
+    "sourceIds": ["gov-nist-rmf-core", "life-official-stakeholder-course"]
+  },
+  {
+    "id": "ccarp-6.1-review-coverage-assumption",
+    "domain": 6, "objectiveId": "6.1",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A laboratory's proposed assistant drafts equipment-calibration exceptions. Policy requires a qualified reviewer before release. The discovery notes say a reviewer will always be available, but the operations manager has not confirmed overnight coverage. How should the architect record this statement?",
+    "answers": [
+      { "text": "As an accepted service requirement, because mandatory review logically implies that staffing for every shift already exists.", "explanation": "A requirement to review does not establish that the organization has the staffing needed to perform that review." },
+      { "text": "As an implementation detail to resolve during handoff, after the release workflow and its response-time commitments are approved.", "explanation": "Review availability affects feasibility and response times, so postponing it can invalidate the approved design." },
+      { "text": "As a residual risk accepted by the sponsor's approval of discovery, without requesting separate operational evidence or ownership.", "explanation": "An unverified statement is not an authorized acceptance of the operational risk or evidence that the policy can be met." },
+      { "text": "As an unverified assumption owned by operations, with a staffing check and an agreed fallback required before design approval.", "explanation": "Separating assumptions from validated requirements makes the dependency testable before commitments rely on it." }
+    ],
+    "correct": 3,
+    "tags": ["requirements", "assumptions", "review-capacity"],
+    "sourceIds": ["life-official-stakeholder-course", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-6.1-catalog-acceptance-contract",
+    "domain": 6, "objectiveId": "6.1",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "An archive wants Claude to propose catalog entries from accession records. Discovery establishes that entries need correct dates and identifiers, restricted donor details must not appear, and the complete proposal must arrive within a curator-approved time budget. Curators will approve a pilot using representative records and difficult exceptions. Which acceptance artifact best translates these requirements?",
+    "answers": [
+      { "text": "A versioned case set with field-quality and disclosure rubrics, end-to-end timing limits, pass thresholds, and a named curator approver.", "explanation": "The artifact maps all three requirements to measurable evidence on relevant cases and makes acceptance authority explicit." },
+      { "text": "A versioned case set with a single average similarity score, response-length limits, pass thresholds, and a named curator approver.", "explanation": "Similarity and length can conceal incorrect identifiers or donor disclosure and do not measure the agreed end-to-end time budget." },
+      { "text": "A production dashboard with API completion rates and token charges, plus a curator survey after the first unrestricted release.", "explanation": "API completion does not establish field correctness or restricted-data handling, and post-release feedback cannot serve as the specified pilot gate." },
+      { "text": "A curator-signed demonstration transcript with selected good entries, documented prompt wording, and the model's stated confidence for each result.", "explanation": "Selected examples and self-reported confidence do not consistently test the representative workload, difficult exceptions, and three acceptance dimensions." }
+    ],
+    "correct": 0,
+    "tags": ["acceptance-criteria", "requirements-traceability", "discovery"],
+    "sourceIds": ["life-success-evaluations", "life-official-stakeholder-course"]
+  },
+  {
+    "id": "ccarp-6.1-field-user-discovery",
+    "domain": 6, "objectiveId": "6.1",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A housing-maintenance sponsor approves a desktop demo that converts tenant messages into repair briefs. Dispatchers will use the briefs, but technicians receive them on intermittently connected phones and tenants submit messages in several languages. The design workshop has included only the sponsor and developers. What discovery action most directly addresses the remaining requirements gap?",
+    "answers": [
+      { "text": "Have procurement compare model context limits and licensing terms, then use the largest available context to accommodate all tenant messages.", "explanation": "Context capacity and commercial terms do not establish the language, connectivity, and workflow requirements of the missing user groups." },
+      { "text": "Ask the sponsor to rank desktop layout alternatives and use those preferences as the acceptance criteria for every user group.", "explanation": "A sponsor's desktop preferences cannot substitute for the needs of technicians, dispatchers, and affected tenants in their actual settings." },
+      { "text": "Walk representative tenant, dispatcher, and technician journeys to document language, connectivity, data-access, and failure-handling constraints before fixing scope.", "explanation": "Including the actual users and affected people exposes deployment constraints that the desktop demo and existing workshop did not test." },
+      { "text": "Run more desktop demonstrations with historical English messages and treat consistent brief formatting as evidence that field requirements are covered.", "explanation": "Repeated desktop demonstrations preserve the same coverage gap for languages, intermittent connectivity, and field use." }
+    ],
+    "correct": 2,
+    "tags": ["affected-users", "deployment-context", "structured-discovery"],
+    "sourceIds": ["gov-nist-rmf-core", "life-official-stakeholder-course"]
+  },
+  {
+    "id": "ccarp-6.1-purchasing-source-authority",
+    "domain": 6, "objectiveId": "6.1",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A manufacturer wants a Claude assistant to explain which purchasing terms apply to an order. Procurement cites a policy wiki; contract staff cite signed amendments in a separate repository. An amendment can override the wiki, but no one has established repository coverage, access rights, or update delay. A wrong explanation can cause a disputed payment. Which discovery outcome is necessary before committing to a retrieval design?",
+    "answers": [
+      { "text": "An agreed policy of retrieving the most recently edited document, with disagreement between repositories counted as ordinary model uncertainty.", "explanation": "Edit recency does not establish contractual authority, and model uncertainty does not resolve missing amendments or inaccessible evidence." },
+      { "text": "An owner-approved source hierarchy and evidence of amendment coverage, permitted access, update delay, and behavior when authoritative evidence is missing.", "explanation": "These requirements establish whether the available sources can support the intended explanations within the organization's error tolerance." },
+      { "text": "A prompt requiring both repositories to be quoted, with business acceptance based on whether the response presents competing interpretations clearly.", "explanation": "Presenting both interpretations does not establish which terms govern or address gaps in authoritative source access and coverage." },
+      { "text": "A larger retrieval budget and a second model reviewer, with source ownership and update expectations deferred until disputed cases appear.", "explanation": "More retrieval and review cannot guarantee access to missing authoritative amendments; the unresolved data dependencies belong in discovery." }
+    ],
+    "correct": 1,
+    "tags": ["source-authority", "data-requirements", "discovery-risk"],
+    "sourceIds": ["gov-nist-rmf-core", "life-official-stakeholder-course"]
+  },
+  {
+    "id": "ccarp-6.1-permit-precheck-business-case",
+    "domain": 6, "objectiveId": "6.1",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A city is considering Claude for tree-permit application prechecks. The tool may identify missing information but must not approve or reject permits. Staff currently use a short checklist, and missing-information notices sometimes delay applicants for weeks. No solution has been chosen. Which discovery activities directly establish whether an AI precheck is justified within this boundary? Select 2 answers.",
+    "answers": [
+      { "text": "Document applicant and staff impacts, authoritative inputs, permitted outputs, costly error types, and who approves the pilot's acceptance evidence.", "explanation": "These facts establish intended use, affected people, information dependencies, error costs, and authority without expanding into permit adjudication." },
+      { "text": "Define successful prechecks as applications receiving any generated notice, and use notice volume as the baseline for deciding deployment value.", "explanation": "Notice volume does not measure useful completeness checks or distinguish helpful requests from incorrect notices that delay applicants." },
+      { "text": "Compare the current checklist, a rules-only precheck, and the AI option on correct completions, avoidable delays, review effort, and cost.", "explanation": "A shared outcome baseline and a viable non-AI alternative test whether AI adds value after review and error costs are included." },
+      { "text": "Include final permit recommendations in the pilot so the sponsor can judge whether the assistant could eventually replace the approving officer.", "explanation": "This evaluates a different objective rather than establishing the bounded precheck's value. A nonbinding recommendation is not itself permit approval, but testing eventual officer replacement does not answer the stated discovery question." }
+    ],
+    "correctIndices": [0, 2],
+    "tags": ["non-ai-alternatives", "business-case", "discovery-boundaries"],
+    "sourceIds": ["gov-nist-rmf-core", "life-official-stakeholder-course"]
+  },
+  {
+    "id": "ccarp-6.1-invoice-design-entry-gate",
+    "domain": 6, "objectiveId": "6.1",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A field-service company has approved the production inputs and quality criteria for invoice drafts. Discovery measures a sustained peak of 48 review-ready drafts per hour during a two-hour evening shift. Each qualified reviewer can sustainably complete 20 per hour at the accepted quality. Every invoice requires approval before release; unaccepted work may be explicitly deferred. Operations must approve a plan that prevents a growing review backlog under this peak. Which proposed arrangements are feasible on the supplied evidence? Select 2 answers.",
+    "answers": [
+      { "text": "Assign three qualified reviewers throughout the evening peak, with owned admission limits and explicit deferral if that coverage drops.", "explanation": "Three reviewers provide sustainable capacity of 60 per hour against the measured 48 arrivals. Coverage and admission ownership make this a feasible no-growth arrangement, not a guarantee of every individual latency target." },
+      { "text": "Assign two qualified reviewers and cap accepted arrivals at 36 per hour, explicitly deferring excess work with operations-approved notices.", "explanation": "Two reviewers provide 40 per hour, exceeding the capped accepted rate of 36. The stated permission to defer makes this feasible while preserving approval for every released invoice." },
+      { "text": "Assign two qualified reviewers to all 48 hourly arrivals, retaining mandatory approval and prioritizing the oldest pending invoice first.", "explanation": "Capacity remains 40 per hour against 48 admitted arrivals, so pending work grows by eight per hour. Oldest-first ordering changes waiting order, not the capacity shortfall." },
+      { "text": "Assign one qualified reviewer during the peak and two additional reviewers afterward, admitting all evening arrivals into the same queue.", "explanation": "Later staffing may clear the backlog after the peak but does not prevent its growth during the required interval. All options retain approval; this one fails the stated peak-capacity condition." }
+    ],
+    "correctIndices": [0, 1],
+    "tags": ["discovery-gate", "capacity-feasibility", "peak-review-capacity"],
+    "sourceIds": ["gov-nist-rmf-core", "life-official-stakeholder-course"]
+  }
+]

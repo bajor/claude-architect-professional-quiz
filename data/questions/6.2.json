@@ -1,0 +1,107 @@
+[
+  {
+    "id": "ccarp-6.2-decision-record-content",
+    "domain": 6, "objectiveId": "6.2",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A distributor chooses a scheduled Claude workflow instead of an autonomous purchasing agent. Both could produce useful recommendations, but only the scheduled workflow meets the current approval policy and staffing budget. What belongs in the architecture decision record so a future team can understand and reconsider the choice?",
+    "answers": [
+      { "text": "The selected workflow diagram and its deployment instructions, with alternative designs removed once the implementation has been accepted.", "explanation": "Implementation instructions alone omit why the agent option was rejected and what assumptions could justify reconsideration." },
+      { "text": "The sponsor's approval and estimated savings, with operational constraints kept in meeting notes rather than linked to the decision.", "explanation": "Approval and savings do not preserve the approval-policy and staffing constraints that made the selected option preferable." },
+      { "text": "A benchmark ranking of candidate models and the winning prompt, treating the architecture choice as implied by the highest score.", "explanation": "A model benchmark does not explain the architectural trade-off between scheduled execution, autonomy, policy, and operating effort." },
+      { "text": "The constraints, alternatives, rationale, costs, risks, reversal effort, decision owner, and conditions that would trigger review.", "explanation": "This preserves the basis and authority of the choice and identifies when new evidence should reopen it." }
+    ],
+    "correct": 3,
+    "tags": ["architecture-decisions", "tradeoffs", "decision-ownership"],
+    "sourceIds": ["life-official-stakeholder-course", "gov-nist-playbook-govern"]
+  },
+  {
+    "id": "ccarp-6.2-capacity-versus-cash-savings",
+    "domain": 6, "objectiveId": "6.2",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A catalog-maintenance pilot measures total staff time, including review and corrections, falling from 24 to 18 minutes per completed record at unchanged accepted quality. Only one product line was sampled. No staffing, contractor spend, or operating budget has been reduced, and ongoing infrastructure costs are not yet measured. Which statement should the architect put in the sponsor's outcome summary?",
+    "answers": [
+      { "text": "The sampled workflow saved six staff minutes per record; annual capacity and net financial value remain projections with unverified scaling and cost assumptions.", "explanation": "This reports the observed pilot result while separating potential capacity from unproven annual results and realized cash savings." },
+      { "text": "The company has realized a 25% reduction in its annual catalog operating budget, subject only to successful deployment across the remaining product lines.", "explanation": "A sampled time reduction does not establish an annual budget reduction, especially before infrastructure costs or actual spending changes are known." },
+      { "text": "The company has demonstrated a six-minute generation improvement per record, while review and correction costs should be excluded from the value statement.", "explanation": "The measured result covers the whole staff workflow, not generation alone; excluding review and corrections would misdescribe the evidence." },
+      { "text": "The pilot establishes positive return on investment because completed-record quality is unchanged and staff time has fallen by one quarter.", "explanation": "Positive return on investment also depends on unmeasured operating and implementation costs and whether the saved time produces valued outcomes." }
+    ],
+    "correct": 0,
+    "tags": ["measured-value", "projected-value", "business-communication"],
+    "sourceIds": ["gov-nist-rmf-core", "life-official-stakeholder-course"]
+  },
+  {
+    "id": "ccarp-6.2-platform-feasibility-constraint",
+    "domain": 6, "objectiveId": "6.2",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "Two tested hosting routes for a Claude document assistant meet the four-second response limit and required quality. Route A costs less but cannot supply the audit evidence mandated by the customer's approved policy. Route B supplies that evidence and stays within the authorized budget. The architect has no authority to waive the policy. What is the clearest recommendation to procurement?",
+    "answers": [
+      { "text": "Recommend A because its lower cost and faster responses outweigh the audit-evidence disadvantage in a weighted average of all requirements.", "explanation": "An unmet mandatory control is a feasibility failure, not a preference that cost or latency can compensate for." },
+      { "text": "Recommend A for initial production and list the missing audit evidence as a backlog item to resolve after the first renewal.", "explanation": "A planned future fix does not satisfy the current policy, and the architect cannot authorize production outside that constraint." },
+      { "text": "Recommend B within the current constraints; explain its extra cost and record what evidence or authorized policy change could reopen A.", "explanation": "This distinguishes a feasible option from a cheaper infeasible one and preserves a specific basis for reconsideration." },
+      { "text": "Present A and B as equally deployable and ask procurement to choose, documenting the evidence gap only after a contract is signed.", "explanation": "Procurement needs the mandatory constraint before committing; calling both deployable conceals the unresolved approval condition." }
+    ],
+    "correct": 2,
+    "tags": ["platform-tradeoffs", "hard-constraints", "procurement"],
+    "sourceIds": ["life-official-stakeholder-course", "gov-nist-playbook-govern"]
+  },
+  {
+    "id": "ccarp-6.2-reversal-effort-evidence",
+    "domain": 6, "objectiveId": "6.2",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A supplier offers a discounted managed retrieval service. The sponsor will accept the discount only if the application can migrate elsewhere within five working days. The API wrapper is portable, but the service uses a proprietary index, export completeness is untested, and rebuilding requires source documents owned by another department. How should the architect characterize reversibility in the decision presentation?",
+    "answers": [
+      { "text": "Describe exit as a one-day API change because the portable wrapper isolates the provider, and list index rebuilding as routine maintenance.", "explanation": "Wrapper portability does not establish complete data export, source availability, or the time needed to rebuild and validate retrieval." },
+      { "text": "Mark the exit limit unproven; require an owned export-and-rebuild rehearsal before relying on the discount as a feasible choice.", "explanation": "The rehearsal must test the actual data and dependency path that determines whether the sponsor's five-day exit constraint can be met." },
+      { "text": "Use the provider's normal export duration as the full migration estimate, and treat obtaining source documents as the receiving team's responsibility.", "explanation": "Export duration excludes source acquisition, rebuilding, and acceptance testing; transferring responsibility does not remove those dependencies." },
+      { "text": "Count the discount as compensation for a potentially longer exit and approve the service while recording the five-day requirement as aspirational.", "explanation": "The sponsor made exit time an acceptance condition, so the architect cannot silently convert it into a negotiable aspiration." }
+    ],
+    "correct": 1,
+    "tags": ["reversibility", "dependency-risk", "decision-evidence"],
+    "sourceIds": ["life-official-stakeholder-course", "gov-nist-playbook-govern", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-6.2-revisit-batching-assumption",
+    "domain": 6, "objectiveId": "6.2",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "An approved decision uses an overnight Claude digest for supplier exceptions because discovery estimated fewer than 1% required same-hour action. The record names the operations director as owner and a rise above 5% as a review trigger. A representative pilot measures 12%; same-hour cases lose value overnight. Costs still favor batching, and no production incident has occurred. What should the architect communicate?",
+    "answers": [
+      { "text": "The assumption and review trigger have failed; ask the owner to compare timely alternatives, including a separate urgent path, using the pilot evidence.", "explanation": "The documented trigger requires reopening the timeliness trade-off before an incident, while leaving the choice of alternative to the authorized decision process." },
+      { "text": "The decision remains valid because batching is still cheapest; document the urgent cases as users whose requests fall outside the original service.", "explanation": "The new evidence concerns the intended workload and violates the recorded assumption; excluding those users would conceal the failed requirement." },
+      { "text": "The pilot validates a lower-cost architecture; keep the decision and defer the timeliness discussion until a customer submits a confirmed incident.", "explanation": "The explicit evidence-based trigger does not depend on an incident, and known loss of timeliness is already relevant to the business outcome." },
+      { "text": "The architect should replace batching with a real-time agent immediately and update the owner after deployment because the trigger has been crossed.", "explanation": "A review trigger authorizes reconsideration, not an unreviewed replacement whose cost, risk, and operational needs have not been compared." }
+    ],
+    "correct": 0,
+    "tags": ["decision-revisit", "assumption-evidence", "stakeholder-communication"],
+    "sourceIds": ["life-official-stakeholder-course", "gov-nist-playbook-govern"]
+  },
+  {
+    "id": "ccarp-6.2-route-specific-responsibilities",
+    "domain": 6, "objectiveId": "6.2",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "An enterprise committee must choose between a direct API route and a cloud-provider-managed route to the same Claude model for confidential bid analysis. Both pass the task-quality pilot. Procurement asks for a decision-ready comparison, including who handles the data and what switching routes entails. Which presentation elements are necessary rather than assuming model equivalence settles the decision? Select 2 answers.",
+    "answers": [
+      { "text": "Compare model-only token prices and infer that equal model outputs mean retention, contractual coverage, and customer-operated controls are equivalent.", "explanation": "The same model does not establish the same processor arrangement, feature coverage, data path, or customer control responsibilities across delivery routes." },
+      { "text": "Map each route's processing parties, enabled features, applicable contract evidence, customer controls, and unresolved obligations to named owners.", "explanation": "Route-specific responsibilities and evidence are needed to assess whether each confidential-data deployment satisfies the enterprise's constraints." },
+      { "text": "Apply the direct route's retention arrangement to the cloud-managed route for comparison, then verify any differences only after the committee selects one.", "explanation": "Anthropic-managed and cloud-managed arrangements must not be assumed interchangeable; that evidence is needed before an informed selection." },
+      { "text": "Compare end-to-end latency, full operating cost, residual risks, and migration work, distinguishing measurements from estimates and naming reversal dependencies.", "explanation": "This exposes business consequences and exit effort instead of reducing the architecture choice to model access or a unit price." }
+    ],
+    "correctIndices": [1, 3],
+    "tags": ["hosting-routes", "shared-responsibility", "tradeoff-presentation"],
+    "sourceIds": ["gov-api-data-retention", "life-official-stakeholder-course"]
+  },
+  {
+    "id": "ccarp-6.2-unequal-pilot-evidence",
+    "domain": 6, "objectiveId": "6.2",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "For a multilingual returns assistant, route A has promising cost and accuracy results on 50 curated daytime examples. Route B has results from 2,000 representative cases across languages and shifts. The board requests a statement that A will have lower production cost at the same quality. No matched workload comparison exists, and review effort is material. What should the architect include in the recommendation? Select 2 answers.",
+    "answers": [
+      { "text": "Explain that the results are not a like-for-like comparison, identifying language coverage, workload, review cost, and sampling gaps before claiming superiority.", "explanation": "Different evaluation conditions cannot establish the requested production claim, especially when relevant populations and material costs differ." },
+      { "text": "Report A's lower pilot cost as measured production savings, and use B's larger quality evaluation to supply the missing confidence for both routes.", "explanation": "Evidence from B does not validate A's quality, and a narrow pilot does not establish realized production savings." },
+      { "text": "Propose a representative matched pilot with an accountable owner and acceptance gate, labeling any annual value estimate as conditional on its results.", "explanation": "This gives the board an actionable way to resolve uncertainty without presenting an untested extrapolation as a measured outcome." },
+      { "text": "Normalize both accuracy percentages to the same scale and recommend A, treating differences in language and review workload as implementation concerns.", "explanation": "Expressing scores on the same scale does not remove population or operating-cost differences that determine business feasibility." }
+    ],
+    "correctIndices": [0, 2],
+    "tags": ["evidence-quality", "value-projections", "decision-uncertainty"],
+    "sourceIds": ["gov-nist-rmf-core", "life-success-evaluations", "life-official-stakeholder-course"]
+  }
+]
