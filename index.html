@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Original, source-attributed practice questions for Claude Certified Architect – Professional (CCAR-P).">
+    <title>Claude Architect Professional Quiz</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <main class="quiz-shell">
+      <header class="hero">
+        <p class="eyebrow">Claude Certified Architect – Professional (CCAR-P)</p>
+        <h1>Claude Architect Professional Quiz</h1>
+        <p class="lede">Practice with source-attributed questions whose correct and incorrect choices are all explained.</p>
+        <p class="disclaimer">Unofficial practice questions. Not affiliated with or endorsed by Anthropic.</p>
+      </header>
+
+      <section class="card" aria-live="polite">
+        <div class="stats-row">
+          <p id="question-count">Question 0 / 0</p>
+          <p id="score">Score: 0 / 0</p>
+        </div>
+
+        <div id="empty-state" class="empty-state" hidden>
+          <h2 id="empty-state-title"></h2>
+          <p id="empty-state-copy"></p>
+        </div>
+
+        <div id="quiz-panel">
+          <p id="question-meta" class="question-source"></p>
+          <h2 id="prompt" class="prompt"></h2>
+          <p id="selection-status" class="selection-status" hidden></p>
+          <div id="answers" class="answers"></div>
+          <button id="submit-button" class="primary-button" type="button" disabled hidden>Submit answers</button>
+          <p id="result" class="question-source" hidden></p>
+          <div id="explanations" class="explanations" hidden></div>
+          <p id="question-source" class="question-source"></p>
+          <details id="source-details" class="question-source">
+            <summary>Source details and exam objective</summary>
+            <div id="source-references"></div>
+          </details>
+          <button id="next-button" class="primary-button" type="button" disabled>Next</button>
+        </div>
+      </section>
+
+      <footer class="footer-actions">
+        <p id="bank-status"></p>
+        <button id="reset-button" class="text-button" type="button">Reset progress</button>
+      </footer>
+      <p class="keyboard-help">Keyboard: 1–4 choose or toggle an answer. Enter submits multiple responses or continues. Tab and Space also work.</p>
+    </main>
+
+    <script src="blueprint.js"></script>
+    <script src="question-schema.js"></script>
+    <script src="questions.js"></script>
+    <script src="quiz-core.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
