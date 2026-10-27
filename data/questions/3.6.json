@@ -1,0 +1,77 @@
+[
+  {
+    "id": "ccarp-3.6-exact-part-identifier-retrieval",
+    "domain": 3, "objectiveId": "3.6",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "An equipment knowledge base contains many near-identical component descriptions with different part identifiers. Queries such as 'installation torque for part HX-741B' retrieve semantically similar components but miss the chunk containing that exact identifier. Which retrieval capability most directly complements the existing semantic search?",
+    "answers": [
+      { "text": "Remove punctuation and digits from all identifiers before matching to increase linguistic similarity.", "explanation": "The identifier's characters distinguish the requested component from similar parts. Removing them can collapse precisely the distinctions the query requires." },
+      { "text": "Return more semantic neighbors without adding any identifier-aware matching.", "explanation": "A larger candidate set may occasionally include the target but does not directly address exact-identifier matching. It also adds unrelated components to the retrieval context." },
+      { "text": "Rerank only the current semantic candidates even when the exact-part chunk is absent from them.", "explanation": "A reranker orders its supplied candidates and cannot select an absent chunk. Candidate generation first needs a mechanism that can find the exact identifier." },
+      { "text": "Add lexical retrieval such as BM25 that preserves and matches the exact part identifier.", "explanation": "Lexical matching is useful for unique identifiers and technical terms that semantic similarity can miss. It supplies a complementary route to the precisely named component." }
+    ],
+    "correct": 3,
+    "tags": ["retrieval", "lexical-search", "exact-identifiers"],
+    "sourceIds": ["int-contextual-retrieval"]
+  },
+  {
+    "id": "ccarp-3.6-policy-paraphrase-semantic-matching",
+    "domain": 3, "objectiveId": "3.6",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "An employee-policy search service uses BM25. Relevant passages use formal policy terminology, while users ask varied paraphrases that share few exact words. Inspection confirms that the right passages are indexed but not retrieved. The team can add one complementary retrieval signal. Which choice most directly addresses this query pattern?",
+    "answers": [
+      { "text": "Increase the weight of exact policy-title matches without adding semantic matching.", "explanation": "Users' paraphrases do not reliably contain the formal titles. More weight on absent lexical terms does not bridge the demonstrated vocabulary mismatch." },
+      { "text": "Add embedding-based semantic retrieval and evaluate it on representative paraphrased policy questions.", "explanation": "Embeddings can match related meanings despite different surface wording. Testing the actual paraphrases establishes whether the added signal retrieves the needed passages in this corpus." },
+      { "text": "Restrict retrieval to passages containing every substantive query word.", "explanation": "Requiring exact term overlap makes the known paraphrase problem stricter. Relevant formal-language passages may contain none of the user's chosen vocabulary." },
+      { "text": "Add a reranker over the same lexical candidate set without changing which passages enter that set.", "explanation": "The relevant passages are missing before reranking begins. Reordering an unchanged candidate set cannot supply the absent evidence or bridge the candidate-generation vocabulary gap." }
+    ],
+    "correct": 1,
+    "tags": ["retrieval", "semantic-search", "paraphrases"],
+    "sourceIds": ["int-contextual-retrieval", "eval-criteria"]
+  },
+  {
+    "id": "ccarp-3.6-hybrid-rank-fusion-and-deduplication",
+    "domain": 3, "objectiveId": "3.6",
+    "difficulty": "intermediate", "type": "multiple",
+    "prompt": "A technical search service receives both exact diagnostic-code queries and paraphrased symptom descriptions. The team is implementing the hybrid pipeline described in Anthropic's Contextual Retrieval article. Which construction steps preserve the complementary evidence from lexical and semantic search? Select 2 answers.",
+    "answers": [
+      { "text": "Retrieve candidates separately with BM25 and embeddings so either matching mechanism can contribute relevant chunks.", "explanation": "BM25 supplies exact-term matches while embeddings supply semantic matches. Separate candidate generation retains the strengths needed by both query patterns." },
+      { "text": "Use the lexical search only to reorder chunks already present in the semantic result set.", "explanation": "This excludes lexical-only candidates before fusion. An exact diagnostic-code match missed by semantic retrieval would still have no route into the final candidate set." },
+      { "text": "Combine the result rankings with rank fusion and deduplicate chunks before selecting final context.", "explanation": "The documented pipeline combines and deduplicates the complementary result sets. Deduplication prevents a chunk found by both methods from occupying multiple context slots." },
+      { "text": "Concatenate both lists into the generation prompt while preserving every repeated chunk as independent evidence.", "explanation": "Repeated appearances do not constitute independent source support. Keeping duplicates consumes context capacity and bypasses the pipeline's fusion and deduplication steps." }
+    ],
+    "correctIndices": [0, 2],
+    "tags": ["retrieval", "hybrid-search", "rank-fusion", "deduplication"],
+    "sourceIds": ["int-contextual-retrieval"]
+  },
+  {
+    "id": "ccarp-3.6-reranker-final-context-selection",
+    "domain": 3, "objectiveId": "3.6",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A maintenance search pipeline fuses and deduplicates 40 lexical and semantic candidates, then passes the first five by fused rank to generation. The five-chunk context budget is fixed. Audited failing queries consistently include the required model-and-revision-specific procedure among the 40, but generic procedures outrank it in the final five. Which experiment most directly targets the demonstrated failure?",
+    "answers": [
+      { "text": "Rerank the 40 candidates for query relevance; compare final-five evidence coverage and answer quality at the unchanged budget.", "explanation": "The needed evidence is already retrieved, so the failure is selection into final context rather than candidate recall. Query-aware reranking can promote the specific procedure; measuring coverage and final answers tests whether it actually does so." },
+      { "text": "Double initial candidate counts while keeping the same fused ranking and first-five selection rule for generation.", "explanation": "The audited target is already present before final selection. Expanding recall alone does not directly repair the ranking that excludes it from the fixed final context." },
+      { "text": "Give the generator all 40 candidates and use a longer output allowance to explain competing procedure revisions.", "explanation": "This exceeds the stipulated five-chunk context budget. More output allowance also does not distinguish the applicable procedure before context selection." },
+      { "text": "Rerank only the selected five chunks, leaving the other 35 outside the reranker's input for each query.", "explanation": "The relevant procedure was excluded before this proposed reranking step. Reordering only those five cannot promote a candidate that the reranker never receives." }
+    ],
+    "correct": 0,
+    "tags": ["retrieval", "reranking", "final-context-selection", "precision"],
+    "sourceIds": ["int-contextual-retrieval"]
+  },
+  {
+    "id": "ccarp-3.6-current-structured-aggregation",
+    "domain": 3, "objectiveId": "3.6",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A logistics assistant must return the exact quantity of currently open order lines by warehouse for the authenticated account at the transaction snapshot taken when the user request starts. The authoritative transactional system already exposes an audited, parameterized aggregation API. Searchable narrative order summaries lag behind and omit some line items. Which retrieval mechanism best matches this requirement?",
+    "answers": [
+      { "text": "Embed the narrative summaries and sum quantities mentioned in the nearest matching chunks.", "explanation": "Similarity search over delayed, incomplete summaries does not provide an exhaustive set of rows at the required snapshot. Summing retrieved mentions cannot establish an exact transactional aggregate." },
+      { "text": "Add BM25 to the summary index and sum every result that contains the warehouse name.", "explanation": "Lexical matching improves term matching but does not repair missing lines or stale transaction state. The index still cannot supply the required complete snapshot." },
+      { "text": "Call the existing aggregation API through a bounded client tool that enforces account access and the requested snapshot.", "explanation": "The API can compute exact aggregates over authoritative structured state under the stated access and snapshot constraints. A client tool provides the application-owned execution boundary for that existing operation." },
+      { "text": "Sum line items deterministically from a complete nightly export and use its latest available totals.", "explanation": "A complete export can support exact arithmetic for its own snapshot. It cannot establish the required current transactional snapshot when orders have changed since the nightly extraction." }
+    ],
+    "correct": 2,
+    "tags": ["retrieval", "structured-data", "aggregation", "client-tools"],
+    "sourceIds": ["int-client-loop", "eval-agent-evals", "int-contextual-retrieval"]
+  }
+]

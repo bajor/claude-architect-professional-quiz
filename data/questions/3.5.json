@@ -1,0 +1,77 @@
+[
+  {
+    "id": "ccarp-3.5-context-before-indexing",
+    "domain": 3, "objectiveId": "3.5",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A technical-manual chunk says, 'Replace this cartridge after the second cycle,' but the product family and operating mode appear only earlier in the manual. Searches that name that family and mode often miss this chunk. How should a Contextual Retrieval preprocessing pipeline address the missing information?",
+    "answers": [
+      { "text": "Embed the isolated chunk unchanged and add its product family only after retrieval selects it.", "explanation": "Adding context after selection cannot help a chunk that was not retrieved. The missing family and mode must be represented when the search index is built." },
+      { "text": "Replace all chunks in the manual with the same generic summary of the manufacturer's product range.", "explanation": "A shared generic summary does not locate this cartridge instruction within its specific family and operating mode. It also removes the detailed source content needed for the answer." },
+      { "text": "Generate concise, source-grounded chunk context from the full manual and prepend it before embedding and BM25 indexing.", "explanation": "Chunk-specific context supplies the identity and conditions missing from the isolated text. Including it in both index representations can make the instruction retrievable by those contextual terms." },
+      { "text": "Increase the answer model's output allowance while leaving the chunk representations unchanged.", "explanation": "More generation space does not change what the retrieval system can find. The needed instruction still lacks its discriminating context in the index." }
+    ],
+    "correct": 2,
+    "tags": ["rag", "contextual-retrieval", "indexing"],
+    "sourceIds": ["int-contextual-retrieval"]
+  },
+  {
+    "id": "ccarp-3.5-table-headers-and-footnotes",
+    "domain": 3, "objectiveId": "3.5",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A maintenance corpus contains limit tables whose headers specify units and whose footnotes define exceptions. A fixed-character splitter separates rows from both. Retrieved rows match the requested device but are misinterpreted without the units and exceptions. Which chunking revision best addresses the observed failure?",
+    "answers": [
+      { "text": "Keep each bounded table section with its headers and applicable footnotes, preserving its source location for verification.", "explanation": "The necessary interpretive dependencies remain available with each relevant table section. Structure-aware boundaries directly address the observed loss of units and exceptions." },
+      { "text": "Use smaller fixed-character chunks so individual numeric values receive more precise embeddings.", "explanation": "Smaller arbitrary fragments further separate values from their meaning. Numeric similarity cannot reconstruct omitted headers or identify which exceptions apply." },
+      { "text": "Keep rows isolated and ask the answer model to infer the missing units from common industry practice.", "explanation": "The manual's stated units and exceptions are authoritative, not industry defaults. Inference cannot substitute for retrieving the dependencies needed to interpret the table." },
+      { "text": "Increase overlap by a fixed small number of characters without checking the table structure or dependencies.", "explanation": "An arbitrary overlap may still fail to include distant headers or footnotes. The revision needs to preserve the specific dependencies demonstrated by the failure cases." }
+    ],
+    "correct": 0,
+    "tags": ["rag", "chunk-boundaries", "tables", "provenance"],
+    "sourceIds": ["int-contextual-retrieval"]
+  },
+  {
+    "id": "ccarp-3.5-searchable-context-and-provenance",
+    "domain": 3, "objectiveId": "3.5",
+    "difficulty": "intermediate", "type": "multiple",
+    "prompt": "A RAG service stores product, operating mode, source revision, and section locator beside each chunk. Its vector and BM25 indexes currently use only the bare chunk text; the product and mode fields do not participate in search. Queries need those terms to distinguish otherwise identical instructions, and answers must cite the source revision. Which ingestion changes address both requirements? Select 2 answers.",
+    "answers": [
+      { "text": "Keep all contextual fields only in non-searchable storage and rely on generation to rescue missed chunks.", "explanation": "Stored fields that do not participate in either search representation cannot improve candidate selection. Generation cannot cite or interpret evidence that retrieval never supplies." },
+      { "text": "Include a concise product-and-mode context prefix in the text used for both embeddings and BM25.", "explanation": "This makes the distinguishing context part of semantic and lexical retrieval rather than merely attached storage. It follows the documented Contextual Retrieval indexing sequence." },
+      { "text": "Replace source revisions with generated product summaries so citations remain short.", "explanation": "A summary is not an authoritative revision identifier or source locator. Removing provenance prevents the application from meeting the explicit citation requirement." },
+      { "text": "Retain authoritative source revision and section metadata and return it with the retrieved original content.", "explanation": "Provenance lets the application identify and verify the cited source. Keeping the original content distinct from added context also helps reviewers inspect what the manual actually states." }
+    ],
+    "correctIndices": [1, 3],
+    "tags": ["rag", "indexed-metadata", "contextual-retrieval", "provenance"],
+    "sourceIds": ["int-contextual-retrieval"]
+  },
+  {
+    "id": "ccarp-3.5-joint-chunking-index-experiment",
+    "domain": 3, "objectiveId": "3.5",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "For compound repair procedures, small fixed chunks retrieve exact steps but omit prerequisites in adjacent sections. Whole-document chunks retain prerequisites but fill the generation budget with unrelated procedures. The team must choose a chunking and indexing strategy without increasing that budget. Which experiment provides the most relevant evidence?",
+    "answers": [
+      { "text": "Keep whole-document chunks and compare only which embedding model gives the highest similarity score.", "explanation": "Raw similarity scores do not establish that the final context contains complete procedures within budget. This comparison leaves the demonstrated granularity problem unchanged." },
+      { "text": "Adopt the chunk size used in a published vendor benchmark and skip corpus-specific validation.", "explanation": "Published settings describe a particular corpus and evaluation. They do not establish the right boundaries or overlap for these cross-section repair dependencies." },
+      { "text": "Keep the smallest chunks and maximize top-K until every neighboring section enters generation.", "explanation": "Increasing top-K can consume the fixed generation budget and add distracting material. It does not test whether better boundaries can preserve dependencies more selectively." },
+      { "text": "Rebuild candidate indexes with procedure-aware boundaries and tested overlap, then compare dependency coverage and final-answer quality at the fixed budget.", "explanation": "Boundary and overlap changes must be reflected in the indexed chunks before retrieval can be evaluated. Testing complete evidence and final outcomes identifies a workable balance between fragmented and overlarge chunks." }
+    ],
+    "correct": 3,
+    "tags": ["rag", "chunking", "index-design", "retrieval-evaluation"],
+    "sourceIds": ["int-contextual-retrieval", "eval-criteria"]
+  },
+  {
+    "id": "ccarp-3.5-contextualizer-provenance-contamination",
+    "domain": 3, "objectiveId": "3.5",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "During a new RAG pipeline's ingestion test, a generated context prefix attributes a component instruction to the wrong product, although the original chunk is intact. Both semantic and BM25 representations were built from that incorrect prefix plus the chunk. Queries for the wrong product now retrieve it. What correction should precede further answer-model tuning?",
+    "answers": [
+      { "text": "Keep the indexed prefix and instruct the answer model to trust whichever product name retrieval ranks highest.", "explanation": "The ranking is already influenced by the incorrect product attribution. Trusting it reinforces the preprocessing error rather than grounding the answer in the source." },
+      { "text": "Validate and correct the prefix against source context, regenerate affected index entries, and test product-specific retrieval.", "explanation": "The false attribution entered both search representations during ingestion. Correcting the source-grounded context and its indexed representations removes that retrieval contamination at its origin." },
+      { "text": "Correct the displayed prefix after retrieval but leave both indexed representations unchanged.", "explanation": "Changing display text can prevent one misleading quotation but leaves the wrong-product candidate ranking intact. The false terms still influence which chunks are selected." },
+      { "text": "Switch to semantic-only retrieval because lexical matching is the only stage affected by contextual text.", "explanation": "The incorrect prefix was embedded as well as lexically indexed. Removing BM25 alone does not remove the wrong attribution from the semantic representation." }
+    ],
+    "correct": 1,
+    "tags": ["rag", "contextualization", "indexing", "source-grounding"],
+    "sourceIds": ["int-contextual-retrieval", "eval-hallucinations"]
+  }
+]
