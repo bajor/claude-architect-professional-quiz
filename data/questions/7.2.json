@@ -1,0 +1,72 @@
+[
+  {
+    "id": "ccarp-7.2-generated-code-verification", "domain": 7, "objectiveId": "7.2",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A developer gives Claude Code a reproducible import defect, a failing fixture, and explicit acceptance criteria. Claude generates a patch and says the defect is fixed, but supplies no evidence that it ran any check. The team requires verified behavior before accepting generated changes. What is the appropriate next gate?",
+    "answers": [
+      { "text": "Obtain approval from a fresh model reviewer and accept that independent judgment in place of executing the reproducer.", "explanation": "Fresh review can find mistakes but does not demonstrate the failing input now works. It supplements rather than replaces executable acceptance evidence." },
+      { "text": "Run the reproducer and relevant regression checks, inspect their actual results, and retain the normal diff-review and merge controls.", "explanation": "The supplied fixture and relevant checks provide observable evidence of the repair and affected behavior. Reviewing the diff and keeping normal merge controls adds scrutiny without treating the model's assertion as proof." },
+      { "text": "Require only a successful syntax or type check because a well-formed patch establishes that the import behavior is repaired.", "explanation": "Structural checks can catch invalid code but may pass while the original import defect remains. The behavioral acceptance criteria still require the reproducer and relevant verification." },
+      { "text": "Run only tests generated from the patch's current behavior, treating the pre-existing failing fixture as obsolete documentation.", "explanation": "Tests derived solely from the proposed implementation can preserve its mistake. Discarding the supplied failure case removes the independent acceptance signal the team explicitly requires." }
+    ],
+    "correct": 1,
+    "tags": ["generated-code", "verification", "regression-testing"],
+    "sourceIds": ["code-best-practices", "code-github-actions"]
+  },
+  {
+    "id": "ccarp-7.2-repeatable-hook-policy", "domain": 7, "objectiveId": "7.2",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A team needs a pre-execution policy that compares a requested target identifier with a fixed approved list. Identical inputs must receive an auditable, repeatable verdict; semantic judgment is unnecessary. An engineer argues that any hook is deterministic because its lifecycle event is fixed. Which implementation best meets the actual requirement?",
+    "answers": [
+      { "text": "Use a prompt hook whose model returns structured ok and reason fields, treating schema validation as proof of deterministic judgment.", "explanation": "Structured output constrains response shape, not how an LLM reaches its decision. A fixed trigger and valid JSON do not make model-based policy evaluation repeatable." },
+      { "text": "Use an agent hook to inspect the repository and decide whether each target looks approved, relying on tool access for repeatability.", "explanation": "An agent hook still delegates judgment to a model, and the documented hook type is experimental. Tool-assisted investigation is not needed to perform the specified fixed-list comparison." },
+      { "text": "Use a command hook that asks an LLM to interpret the approved list, then converts its answer into a blocking exit status.", "explanation": "Wrapping model judgment in a script changes the output mechanism but not the source of the verdict. The comparison remains model-dependent despite a deterministic exit-code mapping." },
+      { "text": "Use a synchronous command hook that validates the target against the approved list in code, with tests for its allowed and denied cases.", "explanation": "A script can implement the stated exact comparison without model interpretation. The lifecycle hook supplies the execution point, while the tested comparison supplies the repeatable policy decision." }
+    ],
+    "correct": 3,
+    "tags": ["hooks", "deterministic-policy", "workflow-controls"],
+    "sourceIds": ["code-hooks", "code-best-practices"]
+  },
+  {
+    "id": "ccarp-7.2-pre-execution-versus-feedback", "domain": 7, "objectiveId": "7.2",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A Claude Code workflow has an identifiable publish-tool call. Required checks must pass before that call starts. Today, an async PostToolUse command hook runs checks and sometimes reports failure after the artifact has already been published. Which redesign creates the required gate rather than merely reporting late feedback?",
+    "answers": [
+      { "text": "Run the required checks synchronously in a matching PreToolUse gate that denies publishing on failure; keep background checks only as additional feedback.", "explanation": "PreToolUse can reject a call before it executes. Waiting for the required checks there establishes the ordering constraint that an asynchronous after-the-fact check cannot provide." },
+      { "text": "Make the PostToolUse hook synchronous and return exit 2 so the completed publish operation is rolled back.", "explanation": "A synchronous PostToolUse check still occurs after the tool ran. Exit 2 supplies feedback at that event; it does not reverse the publication." },
+      { "text": "Move the check to PreToolUse but retain async mode and return a permissionDecision denial when the background test finishes.", "explanation": "Background command hooks cannot enforce decision, permissionDecision, or continue fields on the action. Moving the trigger earlier without waiting for the result does not create a synchronous gate." },
+      { "text": "Use a Stop hook that returns exit 2 after failed checks, relying on the continued conversation to prevent the earlier publish call.", "explanation": "A Stop rejection can keep Claude working instead of ending the conversation. It cannot establish that a tool call earlier in the turn waited for those checks." }
+    ],
+    "correct": 0,
+    "tags": ["hooks", "async", "execution-order", "verification-gates"],
+    "sourceIds": ["code-hooks"]
+  },
+  {
+    "id": "ccarp-7.2-fail-closed-hook-contract", "domain": 7, "objectiveId": "7.2",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "On Linux with Claude Code 2.1.304, a synchronous PreToolUse command hook matches every tool call relevant to a target policy. It emits no stdout and exits 1 for a forbidden target. It also occasionally fails to start or times out. Calls have proceeded after these failures. The requirement is to block both a policy denial and a failed policy evaluator. Which correction fits the documented contract?",
+    "answers": [
+      { "text": "Keep exit 1 for denials and increase the timeout, since every nonzero status is a blocking verdict at PreToolUse.", "explanation": "With no decision JSON, nonzero statuses other than 2 normally report non-blocking errors. A longer timeout does not change that exit contract or cover a missing executable." },
+      { "text": "Return exit 2 for denials and leave failure handling unset, since start failures and timeouts automatically inherit the denial status.", "explanation": "Exit 2 blocks an explicit PreToolUse denial, but a script that never starts or times out may never return that verdict. Those evaluator failures need the supported fail-closed configuration." },
+      { "text": "Return exit 2 for policy denials, set onFailure to block on the synchronous gate, and test denial, missing-executable, and timeout cases.", "explanation": "PreToolUse exit 2 rejects the call, and onFailure: block covers evaluator failures on this supported event. The option requires v2.1.295 or later, so the stated 2.1.304 version qualifies." },
+      { "text": "Set onFailure to block and run the hook asynchronously, preserving the policy decision without delaying tool execution.", "explanation": "The documented fail-closed option has no effect on background command hooks. An asynchronous check cannot both let the call proceed immediately and serve as its required blocking evaluator." }
+    ],
+    "correct": 2,
+    "tags": ["hooks", "fail-closed", "failure-handling", "version-scope"],
+    "sourceIds": ["code-hooks"]
+  },
+  {
+    "id": "ccarp-7.2-untrusted-review-ci", "domain": 7, "objectiveId": "7.2",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A review-only CI job runs Claude Code against pull-request branches that can modify .claude settings and .mcp.json. It needs to read source and post review findings, but must not execute pull-request-supplied customizations or acquire production authority. Using the documented unattended-loading behavior, which two independent controls belong in the design? Select 2 answers.",
+    "answers": [
+      { "text": "Use fixed, reviewed configuration in an isolated runner, explicitly preventing discovery of pull-request-supplied hooks and MCP servers.", "explanation": "An unattended run can load repository hooks and MCP servers without interactive trust approval. Explicit configuration and isolation avoid granting execution authority to configuration changed by the material being reviewed." },
+      { "text": "Keep normal project discovery and rely on the unattended run's workspace-trust dialog to approve repository customizations before they execute.", "explanation": "The documented non-interactive workflow does not show that trust dialog or per-project-server approval prompt. It therefore cannot supply the proposed approval boundary." },
+      { "text": "Provision service credentials through CI secrets and limit GitHub authorization and model tool permissions to the review task, without production credentials.", "explanation": "Secret storage avoids committed credentials, while least-privilege identities and tool controls limit what the job can do. GitHub authorization and model tool approval are separate controls and both need the task's narrow scope." },
+      { "text": "Allow repository-defined hooks and MCP servers, using a read-only GitHub token as the boundary that contains those processes and protects the model API key.", "explanation": "A GitHub token limits GitHub operations, not arbitrary local hook or MCP process access. Such processes can still access runner resources or credentials unless their loading and execution are separately constrained." }
+    ],
+    "correctIndices": [0, 2],
+    "tags": ["ci", "untrusted-repositories", "least-privilege", "secrets"],
+    "sourceIds": ["code-headless", "code-github-actions", "code-hooks", "code-sandboxing"]
+  }
+]
