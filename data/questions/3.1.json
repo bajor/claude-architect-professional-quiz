@@ -1,0 +1,77 @@
+[
+  {
+    "id": "ccarp-3.1-interlock-capability-boundary",
+    "domain": 3, "objectiveId": "3.1",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A factory agent diagnoses equipment faults and schedules inspections. A shared integration template also exposes a tool that changes robot safety interlocks, although this role is never authorized to change them. Which configuration change best addresses this capability bloat?",
+    "answers": [
+      { "text": "Keep the interlock tool but require the agent to explain its reason before calling it.", "explanation": "An explanation is model-generated behavior, not a permission boundary. The agent would retain a capability outside its authorized role." },
+      { "text": "Remove the interlock tool from this role and deny interlock changes in its backend permissions.", "explanation": "Removing the callable capability and its underlying permission aligns both interfaces with the role. A discovered or accidentally constructed call cannot regain the prohibited operation." },
+      { "text": "Defer the interlock tool until tool search finds it, leaving its credentials unchanged.", "explanation": "Deferred loading reduces initial definition context but leaves the tool discoverable and executable. It does not remove the unauthorized capability." },
+      { "text": "Keep the shared template and alert an operator after any interlock change.", "explanation": "Post-action monitoring can detect misuse but cannot prevent a safety setting from changing. The role does not need this capability in the first place." }
+    ],
+    "correct": 1,
+    "tags": ["capability-bloat", "least-privilege"],
+    "sourceIds": ["guardrails", "int-tool-search"]
+  },
+  {
+    "id": "ccarp-3.1-overlapping-lookup-tools",
+    "domain": 3, "objectiveId": "3.1",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "An inventory agent alternates between lookup_stock, stock_lookup_v2, and get_stock_new. Inspection shows that all three expose the same supported backend operation and return the same fields, with no caller requiring their aliases. Wrong-tool selection increased after all three definitions were added. What is the most targeted correction?",
+    "answers": [
+      { "text": "Add a fourth routing tool that asks the model which of the three aliases to invoke.", "explanation": "A model-selected router preserves the redundant choices and adds another selection step. There is no distinct operation for the aliases to represent." },
+      { "text": "Keep all aliases and increase the response token limit for selection reasoning.", "explanation": "A larger output allowance does not resolve indistinguishable capability definitions. It can add generation time while retaining the source of confusion." },
+      { "text": "Load the three definitions earlier and repeat each description in the system prompt.", "explanation": "Repeating equivalent definitions increases context without adding a useful decision boundary. The observed error is ambiguity between aliases, not missing operation documentation." },
+      { "text": "Expose one supported lookup with a clear schema and description, then replay stock-lookup tasks.", "explanation": "One authoritative interface removes redundant selection choices without losing a required capability. Replaying real tasks verifies that the simplified configuration preserves correct arguments and outcomes." }
+    ],
+    "correct": 3,
+    "tags": ["capability-bloat", "tool-selection", "tool-schemas"],
+    "sourceIds": ["int-advanced-tools", "eval-agent-evals"]
+  },
+  {
+    "id": "ccarp-3.1-result-volume-not-catalog-size",
+    "domain": 3, "objectiveId": "3.1",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A telemetry assistant has four compact, necessary tools and selects them correctly. Its sensor query returns thousands of readings, although the task needs a per-device aggregate and every out-of-range reading. Most context tokens come from these results rather than tool definitions. Which change addresses the measured bloat without losing required evidence?",
+    "answers": [
+      { "text": "Aggregate readings in the tool layer and return the requested summary plus all out-of-range records.", "explanation": "Filtering and aggregation before model ingestion target the large intermediate results. Preserving every exception maintains the evidence required by this task." },
+      { "text": "Introduce tool search and defer all four existing tool definitions.", "explanation": "Deferring compact definitions addresses initial catalog context, not the thousands of returned readings. It adds discovery without materially reducing this bottleneck." },
+      { "text": "Shorten the four tool descriptions and remove optional-argument examples to reduce the token load.", "explanation": "This reduces definition tokens rather than the large returned dataset. The measurements show that compact definitions are not the dominant source of context use." },
+      { "text": "Return only the first page of readings and let the model infer device-level totals.", "explanation": "An arbitrary page omits readings and may hide exceptions. Aggregates inferred from an incomplete sample do not satisfy the requirement for complete device summaries." }
+    ],
+    "correct": 0,
+    "tags": ["capability-bloat", "tool-results", "aggregation"],
+    "sourceIds": ["int-advanced-tools"]
+  },
+  {
+    "id": "ccarp-3.1-evidence-for-catalog-pruning",
+    "domain": 3, "objectiveId": "3.1",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A team proposes pruning an authorized engineering tool catalog because agents are slower and choose the wrong operation more often. Some rarely called tools are required for unusual repair cases. Which evidence should guide pruning without treating low usage alone as proof that a capability is unnecessary? Select 3 answers.",
+    "answers": [
+      { "text": "Measure definition-context tokens separately from call arguments and returned-result tokens.", "explanation": "This separates upfront catalog overhead from runtime data volume. The appropriate fix differs when definitions rather than results consume the context." },
+      { "text": "Inspect wrong-tool and wrong-argument cases for overlapping names, schemas, and operation descriptions.", "explanation": "Observed selection failures reveal whether the catalog's interfaces are confusing. Removing or clarifying redundant interfaces can address that mechanism directly." },
+      { "text": "Replay ordinary and rare required tasks with the proposed reduced catalog and compare completed outcomes.", "explanation": "Outcome checks establish whether removed capabilities were redundant or necessary. Including rare repair tasks prevents a usage-based reduction from silently deleting required behavior." },
+      { "text": "Rank tools by invocation frequency and accept every removal that improves the average frequency of those remaining.", "explanation": "This statistic improves mechanically when rarely used tools disappear. It does not establish that the remaining catalog can complete the rare tasks the application must support." }
+    ],
+    "correctIndices": [0, 1, 2],
+    "tags": ["capability-bloat", "tool-selection", "task-coverage"],
+    "sourceIds": ["int-advanced-tools", "eval-pricing", "eval-agent-evals"]
+  },
+  {
+    "id": "ccarp-3.1-unnecessary-validator-agent",
+    "domain": 3, "objectiveId": "3.1",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A build assistant delegates package-coordinate validation to a separate agent with its own prompt, history, and tool catalog. The acceptance rule is exactly the existing deterministic parser's result; no judgment or external evidence is allowed. Delegation adds a model turn and occasional inconsistent validation. Which simplification preserves the required behavior?",
+    "answers": [
+      { "text": "Retain the validator agent and constrain its response to a valid/invalid enum.", "explanation": "A constrained output shape can ensure an allowed label but not agreement with the authoritative parser. It also preserves the extra model turn and agent context." },
+      { "text": "Ask the main and validator agents to vote whenever their validation decisions differ.", "explanation": "Voting substitutes model agreement for the authoritative deterministic rule. It also adds agent work rather than removing the unnecessary delegation." },
+      { "text": "Call the parser in application code at the validation boundary and remove the validator agent.", "explanation": "A direct parser call implements the entire acceptance contract without a separate agent context or model decision. The agent adds no capability needed for this deterministic subtask." },
+      { "text": "Retain the validator agent but cache its general instructions between validations.", "explanation": "Prefix caching can reduce repeated prompt processing but retains the extra model decision and delegation. It cannot make a probabilistic decision equivalent to the required parser result." }
+    ],
+    "correct": 2,
+    "tags": ["capability-bloat", "agent-configuration", "deterministic-validation"],
+    "sourceIds": ["agents", "eval-cache"]
+  }
+]
