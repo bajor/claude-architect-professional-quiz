@@ -1,0 +1,77 @@
+[
+  {
+    "id": "ccarp-3.7-direct-api-client-tool-loop",
+    "domain": 3, "objectiveId": "3.7",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "One application uses Claude Messages API version 2026-10-21 and an existing typed equipment-status API. It needs no shared tool protocol, local command runtime, or independent remote agent. The architect wants the least additional infrastructure while allowing Claude to request status lookups. Which integration design fits?",
+    "answers": [
+      { "text": "Introduce an MCP server around the existing API so this single application can invoke the same status operation.", "explanation": "MCP can expose the operation, but its reusable protocol boundary is not required here. Adding a server and protocol handling does not meet the preference for least additional infrastructure." },
+      { "text": "Define a client tool, execute the validated status API call in application code, and return a matching tool_result.", "explanation": "A client tool directly connects the model's structured request to the existing operation. The application owns execution and returns the result using the emitted tool-use ID before continuing the conversation." },
+      { "text": "Register the API's URL as a client-tool description and treat a returned tool_use block as proof that the lookup ran.", "explanation": "A client tool_use block requests execution; it does not perform the HTTP operation. The application must call the API and supply the corresponding result." },
+      { "text": "Deploy a separate A2A agent whose only task is forwarding each status request to the existing API.", "explanation": "An independently deployed agent adds a coordination and lifecycle boundary without adding needed agency. A direct application-owned API call satisfies the stated bounded operation more simply." }
+    ],
+    "correct": 1,
+    "tags": ["integration-mechanisms", "direct-api", "client-tool-loop"],
+    "sourceIds": ["int-client-loop", "int-client-results", "int-mcp-transports", "int-a2a"]
+  },
+  {
+    "id": "ccarp-3.7-correlated-client-tool-error-results",
+    "domain": 3, "objectiveId": "3.7",
+    "difficulty": "intermediate", "type": "multiple",
+    "prompt": "Under Claude Messages API version 2026-10-21, an assistant response contains only client tools: lookup_parts with id call_parts and estimate_delivery with id call_delivery. The application completes lookup_parts, but estimate_delivery fails with an upstream timeout. It is continuing the conversation rather than retrying the failed tool immediately. Which continuation actions are required to represent both calls faithfully? Select 3 answers.",
+    "answers": [
+      { "text": "Append the assistant response content, including both original tool_use blocks, to conversation history unchanged.", "explanation": "The continuation must preserve the tool requests that the following results answer. Replacing that content with a paraphrase loses the tool-call context and identifiers." },
+      { "text": "Immediately follow it with a user message whose tool_result blocks use call_parts and call_delivery as their respective tool_use_id values.", "explanation": "Results are correlated by tool_use_id, not arrival order or tool name. The user result message must directly follow the assistant tool-use message, with result blocks before any other text." },
+      { "text": "Represent the delivery timeout as a successful empty delivery estimate so the model can continue without an error branch.", "explanation": "An upstream failure is not evidence that no delivery estimate exists. Presenting it as successful empty data hides the execution failure and can mislead downstream reasoning." },
+      { "text": "Set is_error to true on the delivery result and include a useful, non-secret timeout description.", "explanation": "The client-tool result format explicitly supports signaling execution failure with is_error. An informative error lets the model distinguish unavailable evidence from a valid empty result." }
+    ],
+    "correctIndices": [0, 1, 3],
+    "tags": ["client-tool-loop", "tool-use-id", "tool-errors", "api-version"],
+    "sourceIds": ["int-client-results", "int-client-loop"]
+  },
+  {
+    "id": "ccarp-3.7-independent-agent-coordination",
+    "domain": 3, "objectiveId": "3.7",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A manufacturer must delegate an analysis task to a supplier's independently managed agent, implemented on another stack. The supplier owns its reasoning and internal tools, and the manufacturer needs interoperable task updates and eventual results rather than direct access to those tools. Using the boundaries described in the A2A v1.0 release of 2026-03-12, which integration is the best fit?",
+    "answers": [
+      { "text": "Expose every internal supplier tool through MCP and have the manufacturer's agent reconstruct the supplier's workflow.", "explanation": "This changes the boundary from delegating to an independent agent to controlling its implementation tools. It does not preserve the supplier-owned reasoning and task lifecycle required here." },
+      { "text": "Transfer the supplier's command-line scripts into the manufacturer's runtime and coordinate them as local subprocesses.", "explanation": "Local subprocess control requires access to and responsibility for the supplier's implementation. The scenario instead calls for communication across an independently managed agent boundary." },
+      { "text": "Use A2A for the cross-agent task exchange, with suitable task-update delivery; each agent may still use MCP internally.", "explanation": "The cited A2A release addresses agent communication across stacks and organizations, including polling, streaming, or webhooks for updates. It explicitly treats MCP tool/context integration as complementary rather than a competing replacement." },
+      { "text": "Use the manufacturer's Claude client-tool IDs as the shared protocol for the supplier's complete agent lifecycle.", "explanation": "Claude tool-use IDs correlate calls within the client's API conversation. They do not by themselves define an interoperable cross-organization agent task protocol or update lifecycle." }
+    ],
+    "correct": 2,
+    "tags": ["integration-mechanisms", "a2a", "agent-coordination", "mcp"],
+    "sourceIds": ["int-a2a", "int-client-results"]
+  },
+  {
+    "id": "ccarp-3.7-mcp-current-transport-contract",
+    "domain": 3, "objectiveId": "3.7",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A reusable tool service must support both a client-launched local worker and an independently hosted remote endpoint. All participating clients and servers target MCP 2026-07-28; compatibility with older initialization-based revisions is out of scope. Which transport and request-metadata decisions match that exact version? Select 2 answers.",
+    "answers": [
+      { "text": "Establish protocol version and capabilities only through a mandatory connection-scoped initialize handshake.", "explanation": "The current version carries this metadata per request. The transport overview discusses connection-scoped initialization as an earlier-revision compatibility model, not the required current contract." },
+      { "text": "Use stdio for the client-launched worker and Streamable HTTP with per-message POSTs and JSON or request-scoped SSE replies for the remote endpoint.", "explanation": "These are the documented standard bindings for the two deployment shapes. The framing and delivery differ while the core MCP protocol semantics remain the same." },
+      { "text": "Require a persistent standalone SSE connection before any remote tool request because all MCP HTTP communication depends on that session.", "explanation": "MCP 2026-07-28 describes per-message HTTP POSTs with JSON-object or request-scoped SSE responses. A mandatory persistent SSE session is not that binding's transport contract." },
+      { "text": "Carry protocol version and client capabilities in the request body's _meta fields, treating the body as authoritative if the binding mirrors metadata.", "explanation": "This version puts protocol metadata in each request body. Selected values may also be mirrored by the HTTP binding, but the body remains the source of truth." }
+    ],
+    "correctIndices": [1, 3],
+    "tags": ["integration-mechanisms", "mcp", "stdio", "streamable-http", "protocol-version"],
+    "sourceIds": ["int-mcp-transports"]
+  },
+  {
+    "id": "ccarp-3.7-bounded-local-cli-adapter",
+    "domain": 3, "objectiveId": "3.7",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A licensed offline simulator has only an audited noninteractive CLI with a stable JSON output mode. One local Claude application needs a bounded simulation operation; cross-client tool reuse and remote-agent coordination are not requirements. Model-generated free-form shell commands are prohibited. Which integration introduces the least unnecessary machinery while preserving execution controls?",
+    "answers": [
+      { "text": "Wrap the CLI as a narrow client tool using validated typed arguments, fixed executable/argv construction, isolated bounded execution, and exit-status/output checks.", "explanation": "The wrapper adapts the available local interface without granting a free-form shell. Application-owned validation, runtime bounds, and result checks remain necessary because the CLI is the execution boundary." },
+      { "text": "Build a separate MCP service around the same validated CLI solely for this single local caller.", "explanation": "A carefully implemented MCP wrapper could be valid when reusable interoperability is needed. Here it adds a protocol service without meeting a requirement the narrower client-tool wrapper cannot satisfy." },
+      { "text": "Run a separate autonomous agent that invents simulator command sequences and decides from narrative output when the simulation is complete.", "explanation": "The available operation has a stable bounded CLI and machine-readable result, so another autonomous controller adds uncertainty and orchestration. It also replaces explicit exit and output checks with model judgment." },
+      { "text": "Expose one command-string parameter to the model and restrict execution only through instructions naming the approved simulator.", "explanation": "Instructions do not enforce the prohibition on free-form shell commands. A command-string interface can introduce shell syntax or unintended arguments that a fixed executable and validated argv avoid." }
+    ],
+    "correct": 0,
+    "tags": ["integration-mechanisms", "cli", "client-tools", "execution-isolation"],
+    "sourceIds": ["int-client-loop", "guardrails", "agents"]
+  }
+]
