@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-1.4-worker-delegation-contract",
+    "domain": 1, "objectiveId": "1.4",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A lead agent delegates supplier investigations, but workers repeatedly inspect the same suppliers and omit required evidence. The tools function correctly. Which delegation change most directly addresses the coordination problem?",
+    "answers": [
+      { "text": "Give each worker the full research request and encourage it to pursue the sources it finds most promising.", "explanation": "A shared broad request leaves ownership ambiguous. Independent workers can choose the same attractive sources while all neglecting less obvious requirements." },
+      { "text": "Define each worker's objective, supplier scope, source guidance, output format, evidence requirements, and boundaries with other assignments.", "explanation": "An explicit delegation contract establishes both what to cover and what belongs elsewhere. This directly addresses duplicated work and missing evidence." },
+      { "text": "Increase each worker's token budget and preserve its original task description to avoid disrupting its search strategy.", "explanation": "More search effort does not clarify which suppliers or evidence each worker owns. It can amplify overlapping work under the same ambiguous assignment." },
+      { "text": "Ask the synthesis agent to remove duplicate paragraphs after workers finish, without changing their assignments or source guidance.", "explanation": "Post-processing can remove repeated prose but cannot recover evidence nobody collected. The coordination defect starts at delegation, not final wording." }
+    ],
+    "correct": 1,
+    "tags": ["worker-boundaries", "delegation-contracts"],
+    "sourceIds": ["multiagent"]
+  },
+  {
+    "id": "ccarp-1.4-artifacts-not-context-copying",
+    "domain": 1, "objectiveId": "1.4",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "Research workers produce detailed tables that authorized analysts must receive unchanged. Copying the tables through a lead agent consumes substantial context, and successive summaries drop rows. The lead only needs conclusions for synthesis, while analysts may inspect the full tables later. Which result-transfer design best fits?",
+    "answers": [
+      { "text": "Require the lead to rewrite each full table into its final answer so all downstream consumers use a single representation.", "explanation": "Rewriting preserves the same lossy transfer point and forces the lead to process all detailed content. It does not meet the unchanged-table requirement reliably." },
+      { "text": "Have workers return only narrative summaries and discard their detailed tables after the lead confirms that synthesis is complete.", "explanation": "A summary can support synthesis but cannot provide the full unchanged tables that analysts must later inspect." },
+      { "text": "Persist each worker's complete table as a durable artifact and return its reference plus concise findings for synthesis.", "explanation": "Direct artifact delivery preserves specialized output without copying it through the lead's context. References let authorized consumers retrieve the original tables while the lead handles only the synthesis information it needs." },
+      { "text": "Give every worker every other worker's full table so each can reconstruct missing rows before the lead produces the final version.", "explanation": "Broadcasting full tables multiplies context transfer and coordination. Reconstruction is unnecessary when the workers' original artifacts can be retained directly." }
+    ],
+    "correct": 2,
+    "tags": ["artifact-handoffs", "separate-contexts", "result-fidelity"],
+    "sourceIds": ["multiagent"]
+  },
+  {
+    "id": "ccarp-1.4-multi-agent-fit-conditions",
+    "domain": 1, "objectiveId": "1.4",
+    "difficulty": "intermediate", "type": "multiple",
+    "prompt": "A team is considering parallel research agents for a high-value market-entry study. It has not yet shown that multiple agents are preferable to one investigator. Which findings would strengthen the architectural case for separate workers? Select 2 answers.",
+    "answers": [
+      { "text": "The study contains substantial evidence-gathering branches that can proceed independently under clear assignments.", "explanation": "Independent branches allow useful parallel exploration without requiring every worker to share each intermediate decision. Clear assignments limit duplication and coverage gaps." },
+      { "text": "Every research decision depends on the complete, continually changing context held by all other workers.", "explanation": "Heavy shared context and dependencies increase coordination and consistency costs. They weaken rather than strengthen the case for separate workers." },
+      { "text": "Measured improvement in study quality or completion time justifies added token and coordination costs.", "explanation": "Economic viability depends on the value of the improvement, not on agent count. Evidence of sufficient benefit addresses the added operating cost of multi-agent work." },
+      { "text": "The team can create one worker per discovered webpage, regardless of whether those pages answer distinct questions.", "explanation": "A webpage count is not a task-decomposition strategy. Redundant or closely related pages can create overlapping workers without useful independent work." }
+    ],
+    "correctIndices": [0, 2],
+    "tags": ["multi-agent-fit", "independence", "coordination-cost"],
+    "sourceIds": ["multiagent"]
+  },
+  {
+    "id": "ccarp-1.4-asynchronous-result-consistency",
+    "domain": 1, "objectiveId": "1.4",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A lead agent revises a study from plan A to plan B while asynchronous workers are still running. A late worker returns a valid result for plan A after several plan B results. The final report must use one approved plan and data snapshot. How should the orchestrator prevent a mixed report?",
+    "answers": [
+      { "text": "Accept results in arrival order and let the most recently returned findings replace earlier findings on the same topic.", "explanation": "Arrival order reflects execution timing, not semantic compatibility. A late result can belong to the superseded plan and overwrite current evidence." },
+      { "text": "Broadcast the new plan once and assume every result received after that message was produced under the revised instructions.", "explanation": "In-flight workers may already have used the old plan or snapshot. A notification alone does not establish which version a returned artifact represents." },
+      { "text": "Combine both sets of findings and ask a synthesis model to prefer whichever passages appear more detailed and internally consistent.", "explanation": "Detail and internal consistency do not establish that evidence belongs to the approved plan. Content-based preference cannot enforce a version boundary." },
+      { "text": "Identify every assignment and result by plan and data snapshot, reconciling incompatible versions before accepting evidence into synthesis.", "explanation": "Explicit identities let the coordinator distinguish stale work from current work despite asynchronous arrival. Reconciliation or rerunning is required before incompatible evidence enters the approved report." }
+    ],
+    "correct": 3,
+    "tags": ["asynchronous-orchestration", "state-consistency", "result-versioning"],
+    "sourceIds": ["multiagent"]
+  },
+  {
+    "id": "ccarp-1.4-straggler-aware-publication",
+    "domain": 1, "objectiveId": "1.4",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A daily briefing has a fixed release deadline. Its mandatory core evidence is already verified; regional worker reports are optional supplements. Some regional searches stall. The business accepts missing supplements if omissions are disclosed, but it does not accept treating missing evidence as a negative finding. Which orchestration choices satisfy this contract? Select 3 answers.",
+    "answers": [
+      { "text": "Release the verified core by the deadline and disclose which optional supplements were unavailable.", "explanation": "The contract permits an explicitly incomplete supplement set. Publishing the valid core with disclosed omissions preserves both the deadline and the evidence boundary." },
+      { "text": "Collect optional worker results without requiring an all-worker completion barrier before publication.", "explanation": "An unconditional synchronous barrier makes release depend on the slowest optional worker. Removing that dependency allows useful parallel work without violating the core release requirement." },
+      { "text": "Wait for every regional search and retry stalled workers until each produces a complete report.", "explanation": "Unbounded waiting gives optional work control over the release deadline. The business explicitly permits omissions instead of requiring full regional completion." },
+      { "text": "Represent pending and failed supplements explicitly so synthesis cannot interpret silence as evidence of absence.", "explanation": "Typed task outcomes distinguish a failed search from a completed search with no finding. This prevents orchestration failures from becoming unsupported business conclusions." }
+    ],
+    "correctIndices": [0, 1, 3],
+    "tags": ["stragglers", "synchronization", "partial-results"],
+    "sourceIds": ["multiagent", "agents"]
+  },
+  {
+    "id": "ccarp-1.4-tightly-coupled-planning",
+    "domain": 1, "objectiveId": "1.4",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A scheduling prototype assigns one agent per depot. Each allocation changes a shared vehicle pool, so nearly every decision invalidates another worker's assumptions. Broadcasting all intermediate state consumes the savings from parallel work, and independent full-plan attempts exceed the cost budget. Which redesign addresses the task's dependency structure?",
+    "answers": [
+      { "text": "Use one authoritative planner for interdependent allocations and delegate only checks that have stable, separable inputs.", "explanation": "A single owner of coupled allocation state avoids continual reconciliation between conflicting plans. Separate workers remain useful only where their inputs and responsibilities are genuinely independent." },
+      { "text": "Add a worker for each vehicle and broadcast its proposed location after every allocation to all depot agents.", "explanation": "Finer partitioning increases the participants that must coordinate around the same shared resource. It does not remove the dependency causing invalidated assumptions." },
+      { "text": "Let depot agents finish independently and ask a synthesis agent to combine their plans without revisiting the allocation decisions.", "explanation": "Independently valid depot plans can assign the same vehicle simultaneously. Prose synthesis cannot guarantee a valid shared allocation without solving the coupled decisions again." },
+      { "text": "Have every worker construct a complete global schedule and choose the most popular final plan by voting.", "explanation": "Full-plan duplication is explicitly outside the cost budget. Voting also changes the task from coordinating allocations to repeating the entire search." }
+    ],
+    "correct": 0,
+    "tags": ["shared-state", "task-coupling", "worker-boundaries"],
+    "sourceIds": ["multiagent", "agents"]
+  }
+]
