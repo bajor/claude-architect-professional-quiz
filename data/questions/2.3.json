@@ -1,0 +1,86 @@
+[
+  {
+    "id": "ccarp-2.3-sufficient-zero-shot-baseline",
+    "domain": 2, "objectiveId": "2.3", "difficulty": "foundational", "type": "single",
+    "prompt": "A short instructions-only prompt, with no demonstrations, already meets a team's field-extraction quality threshold on representative and edge-case inputs. Response time is close to the allowed limit. What is the most defensible default for this zero-shot prompt?",
+    "answers": [
+      { "text": "Retain the passing baseline; add demonstrations only to address observed failures.", "explanation": "The minimal prompt already satisfies the stated quality contract. Examples add input and should be justified by a measured benefit rather than treated as mandatory." },
+      { "text": "Add a fixed quota of examples because few-shot prompting is always more accurate than zero-shot prompting.", "explanation": "Example relevance and task behavior matter more than meeting a universal quota. Few-shot prompting does not guarantee a quality improvement for an already sufficient prompt." },
+      { "text": "Require a written step-by-step derivation before every extracted field to preserve correctness.", "explanation": "Visible derivations add output work without evidence of a benefit for this task. Asking for them also does not guarantee that extraction is correct." },
+      { "text": "Remove the field definitions because successful zero-shot results show that instructions are unnecessary.", "explanation": "Zero-shot means no demonstrations, not no task instructions. Removing the definitions changes the evaluated contract and can introduce ambiguity." }
+    ],
+    "correct": 0,
+    "tags": ["zero-shot", "minimal-prompts", "evidence-driven-prompting"],
+    "sourceIds": ["context-engineering", "prompting"]
+  },
+  {
+    "id": "ccarp-2.3-few-shot-boundary-coverage",
+    "domain": 2, "objectiveId": "2.3", "difficulty": "intermediate", "type": "single",
+    "prompt": "A few-shot classifier must distinguish a request to cancel a booking from a dispute about a completed booking. Every cancellation demonstration is short, and every dispute demonstration is long and mentions a refund. Evaluation shows errors on long cancellations and short disputes without refund language. Which example revision best targets the observed failure?",
+    "answers": [
+      { "text": "Add more long refund disputes while retaining the existing cancellation examples unchanged.", "explanation": "This reinforces the same length and vocabulary correlations. It does not demonstrate that intent, rather than those incidental features, determines the label." },
+      { "text": "Repeat the label definitions after every demonstration, retaining the same lengths and refund vocabulary in the training examples.", "explanation": "Repetition can emphasize definitions, but it leaves the observed spurious example patterns intact. The failing boundary cases still have no demonstrations." },
+      { "text": "Add labeled long cancellations and short disputes, varying refund wording across clearly delimited examples of both labels.", "explanation": "Diverse counterexamples show which features are irrelevant and which intent distinction controls the label. Clear example structure also separates demonstrations from the live input." },
+      { "text": "Include the failing inputs as unlabeled examples and let the model infer their intended labels.", "explanation": "Unlabeled cases do not demonstrate the desired input-output mapping. They can preserve the ambiguity instead of teaching the decision boundary." }
+    ],
+    "correct": 2,
+    "tags": ["few-shot", "example-diversity", "spurious-patterns"],
+    "sourceIds": ["prompting"]
+  },
+  {
+    "id": "ccarp-2.3-thinking-is-not-a-proof",
+    "domain": 2, "objectiveId": "2.3", "difficulty": "intermediate", "type": "single",
+    "prompt": "A team wants to certify engineering calculations by prompting Claude to reveal its complete private chain of thought. A reviewer would approve an answer whenever the returned reasoning looks thorough. The chosen model supports thinking and summarized thinking output. Which revision best distinguishes a useful prompting technique from an unsupported assurance claim?",
+    "answers": [
+      { "text": "Require reasoning inside XML thinking tags and treat that text as the complete internal computation.", "explanation": "Tags only organize generated text; they do not expose private internal reasoning. Some models can decline requests to put private reasoning into the response." },
+      { "text": "Approve answers whenever a thinking summary is present, because summary generation validates the calculation.", "explanation": "A summary describes reasoning but is not an independent correctness check. Its presence does not establish that the calculation or its assumptions are valid." },
+      { "text": "Disable thinking so that a step-by-step answer becomes an exact record of the model's internal process.", "explanation": "A generated explanation is not a guaranteed transcript of internal computation. Disabling thinking does not create that guarantee." },
+      { "text": "Use supported thinking and concise justifications, with independent checks of calculation assumptions and results.", "explanation": "Visible thinking is summarized rather than raw chain of thought. Verifiable evidence and checks support an assurance decision without relying on a supposedly complete internal trace." }
+    ],
+    "correct": 3,
+    "tags": ["thinking", "reasoning-summaries", "verification"],
+    "sourceIds": ["thinking", "prompting"]
+  },
+  {
+    "id": "ccarp-2.3-manual-thinking-output-budget",
+    "domain": 2, "objectiveId": "2.3", "difficulty": "advanced", "type": "single",
+    "prompt": "On a model explicitly supporting manual extended thinking, ordinary requests without tools frequently end at max_tokens before the final answer is complete. The team configured a large budget_tokens value and assumed it was a strict ceiling on reasoning spend separate from the final-answer limit. Which correction matches the specialized extended-thinking contract?",
+    "answers": [
+      { "text": "Increase budget_tokens while leaving max_tokens unchanged, because the reasoning budget does not consume the final-answer allowance.", "explanation": "Current-turn thinking and final text share the total output limit. Raising the reasoning target alone does not reserve space for a complete answer." },
+      { "text": "Treat budget_tokens as a target and size max_tokens for combined reasoning and final-answer output.", "explanation": "The specialized reference identifies max_tokens as the hard total-output ceiling and the manual budget as a target, not a strict cap. This no-tool scenario requires room for the final response in that shared allowance." },
+      { "text": "Omit the visible thinking summary and subtract the hidden reasoning from billed output and output-limit accounting.", "explanation": "Hiding the summary changes presentation, not whether reasoning tokens were generated. Thinking still consumes output budget and is billed." },
+      { "text": "Keep both limits unchanged and make the final-answer word count the hard API spending control.", "explanation": "A natural-language word-count request is not the API's token ceiling. It neither caps internal reasoning nor guarantees that sufficient output remains for the answer." }
+    ],
+    "correct": 1,
+    "tags": ["manual-thinking", "output-budget", "version-scoping"],
+    "sourceIds": ["extended-thinking", "thinking"]
+  },
+  {
+    "id": "ccarp-2.3-thinking-tool-round-trip",
+    "domain": 2, "objectiveId": "2.3", "difficulty": "advanced", "type": "multiple",
+    "prompt": "A thinking-enabled assistant returns thinking blocks followed by a tool_use block. The application must submit the tool result to continue the same assistant turn, show users only the final answer, and account for reasoning costs correctly. Which implementation statements are valid under the cited thinking contract? Select 2 answers.",
+    "answers": [
+      { "text": "Round-trip the generated thinking and tool-use sequence completely and unmodified when returning the corresponding tool result.", "explanation": "The tool result continues the same assistant turn. Preserving the generated blocks and their ordering maintains the required reasoning and tool context." },
+      { "text": "Replace the thinking blocks with a shorter application-written summary before returning the tool result.", "explanation": "The application must not edit, reorder, or partially drop the generated thinking sequence within the tool-use turn. Its own summary is not a valid replacement for those blocks." },
+      { "text": "Exclude thinking charges when the frontend suppresses summaries, while retaining ordinary final-text token charges in the cost ledger.", "explanation": "Frontend visibility does not determine API billing. The reasoning was still generated and is billed as output even when the summary is not shown." },
+      { "text": "Suppress thinking display while preserving continuation blocks and accounting for generated reasoning as output.", "explanation": "Presentation can be separated from backend continuation state. Omitted display does not remove reasoning charges or the requirement to return blocks unchanged." }
+    ],
+    "correctIndices": [0, 3],
+    "tags": ["thinking", "tool-continuations", "reasoning-display"],
+    "sourceIds": ["thinking"]
+  },
+  {
+    "id": "ccarp-2.3-worked-method-demonstrations",
+    "domain": 2, "objectiveId": "2.3", "difficulty": "advanced", "type": "single",
+    "prompt": "A thinking-capable model solves maintenance scheduling exercises whose solution method depends on the constraint structure. Trusted training cases currently show only final schedules. The team wants examples that guide choosing between resource-conflict analysis and prerequisite timing, without prescribing one plan for every task or requesting private reasoning. Which prompt experiment most directly supplies that guidance?",
+    "answers": [
+      { "text": "Show more final schedules without their methods, and require the output to match the most frequent demonstration template.", "explanation": "Additional conclusions still omit how the method follows from the constraints. Matching a frequent template can transfer incidental output patterns rather than the intended reasoning strategy." },
+      { "text": "Prescribe a fixed resource-first sequence for every exercise, following the same ordered steps regardless of its dependency structure.", "explanation": "The scenario requires method selection to depend on the problem. One mandatory sequence suppresses that distinction rather than demonstrating how to make it." },
+      { "text": "Show worked problems with the applicable method and expected answer; evaluate transfer to held-out constraint patterns.", "explanation": "Problem-method-answer examples can guide a thinking model's approach without asking it to expose private reasoning. Held-out evaluation checks whether the method transfers beyond copied schedules." },
+      { "text": "Repeat each training case's final conclusion in several phrasings, leaving method selection absent from every demonstration.", "explanation": "Rephrasing conclusions adds no evidence about choosing a method. The desired connection between constraint structure and approach remains unspecified." }
+    ],
+    "correct": 2,
+    "tags": ["worked-examples", "reasoning-guidance", "method-selection"],
+    "sourceIds": ["prompting", "thinking"]
+  }
+]
