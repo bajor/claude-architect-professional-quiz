@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-4.1-multidimensional-release-gates",
+    "domain": 4, "objectiveId": "4.1",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A change-request assistant must produce usable drafts within a completion-time target and budget. The security owner also requires zero successful cross-account reads in the defined attack suite. Which release scorecard preserves all of these requirements?",
+    "answers": [
+      { "text": "Rank variants by a weighted average of draft quality, speed, cost, and security.", "explanation": "A weighted average can let inexpensive, high-quality drafts compensate for a successful cross-account read. That violates the stated security acceptance gate." },
+      { "text": "Gate on security and rank the remaining variants by API response success rate.", "explanation": "Passing security is necessary, but API response success does not establish draft usability, application completion time, or budget compliance." },
+      { "text": "Gate on security, then check draft quality, completion latency, and outcome cost separately.", "explanation": "Separate measurements preserve the quality, latency, and cost requirements while preventing a security failure from being averaged away. The thresholds come from this application's requirements, not a universal benchmark." },
+      { "text": "Gate on draft quality and require the combined latency-and-cost score to improve.", "explanation": "This omits the independent security gate and can hide a latency-target violation behind cost savings. Improvement in a combined score is not compliance with each stated requirement." }
+    ],
+    "correct": 2,
+    "tags": ["success-criteria", "security-gates"],
+    "sourceIds": ["eval-criteria", "eval-agent-evals"]
+  },
+  {
+    "id": "ccarp-4.1-verify-workspace-outcome",
+    "domain": 4, "objectiveId": "4.1",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A workspace agent must move three specified files to distinct, initially unused destinations without changing their contents. Source and destination paths do not overlap. It finishes by saying that the move succeeded. Which observation should determine the task-success metric?",
+    "answers": [
+      { "text": "Each requested destination has its mapped source's original content hash, and every original source path is absent.", "explanation": "These environment checks distinguish a completed move from copying while leaving originals behind. The source-to-destination mapping and hashes verify placement and unchanged contents; the agent's narrative proves neither." },
+      { "text": "The final assistant message names all three requested destinations.", "explanation": "A message can accurately repeat destination names even when no move occurred. It measures the description of an action rather than the filesystem outcome." },
+      { "text": "The model emitted three syntactically valid file-move tool calls.", "explanation": "Valid tool arguments establish an attempted action, not successful execution. A tool can fail or move a file to an unintended location despite a valid call." },
+      { "text": "The model request completed without an API transport error.", "explanation": "Successful transport says the model response arrived, not that the requested file operations completed correctly. External tool effects need their own outcome checks." }
+    ],
+    "correct": 0,
+    "tags": ["task-success", "environment-state"],
+    "sourceIds": ["eval-agent-evals", "eval-move-semantics", "int-client-loop"]
+  },
+  {
+    "id": "ccarp-4.1-completion-latency-boundary",
+    "domain": 4, "objectiveId": "4.1",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A streaming planning assistant shows its first text quickly, but retrieval, tool calls, and occasional retries continue afterward. Its service agreement requires 95% of user requests to receive a complete, validated plan within nine seconds of application receipt. Which measurement tests that agreement?",
+    "answers": [
+      { "text": "The 95th percentile of provider time to first generated token.", "explanation": "Time to first token measures initial model responsiveness. It excludes the remaining generation and application work required to deliver the validated plan." },
+      { "text": "The mean time from application receipt to delivery of a validated plan.", "explanation": "This uses the correct application boundary, but a mean can hide a slow tail. It does not test the requirement that 95% of requests finish within nine seconds." },
+      { "text": "The 95th percentile of model-call duration, excluding tools and retries.", "explanation": "This tail measurement omits retrieval, external execution, and retry delays borne by the user. Those delays remain inside the stated application-level agreement." },
+      { "text": "The share of all received requests with validated final delivery within nine seconds.", "explanation": "This counts every received request and credits only a complete acceptable plan delivered within the application deadline. Retrieval, tools, and retries must all fit within that boundary; the required share is at least 95%." }
+    ],
+    "correct": 3,
+    "tags": ["latency-metrics", "service-level-objectives"],
+    "sourceIds": ["eval-agent-evals", "int-latency"]
+  },
+  {
+    "id": "ccarp-4.1-cost-per-acceptable-outcome",
+    "domain": 4, "objectiveId": "4.1",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "Two configurations each process 100 independent tasks. A spends 48 budget units and completes 80 tasks acceptably; B spends 42 units and completes 60 acceptably. Spend includes all failed attempts, retries, model calls, and tools. Which comparison correctly identifies the lower cost per acceptable outcome?",
+    "answers": [
+      { "text": "B: its 0.42 units per submitted task is lower than A's 0.48.", "explanation": "Dividing by submitted tasks measures cost per submitted task, not cost per acceptable outcome. One task may consume several attempts. B's lower spend accompanies substantially fewer acceptable results." },
+      { "text": "A: its 0.60 units per acceptable task is lower than B's 0.70.", "explanation": "The relevant denominators are 80 and 60 successful outcomes: 48/80 = 0.60 and 42/60 = 0.70. Including unsuccessful work in total spend captures the cost of obtaining those successes." },
+      { "text": "B: its success-weighted spend is 25.2 units versus A's 38.4.", "explanation": "Multiplying spend by success rate does not calculate a unit cost. It discounts unsuccessful work instead of charging that work to the outcomes actually achieved." },
+      { "text": "Neither: the spend on failed attempts must be removed before comparison.", "explanation": "Removing failed-attempt spend would understate what each configuration costs to produce acceptable results. The provided total spend and success counts are sufficient for the requested metric." }
+    ],
+    "correct": 1,
+    "tags": ["cost-metrics", "successful-outcomes"],
+    "sourceIds": ["eval-agent-evals", "eval-pricing"]
+  },
+  {
+    "id": "ccarp-4.1-stage-metrics-not-system-proof",
+    "domain": 4, "objectiveId": "4.1",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A document assistant reports improved retrieval recall at a fixed candidate count. Its owner claims this proves both correctly supported answers and access-token isolation for its protected MCP 2026-07-28 resource. Which additional measurements directly test those two unproven claims? Select 2 answers.",
+    "answers": [
+      { "text": "Claim correctness and citation support on complete generated answers.", "explanation": "Retrieving relevant material does not ensure the generator uses it faithfully. Checking complete claims against their cited evidence tests answer fidelity at the output boundary." },
+      { "text": "Retrieval recall after increasing the number of candidate chunks.", "explanation": "A larger-candidate recall measurement remains a retrieval-stage metric. It establishes neither grounded generation nor rejection of tokens issued for a different resource." },
+      { "text": "Acceptance rate for attack requests carrying tokens issued for another resource.", "explanation": "MCP 2026-07-28 requires the server to reject tokens not intended for its resource. Testing such requests directly measures the claimed token-audience boundary." },
+      { "text": "The generator's confidence score for each answer and cited document.", "explanation": "Model confidence does not independently verify a claim or an access-token audience check. A confident answer can be unsupported, and authorization is enforced by the resource server." }
+    ],
+    "correctIndices": [0, 2],
+    "tags": ["metric-boundaries", "grounding", "token-audience"],
+    "sourceIds": ["int-contextual-retrieval", "int-mcp-security", "eval-hallucinations"]
+  },
+  {
+    "id": "ccarp-4.1-separate-utility-and-policy-denominators",
+    "domain": 4, "objectiveId": "4.1",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A maintenance agent may execute approved operations but must not execute unapproved destructive operations or read another tenant's records. Its evaluation set labels these three categories separately. The dashboard currently shows only an overall refusal rate. Which measurements distinguish useful service from the two prohibited behaviors? Select 3 answers.",
+    "answers": [
+      { "text": "Destructive-operation blocking rate calculated over all legitimate and adversarial evaluation cases.", "explanation": "The denominator includes cases that never requested destructive execution. Changes in ordinary traffic can move this rate without changing the approval boundary's effectiveness; use the relevant prohibited-action slice instead." },
+      { "text": "Successful completion rate within the approved-operation cases.", "explanation": "This denominator isolates work the agent is supposed to perform. It detects a system that appears safe only because it refuses legitimate operations." },
+      { "text": "Executed unsafe-action rate within the unapproved destructive-operation cases.", "explanation": "Inspecting action outcomes on the prohibited-action slice measures whether the approval boundary held. Refusal wording alone would not establish that no destructive tool effect occurred." },
+      { "text": "Successful unauthorized-read rate within the cross-tenant access attempts.", "explanation": "This measures the separate data-access boundary using the attack cases that exercise it. An agent can avoid destructive actions yet still expose another tenant's records." }
+    ],
+    "correctIndices": [1, 2, 3],
+    "tags": ["safety-metrics", "security-metrics", "evaluation-slices"],
+    "sourceIds": ["eval-agent-evals", "eval-criteria"]
+  }
+]
