@@ -1,5 +1,88 @@
 [
   {
+    "id": "eval-grouped-splits",
+    "name": "scikit-learn: Cross-validation, grouped data",
+    "url": "https://scikit-learn.org/stable/modules/cross_validation.html#cross-validation-iterators-for-grouped-data",
+    "section": "3.1.2.4 Cross-validation iterators for grouped data; test-set leakage introduction",
+    "accessedAt": "2026-10-27",
+    "version": "Official stable project user guide retrieved 2026-10-27",
+    "evidence": [
+      "Related samples violate independent-sample assumptions; group-wise evaluation keeps all samples from a held-out group outside its paired training partition.",
+      "Tuning against final test results leaks test knowledge into model selection, so final evaluation needs a protected test set.",
+      "Application inference: treat paraphrases of one incident as a group and exclude that entire incident family from prompt examples and other development data when measuring unseen-incident generalization."
+    ],
+    "caveats": ["Methodological source, not a requirement to add scikit-learn or use a universal split ratio."]
+  },
+  {
+    "id": "eval-cluster-randomization",
+    "name": "Microsoft ExP: Why Tenant-Randomized A/B Test is Challenging and Tenant-Pairing May Not Work",
+    "url": "https://www.microsoft.com/en-us/research/group/experimentation-platform-exp/articles/why-tenant-randomized-a-b-test-is-challenging-and-tenant-pairing-may-not-work/",
+    "section": "What is a tenant-randomized A/B test?; Variance Computation; Metric Power",
+    "accessedAt": "2026-10-27",
+    "version": "Li Jiang et al., published 2020-11-04; retrieved 2026-10-27",
+    "evidence": [
+      "[COI: Microsoft] Cluster assignment puts all users in a tenant in the same treatment arm when individual assignment conflicts with shared behavior or a consistent experience.",
+      "[COI: Microsoft] Assignment at tenant level changes sample size, variance, power, and analysis requirements; treating correlated users as independent can understate uncertainty.",
+      "Application inference: assign the complete workspace persistently when its shared memory is the stated treatment-interference boundary and workspaces do not share that state."
+    ],
+    "caveats": ["Primary practitioner account; the bank imports no vendor performance percentage or universal statistical recipe."]
+  },
+  {
+    "id": "eval-repeated-looks",
+    "name": "Microsoft ExP: Patterns of Trustworthy Experimentation, During-Experiment Stage",
+    "url": "https://www.microsoft.com/en-us/research/group/experimentation-platform-exp/articles/patterns-of-trustworthy-experimentation-during-experiment-stage/",
+    "section": "Measure Early and Often; Monitor Metrics to Intervene when Needed",
+    "accessedAt": "2026-10-27",
+    "version": "Widad Machmouchi, Somit Gupta and Ruhan Zhang, published 2021-01-25; retrieved 2026-10-27",
+    "evidence": [
+      "[COI: Microsoft] Repeated measurements during an experiment require methods that account for multiple testing and early peeking.",
+      "[COI: Microsoft] Monitoring can identify harmful regressions early, while declaring a benefit at the first favorable noisy look needs a valid analysis and stopping policy."
+    ],
+    "caveats": ["No universal experiment duration, significance cutoff, or assurance that one statistical test fits every metric."]
+  },
+  {
+    "id": "eval-longitudinal-outcomes",
+    "name": "Spotify Engineering: Bringing Sequential Testing to Experiments with Longitudinal Data, Part 1",
+    "url": "https://engineering.atspotify.com/2023/7/bringing-sequential-testing-to-experiments-with-longitudinal-data-part-1-the-peeking-problem-2-0",
+    "section": "Cohort-based metrics; the peeking problem 2.0",
+    "accessedAt": "2026-10-27",
+    "version": "Sebastian Ankargren, Mattias Frånberg and Mårten Schultzberg, published 2023-07-18; retrieved 2026-10-27",
+    "evidence": [
+      "[COI: Spotify] A fixed post-exposure cohort metric is defined only after a unit has its complete observation window; later entrants remain outside that mature analysis until their windows finish.",
+      "[COI: Spotify] Open-ended within-unit measurements and repeated looks introduce covariance and changing-estimand issues; sequential tests are not valid automatically for every data setting.",
+      "Application inference: retain pending cases distinctly from final seven-day failures and compare matched mature windows for the scenario's seven-day completion outcome."
+    ],
+    "caveats": ["Primary methodological/practitioner account; no claim that seven days is universally sufficient or statistically powered."]
+  },
+  {
+    "id": "eval-move-semantics",
+    "name": "GNU Coreutils: mv, Move (rename) files",
+    "url": "https://www.gnu.org/software/coreutils/manual/html_node/mv-invocation.html",
+    "section": "11.4 mv: Move (rename) files",
+    "accessedAt": "2026-10-27",
+    "version": "Official rolling GNU Coreutils manual retrieved 2026-10-27",
+    "evidence": [
+      "Moving normally renames a source; cross-filesystem fallback copies and, after successful copying, removes the original.",
+      "Application inference: destination content equality without original-source removal proves copying but not the scenario's complete move contract."
+    ],
+    "caveats": ["The question requires content and placement, not universal atomicity or preservation of unspecified metadata."]
+  },
+  {
+    "id": "eval-context-propagation",
+    "name": "OpenTelemetry: Context propagation",
+    "url": "https://opentelemetry.io/docs/concepts/context-propagation/",
+    "section": "Context; Propagation; Custom Context Propagation; Security best practices",
+    "accessedAt": "2026-10-27",
+    "version": "Official rolling OpenTelemetry project documentation retrieved 2026-10-27",
+    "evidence": [
+      "Context contains causal trace/span information; propagation serializes and transfers it across process and network boundaries.",
+      "Manual propagation injects context into a carrier on the sender and extracts it on the receiver, enabling the receiving instrumentation to preserve trace relationships.",
+      "Incoming untrusted context needs validation or sanitization, and sensitive information should not be placed in propagated baggage.",
+      "Application inference: for the trusted internal queue in the scenario, carry context in message metadata rather than infer causality from times or customer identities."
+    ],
+    "caveats": ["A context-propagation design is not proof that a particular queue integration propagates correctly; verify it in emitted traces."]
+  },
+  {
     "id": "int-client-loop",
     "name": "Anthropic: How tool use works",
     "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works",

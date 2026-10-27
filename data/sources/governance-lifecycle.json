@@ -362,6 +362,42 @@
     ]
   },
   {
+    "id": "gov-transaction-authorization",
+    "name": "OWASP Transaction Authorization Cheat Sheet",
+    "url": "https://cheatsheetseries.owasp.org/cheatsheets/Transaction_Authorization_Cheat_Sheet.html",
+    "section": "1.1; 1.5; 2.1; 2.5; 2.6; 2.8; 2.10",
+    "accessedAt": "2026-10-27",
+    "version": "Rolling OWASP Cheat Sheet Series retrieved 2026-10-27",
+    "evidence": [
+      "Section 1.1 binds user authorization to significant transaction data; Section 2.6 invalidates authorization or restarts approval when those data change.",
+      "Sections 2.1, 2.5 and 2.8 place enforcement server-side, preserve allowed state ordering, and require a final authorization gate tied to execution.",
+      "Section 1.5 requires accepting an authorization credential once, with an atomic unused-to-used transition in state shared by accepting servers; Section 2.10 requires per-operation uniqueness."
+    ],
+    "verification": "Full primary OWASP page fetched directly and relevant numbered sections read on 2026-10-27.",
+    "caveats": [
+      "Security design guidance, not proof that an application enforces it or a native Claude authorization feature.",
+      "Application inference: bind the reviewed payload and current authority to a durable execution claim, retain unresolved state, and do not infer safe replay from an audit log alone."
+    ]
+  },
+  {
+    "id": "gov-idempotent-retries",
+    "name": "Amazon Builders' Library: Making retries safe with idempotent APIs",
+    "url": "https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/",
+    "section": "Retrying and side effects; Reducing client complexity; Same client request ID, different intent",
+    "accessedAt": "2026-10-27",
+    "version": "Malcolm Featonby, primary practitioner article retrieved 2026-10-27",
+    "evidence": [
+      "[COI: AWS] A timeout can leave the caller unsure whether an operation committed; blindly retrying a non-idempotent operation can duplicate resources or other side effects.",
+      "[COI: AWS] The described idempotency contract records a caller-provided request identity and parameters, rejects changed intent under the same identity, and requires atomic durable recording with mutation.",
+      "[COI: AWS] Retention and late-arrival treatment are service-specific; some APIs supply this contract, not every API or SDK retry."
+    ],
+    "verification": "Full primary Amazon Builders' Library page fetched directly and relevant sections read on 2026-10-27.",
+    "caveats": [
+      "Vendor practitioner account, not a universal exactly-once guarantee or documentation of Claude tool effects.",
+      "Application inference: when the scenario supplies no idempotency or reliable lookup, hold uncertain sends for reconciliation rather than assuming a fresh approval makes replay safe."
+    ]
+  },
+  {
     "id": "life-google-production-handoff",
     "name": "Google SRE: The Evolving SRE Engagement Model",
     "url": "https://sre.google/sre-book/evolving-sre-engagement-model/",
