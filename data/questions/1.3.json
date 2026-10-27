@@ -1,0 +1,107 @@
+[
+  {
+    "id": "ccarp-1.3-model-routing-fixed-control",
+    "domain": 1, "objectiveId": "1.3",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "Claude classifies each facilities request as access, maintenance, or supplies. Application code then invokes the corresponding fixed handler and applies a predefined escalation rule. Claude does not choose additional steps. Which architectural description is most accurate?",
+    "answers": [
+      { "text": "An autonomous agent, because model categorization implies dynamic process control.", "explanation": "A model-produced classification does not give the model control over the subsequent process. The application still owns the allowed paths and transitions." },
+      { "text": "An orchestrator-worker system, because the three handler names identify distinct responsibilities within the application.", "explanation": "Named handlers do not establish dynamic task decomposition or autonomous workers. The scenario describes a fixed classification-to-handler mapping." },
+      { "text": "An evaluator-optimizer loop, because escalation can send unsuccessful requests to a different downstream handler.", "explanation": "Escalation is not iterative generation and revision based on an evaluator's feedback. The stated rule selects a predefined path." },
+      { "text": "A routing workflow, because application code controls predefined paths after model-based classification.", "explanation": "Routing can use an LLM to classify inputs while remaining a workflow. The decisive distinction is who controls the process, not whether every decision is deterministic." }
+    ],
+    "correct": 3,
+    "tags": ["routing", "workflow-control"],
+    "sourceIds": ["agents"]
+  },
+  {
+    "id": "ccarp-1.3-evidence-augmented-response",
+    "domain": 1, "objectiveId": "1.3",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A museum assistant answers questions about collection records. The application retrieves the relevant catalog entries before one Claude response. Tests show this meets the required answer quality and response time; there are no actions to perform or unresolved searches to pursue. Which pattern is justified by the current requirements?",
+    "answers": [
+      { "text": "A research agent that repeatedly selects catalog queries until it decides that no further search would improve the answer.", "explanation": "The evidence path already satisfies the tested task. A model-directed search loop adds latency and termination decisions without an identified capability gap." },
+      { "text": "An augmented LLM response using the retrieved catalog evidence, without an additional autonomous loop.", "explanation": "Retrieval can augment a single response without making the application an autonomous agent. The demonstrated requirements do not justify adding process autonomy." },
+      { "text": "An orchestrator that creates a new specialist for every retrieved catalog entry and combines their independently drafted responses.", "explanation": "A retrieved entry is not necessarily an independent task. Per-entry workers introduce synthesis and coordination costs without a stated need for separate investigations." },
+      { "text": "An evaluator-optimizer that repeatedly revises already-acceptable answers against the same catalog evidence.", "explanation": "Refinement needs measurable value and a stopping rule. Repeated revision of an already acceptable response is not supported by the scenario's quality or timing constraints." }
+    ],
+    "correct": 1,
+    "tags": ["augmented-llm", "retrieval", "pattern-selection"],
+    "sourceIds": ["agents"]
+  },
+  {
+    "id": "ccarp-1.3-adaptive-investigation-loop",
+    "domain": 1, "objectiveId": "1.3",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "An engineer investigates intermittent equipment failures using read-only telemetry tools. Each result determines which subsystem to inspect next, and the required sequence and number of lookups cannot be specified in advance. A sandbox trial demonstrates useful progress from tool feedback. Which control pattern best matches this task?",
+    "answers": [
+      { "text": "A single response from a fixed telemetry snapshot, with no further inspection after the first answer.", "explanation": "A fixed snapshot prevents the investigation from pursuing leads revealed by intermediate tool results. That removes a capability the task explicitly requires." },
+      { "text": "A fixed prompt chain that always queries the same subsystems in the same order before producing a report.", "explanation": "The required path is data-dependent and not known in advance. A fixed sequence cannot represent the stipulated adaptive investigation without changing its control model." },
+      { "text": "A bounded, model-directed tool loop that chooses inspections from environmental results and escalates when progress is blocked.", "explanation": "An agent can choose subsequent inspections from observed results when the path cannot be hardcoded. Budgets and escalation constrain the open-ended process." },
+      { "text": "A parallel voting workflow in which several responses independently diagnose the same initial telemetry snapshot.", "explanation": "Voting adds perspectives on the initial evidence but does not collect the new subsystem evidence needed as the investigation unfolds." }
+    ],
+    "correct": 2,
+    "tags": ["agentic-control", "adaptive-tool-use", "termination"],
+    "sourceIds": ["agents"]
+  },
+  {
+    "id": "ccarp-1.3-bounded-agent-within-workflow",
+    "domain": 1, "objectiveId": "1.3",
+    "difficulty": "intermediate", "type": "multiple",
+    "prompt": "An expense-audit process must always execute fixed eligibility checks and obtain employee approval before releasing a finding. Between those points, an investigator may need an unpredictable sequence of read-only searches to resolve discrepancies. Which design choices preserve both requirements? Select 2 answers.",
+    "answers": [
+      { "text": "Let the investigator decide whether fixed checks remain relevant after it has inspected the available evidence.", "explanation": "The eligibility checks are mandatory, not optional investigative steps. Giving the agent authority to omit them violates the prescribed outer process." },
+      { "text": "Keep mandatory checks and release approval as enforced transitions in the outer workflow.", "explanation": "Application-controlled transitions preserve the required order and authority regardless of how the investigation proceeds." },
+      { "text": "Use a bounded agent for discrepancy investigation inside that workflow, with a defined return contract.", "explanation": "A model-directed stage supplies adaptive search without transferring control of the entire business process. Its return contract allows the fixed workflow to resume predictably." },
+      { "text": "Replace employee approval with evaluator agreement whenever the investigation stays within its tool budget.", "explanation": "Budget compliance and model agreement do not satisfy a requirement for employee approval. They constrain different aspects of execution." }
+    ],
+    "correctIndices": [1, 2],
+    "tags": ["hybrid-architecture", "workflow-boundaries", "bounded-autonomy"],
+    "sourceIds": ["agents", "gov-official-safety-course"]
+  },
+  {
+    "id": "ccarp-1.3-runtime-subtask-discovery",
+    "domain": 1, "objectiveId": "1.3",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A due-diligence assistant discovers a target company's ownership structure before deciding which jurisdiction-specific investigations are necessary. New relationships can introduce additional investigations not known at intake. Narrow investigators can work independently after assignment, but their findings require a unified synthesis. Which pattern addresses this control requirement?",
+    "answers": [
+      { "text": "An orchestrator that identifies jurisdictions as ownership evidence arrives, delegates bounded investigations, and synthesizes the resulting findings.", "explanation": "Orchestrator-workers supports input-dependent decomposition rather than assuming a complete task list at intake. The central synthesis step integrates the independently gathered evidence." },
+      { "text": "A fixed parallel sectioning workflow whose complete jurisdiction task list is determined before inspecting ownership relationships.", "explanation": "Fixed sectioning assumes the subtasks are already known. The scenario requires discovery to create additional tasks from relationships found during execution." },
+      { "text": "A prompt chain that processes a predefined set of jurisdictions in order and stops after the last configured jurisdiction.", "explanation": "A predefined chain cannot cover newly discovered investigations outside its configured sequence. Sequential execution also discards the stated independence of assigned work." },
+      { "text": "A voting workflow in which every worker investigates the original target without receiving a distinct jurisdiction assignment.", "explanation": "Repeated attempts at the same broad task do not provide the requested division of discovered investigations and can duplicate work while leaving coverage gaps." }
+    ],
+    "correct": 0,
+    "tags": ["orchestrator-workers", "dynamic-decomposition", "pattern-selection"],
+    "sourceIds": ["agents", "multiagent"]
+  },
+  {
+    "id": "ccarp-1.3-framework-transparency-tradeoff",
+    "domain": 1, "objectiveId": "1.3",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A framework-based prototype performs a fixed three-call workflow correctly, but its abstractions hide rendered prompts, retries, and intermediate responses. The production requirement includes reconstructing failed executions. No framework-only capability is needed. Which actions are justified when selecting the production architecture? Select 2 answers.",
+    "answers": [
+      { "text": "Require access to the underlying prompts, responses, and execution transitions before accepting the framework.", "explanation": "Abstractions that obscure execution can defeat the stated reconstruction requirement. Understanding and exposing the underlying behavior is necessary even when final outputs look correct." },
+      { "text": "Treat the framework's final-answer log as sufficient evidence because the acceptance sample produced correct outputs.", "explanation": "A final answer does not reveal retries, intermediate failures, or the actual prompts. Passing a sample does not satisfy the separate execution-reconstruction requirement." },
+      { "text": "Add a supervisor agent that narrates what the hidden workflow probably did whenever an execution fails.", "explanation": "A generated account is not a trace of the actual hidden execution. Another agent cannot recover evidence that the runtime never exposed." },
+      { "text": "Compare a direct-API implementation of the fixed workflow against the same acceptance and operational requirements.", "explanation": "Direct calls may meet the task with fewer obscuring layers. Comparing equivalent requirements tests that alternative without assuming that all frameworks are unsuitable." }
+    ],
+    "correctIndices": [0, 3],
+    "tags": ["framework-selection", "execution-transparency", "architecture-complexity"],
+    "sourceIds": ["agents", "multiagent"]
+  },
+  {
+    "id": "ccarp-1.3-refinement-loop-fit",
+    "domain": 1, "objectiveId": "1.3",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A team proposes an evaluator-optimizer loop for investment briefings. Analysts currently disagree about what 'more useful' means, and pilot revisions often change style without improving acceptance. Extra iterations threaten the publication deadline. What evidence is needed before this pattern is a defensible choice?",
+    "answers": [
+      { "text": "A larger iteration allowance so the generator has enough opportunities to satisfy each analyst's unstated preferences.", "explanation": "More iterations do not resolve conflicting or undefined criteria. They increase deadline risk without establishing that feedback improves the required outcome." },
+      { "text": "Agreement between two evaluator instances using the current usefulness instruction, without checking analyst acceptance of their revisions.", "explanation": "Evaluator agreement can reproduce the same ambiguous interpretation. It does not show alignment with the business criterion or measurable improvement from revision." },
+      { "text": "An agreed evaluation rubric plus evidence that iterative feedback measurably improves accepted briefings within the publication deadline.", "explanation": "Evaluator-optimizer is a good fit when criteria are clear and iterative feedback improves results. Demonstrating that benefit within the operating constraint addresses the observed failure." },
+      { "text": "A more capable generator selected by a general benchmark, while retaining the existing evaluator and open-ended stopping rule.", "explanation": "General capability does not define usefulness or validate the feedback loop. The unresolved rubric and termination problems remain even if the generator changes." }
+    ],
+    "correct": 2,
+    "tags": ["evaluator-optimizer", "refinement-criteria", "pattern-fit"],
+    "sourceIds": ["agents", "prompt-overview"]
+  }
+]
