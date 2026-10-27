@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-5.4-training-versus-retention",
+    "domain": 5, "objectiveId": "5.4",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A supplier promises not to use a company's API content for model training without permission. The project team wants to describe the entire assistant as retaining no customer data, although it has not checked feature storage, third-party tools, or application logs. Which conclusion is justified?",
+    "answers": [
+      { "text": "Separate training use from retention; verify actual deployment terms, feature storage, third-party tools, and company logs before claiming zero storage.", "explanation": "A no-training commitment does not establish that content is never stored. Retention obligations and evidence must cover the actual data paths, including those outside the model provider." },
+      { "text": "The no-training promise establishes zero retention for prompts and responses, so only the company's application logs need further review.", "explanation": "Provider features can require storage without using the data for training. Excluding those paths would leave the proposed zero-retention claim unsupported." },
+      { "text": "A successful API response demonstrates that the request met every applicable retention arrangement, so additional feature-level verification is unnecessary.", "explanation": "Request acceptance is not an end-to-end retention attestation. Some arrangements and external integrations require checks that an ordinary API success does not perform." },
+      { "text": "Encrypted storage can be treated as nonretention, so the team may make the claim if every service promises encryption at rest.", "explanation": "Encryption protects stored data but does not make the storage disappear. Retention duration, access, deletion, and arrangement scope remain separate questions." }
+    ],
+    "correct": 0,
+    "tags": ["data-retention", "training-use", "deployment-scope"],
+    "sourceIds": ["gov-api-data-retention", "gov-commercial-retention"]
+  },
+  {
+    "id": "ccarp-5.4-pseudonymized-support-copies",
+    "domain": 5, "objectiveId": "5.4",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "An EU support system replaces customer names with random IDs but retains a lookup table. Related ticket excerpts appear in a vector index and debugging logs. The privacy owner has validated an erasure request, confirmed no applicable exception for these support copies, and approved an erasure procedure. What should the architect do?",
+    "answers": [
+      { "text": "Classify the renamed tickets and derived stores as anonymous because the model never sees the customer-name lookup table.", "explanation": "The system can still attribute the records to a person using additional information. Hiding the lookup from the model does not demonstrate anonymity of the processing." },
+      { "text": "Erase only the lookup-table row and consider all ticket text, searchable excerpts, and logs outside the request's scope.", "explanation": "Removing one mapping is not evidence that remaining content is no longer identifiable. The scenario's validated request covers the support copies and requires tracing them." },
+      { "text": "Treat the records as pseudonymized personal data, trace the source and derived copies, and apply the approved erasure process across the relevant stores.", "explanation": "Reattribution through the retained table keeps the data within the personal-data analysis. A data-flow inventory lets the team implement the validated request beyond the primary ticket database." },
+      { "text": "Retain the copies if the vector index and logging service are hosted in the EU, documenting their region as the erasure control.", "explanation": "EU hosting does not satisfy a validated erasure obligation. Location is distinct from purpose, storage limitation, and implementing the approved rights-handling process." }
+    ],
+    "correct": 2,
+    "tags": ["gdpr", "pseudonymization", "data-inventory", "erasure"],
+    "sourceIds": ["gov-gdpr-eurlex"]
+  },
+  {
+    "id": "ccarp-5.4-hipaa-feature-path-change",
+    "domain": 5, "objectiveId": "5.4",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A covered entity has a signed business associate agreement (BAA) and an approved electronic protected health information (ePHI) inference workflow in a specific HIPAA-enabled API organization. The team proposes persistent file handling and an external optical character recognition (OCR) service; neither has been assessed against the BAA or current risk analysis. A synthetic-data staging request succeeds. Which two checks are required before sending ePHI through the proposed path? Select 2 answers.",
+    "answers": [
+      { "text": "Verify the signed agreement, exact organization, deployment route, and feature coverage; keep ePHI off any path whose required coverage has not been established.", "explanation": "HIPAA readiness is scoped to an arrangement and eligible processing path, not simply a model name or successful request. Feature changes require checking the actual contractual and technical boundary." },
+      { "text": "Treat the staging success as confirmation that file storage and the external OCR service inherit the original BAA automatically.", "explanation": "The inference API cannot establish the contractual status and safeguards of every external service. Technical acceptance of synthetic data is not evidence of ePHI coverage." },
+      { "text": "Add zero data retention to the inference organization and treat that retention setting as extending the BAA to the new storage and OCR services.", "explanation": "A retention arrangement does not expand a BAA's feature or third-party scope. It also does not replace the safeguards and regulated relationships required for the changed workflow." },
+      { "text": "Map the OCR service, storage, logs, and recovery paths into the risk analysis, assigning applicable agreements, safeguard responsibilities, and evidence to their owners.", "explanation": "The full ePHI data path includes services and operational copies outside the model request. Each relevant relationship and safeguard must be assessed rather than inherited by assumption." }
+    ],
+    "correctIndices": [0, 3],
+    "tags": ["hipaa", "baa", "feature-eligibility", "third-party-processing"],
+    "sourceIds": ["gov-api-data-retention", "gov-hipaa-hhs-cloud"]
+  },
+  {
+    "id": "ccarp-5.4-encrypted-ephi-custodian",
+    "domain": 5, "objectiveId": "5.4",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A HIPAA-covered entity proposes using a cloud backup provider to maintain encrypted electronic protected health information (ePHI) on its behalf. The provider will not possess the decryption key. Under US Department of Health and Human Services (HHS) cloud guidance, which architectural requirement follows from this arrangement?",
+    "answers": [
+      { "text": "Limit review to encryption strength because a provider without the key is outside the business-associate relationship.", "explanation": "HHS includes providers maintaining ePHI on behalf of a covered entity even when they cannot decrypt it. Key separation does not remove that relationship or its safeguards." },
+      { "text": "Use an applicable business associate agreement and assess the provider's security duties, including availability and recovery.", "explanation": "Maintaining encrypted ePHI can create the business-associate relationship. An agreement and risk management remain necessary, and encryption alone does not address integrity, availability, or administrative safeguards." },
+      { "text": "Require an HHS Office for Civil Rights product-certification badge and use that badge in place of the covered entity's own risk analysis.", "explanation": "The HHS Office for Civil Rights does not endorse or certify particular products. A supposed product badge cannot replace the entity's assessment of its actual data path and responsibilities." },
+      { "text": "Treat the encrypted backup as de-identified information and document the key holder as the only party with HIPAA responsibilities.", "explanation": "Encryption is not the same as de-identification under HIPAA. The provider's role maintaining ePHI and the shared safeguard responsibilities still require assessment." }
+    ],
+    "correct": 1,
+    "tags": ["hipaa", "encrypted-data", "business-associate", "shared-responsibility"],
+    "sourceIds": ["gov-hipaa-hhs-cloud"]
+  },
+  {
+    "id": "ccarp-5.4-federal-internal-search-boundary",
+    "domain": 5, "objectiveId": "5.4",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "On 2026-10-26, an agency explicitly chooses early adoption of the FedRAMP Consolidated Rules for 2026 for a proposed deployment. A public-document search prototype would become a shared cloud search service over nonpublic agency records. The supplier provides certification evidence for one cloud service offering. What should the agency do before production?",
+    "answers": [
+      { "text": "Use the supplier's model brand as the authorization boundary and apply the supplied evidence to any hosting route using that model.", "explanation": "FedRAMP evidence concerns a specific cloud service offering, not every deployment of a model. Different routes and integrations can fall outside the documented boundary." },
+      { "text": "Carry forward the public-search scope decision and add record-level access controls, since the user-facing search function is unchanged.", "explanation": "Processing nonpublic agency information changes the use-case analysis. Access controls are necessary but do not establish scope, boundary coverage, or agency risk acceptance." },
+      { "text": "Copy the supplier's certification package into the agency system record and treat it as covering agency identity, logging, and integration controls.", "explanation": "Reusable provider evidence does not document controls operated by the agency or its custom integrations. The agency still authorizes its own information system and accepts its use-specific risk." },
+      { "text": "Reassess scope, confirm the exact offering and boundary, review inherited and agency-operated controls, and complete the agency's system authorization for this use.", "explanation": "The changed information and integration context require an agency-specific decision using scoped provider evidence. The stated early-adoption choice avoids assuming the 2026 rules were already universally mandatory on this date." }
+    ],
+    "correct": 3,
+    "tags": ["fedramp", "authorization-boundary", "agency-risk-acceptance", "transition-scope"],
+    "sourceIds": ["gov-fedramp-agency-use", "gov-fedramp-scope", "gov-fedramp-timeline"]
+  },
+  {
+    "id": "ccarp-5.4-gdpr-significant-decision-gates",
+    "domain": 5, "objectiveId": "5.4",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "An EU controller proposes decisions based solely on automated processing with similarly significant effects on applicants. Privacy counsel has determined that a prior data protection impact assessment (DPIA) is required under Article 35, and no Article 22 exception has been established. A processor agreement is already signed. Which two unresolved governance gates must the launch plan address? Select 2 answers.",
+    "answers": [
+      { "text": "Use the processor agreement as evidence that both the automated-decision restriction and the controller's impact-assessment obligation are satisfied.", "explanation": "Processor terms address a different obligation. They do not establish an Article 22 exception or replace the controller's required prior DPIA." },
+      { "text": "Complete the required DPIA before processing, documenting the effects on rights, proposed safeguards, unresolved risks, and accountable privacy decisions.", "explanation": "The scenario explicitly establishes the prior-assessment requirement. A launch gate needs evidence of that assessment and risk treatment rather than a promise to perform it after deployment." },
+      { "text": "Obtain privacy approval of an applicable Article 22 path and safeguards, or redesign the decision workflow before it is authorized to operate.", "explanation": "Article 22 is scoped and has exceptions, but none is established here. The team must resolve that applicability and safeguard question rather than infer permission from the processor contract." },
+      { "text": "Add an AI-use notice and an optional post-decision survey, then classify the decisions as no longer solely automated.", "explanation": "Notice and feedback do not themselves introduce meaningful human decision-making or establish an exception. They also do not fulfill the separately required prior impact assessment." }
+    ],
+    "correctIndices": [1, 2],
+    "tags": ["gdpr", "dpia", "automated-decisions", "compliance-evidence"],
+    "sourceIds": ["gov-gdpr-eurlex", "gov-nist-rmf-core"]
+  }
+]

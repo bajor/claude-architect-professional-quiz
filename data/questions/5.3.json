@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-5.3-consequence-based-routing",
+    "domain": 5, "objectiveId": "5.3",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "An assistant generates editable email subject-line drafts and can also request permanent project deletion. Evaluated drafts are eligible for sampled review; company policy requires the project owner's approval before every permanent deletion. Which routing strategy meets these rules without adding mandatory review to eligible drafts?",
+    "answers": [
+      { "text": "Sample both task types after completion, increasing the deletion sample if users report a mistake.", "explanation": "Post-action sampling cannot prevent a permanent deletion that requires prior owner approval. Consequences and policy distinguish the two task types." },
+      { "text": "Sample eligible drafts and hold each deletion for the qualified owner's explicit approval before execution.", "explanation": "This uses the permitted lower-cost review strategy for reversible drafts while preserving mandatory approval for irreversible actions. Model confidence does not waive the deletion requirement." },
+      { "text": "Review every subject-line draft before delivery and review deletions only when the assistant reports uncertainty.", "explanation": "This adds review where it is not mandatory while leaving confident deletion requests outside a required control. Generated certainty is not an exception to the policy." },
+      { "text": "Use the same uncertainty threshold for both tasks and automatically release any output above that threshold.", "explanation": "A common threshold ignores differences in reversibility and explicit approval obligations. Even an accurately calibrated signal cannot override the stated deletion rule." }
+    ],
+    "correct": 1,
+    "tags": ["human-in-the-loop", "risk-routing", "reversibility"],
+    "sourceIds": ["gov-official-safety-course", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-5.3-reviewer-evidence-authority",
+    "domain": 5, "objectiveId": "5.3",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A qualified operations reviewer must validate an assistant's proposed inventory correction before it changes the ledger. The approval screen shows only the assistant's explanation, and reviewers cannot inspect source records or reject the proposed correction. Which redesign most directly makes this human control effective?",
+    "answers": [
+      { "text": "Show a longer model-generated justification and require the reviewer to confirm that the explanation is internally consistent.", "explanation": "An internally consistent explanation can still misstate the source records. More generated text does not provide independent evidence or authority to prevent the correction." },
+      { "text": "Add the assistant's confidence score and require the reviewer to acknowledge it before the existing approval button activates.", "explanation": "Acknowledging confidence does not validate the ledger change. The reviewer would still lack source access and the ability to reject a wrong action." },
+      { "text": "Provide source-record links after execution and let the reviewer file a correction request if the posted change appears wrong.", "explanation": "This changes a required pre-execution validation into post-action remediation. The ledger would already have changed before evidence-based review could stop it." },
+      { "text": "Provide source records and the proposed change, with authority to reject, correct, or escalate before execution.", "explanation": "The reviewer receives evidence for the exact action and authority to change its outcome. Both are necessary for validation rather than acknowledgement of the model's recommendation." }
+    ],
+    "correct": 3,
+    "tags": ["reviewer-evidence", "review-authority", "pre-execution-review"],
+    "sourceIds": ["gov-nist-rmf-core", "gov-official-safety-course", "gov-nist-genai-profile"]
+  },
+  {
+    "id": "ccarp-5.3-approval-queue-overload",
+    "domain": 5, "objectiveId": "5.3",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A workflow receives 90 requests per hour requiring qualified human approval, but its active reviewers can process only 30. A trained reserve can add 80 per hour. Policy forbids execution without approval, permits deferral, and requires notice when the 15-minute service target cannot be met. Which two responses preserve meaningful review under this overload? Select 2 answers.",
+    "answers": [
+      { "text": "Bound admitted work, keep unreviewed actions pending or safely deferred, and notify users when review will miss the service target.", "explanation": "Admission and pending-state controls prevent the growing queue from becoming an implicit bypass. Communication handles the service miss without redefining unreviewed work as approved." },
+      { "text": "Automatically execute requests waiting more than 15 minutes, marking their review records for next-day retrospective approval.", "explanation": "A timeout is not a qualified decision, and retrospective review cannot satisfy approval before execution. This protects a latency metric by violating the mandatory control." },
+      { "text": "Activate the qualified reserve with the same evidence, rejection authority, and escalation process, then monitor capacity and review quality.", "explanation": "Additional qualified capacity can exceed the stated arrival rate without weakening the review contract. Maintaining evidence and authority avoids replacing review with untrained throughput." },
+      { "text": "Treat historical reviewer agreement as advance approval for the highest-confidence requests until the active queue falls below capacity.", "explanation": "Past agreement does not constitute a decision on each request that requires approval. This silently substitutes a model score for the mandated human control during peak demand." }
+    ],
+    "correctIndices": [0, 2],
+    "tags": ["review-capacity", "queue-safety", "human-in-the-loop", "service-targets"],
+    "sourceIds": ["gov-official-safety-course", "gov-nist-rmf-core", "gov-nist-playbook-govern"]
+  },
+  {
+    "id": "ccarp-5.3-automation-bias-interception",
+    "domain": 5, "objectiveId": "5.3",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "In a controlled reviewer evaluation with adjudicated cases, experienced reviewers repeatedly approve incorrect AI recommendations despite contradictory source evidence. The interface prominently displays the AI recommendation first. Management wants evidence that reviewers intercept errors, not merely that they click approval quickly. Which redesign and evaluation best address the observed failure?",
+    "answers": [
+      { "text": "Test evidence-first assessment before showing the recommendation; measure accepted errors, justified overrides, and time.", "explanation": "Testing an independent initial assessment targets anchoring on the recommendation; outcome-based measurements establish whether it improves error interception for these reviewers. Review speed alone is not the control's objective." },
+      { "text": "Display a larger model-confidence badge and measure whether reviewers' decisions align more closely with the recommendation.", "explanation": "Prominent confidence can increase deference to the system, including when it is wrong. Agreement with the recommendation is not evidence of detecting its errors." },
+      { "text": "Require a written rationale supporting the AI recommendation before approval, and measure completion of the rationale field.", "explanation": "Requiring support for a predetermined conclusion encourages rationalization instead of independent checking. Field completion does not show that reviewers rejected incorrect recommendations." },
+      { "text": "Rank reviewers by approval throughput and give the fastest reviewers the largest share of high-consequence cases.", "explanation": "Throughput incentives can reward superficial acceptance and worsen automation bias. Speed does not establish competence at detecting consequential mistakes." }
+    ],
+    "correct": 0,
+    "tags": ["automation-bias", "independent-review", "review-effectiveness"],
+    "sourceIds": ["gov-nist-genai-profile", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-5.3-calibrated-routing-signal",
+    "domain": 5, "objectiveId": "5.3",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A team wants to bypass optional review for low-consequence drafts whenever the assistant writes 'confidence: 0.97'. No relationship between that number and correctness has been measured. High-consequence actions already have mandatory review. What should happen before using confidence to route the optional-review cases?",
+    "answers": [
+      { "text": "Interpret 0.97 as a 97% probability of correctness because the value is expressed on a zero-to-one scale.", "explanation": "The numeric format does not establish calibration. A generated probability-like value can accompany confidently incorrect content." },
+      { "text": "Ask the assistant to explain its score and bypass review whenever the explanation contains a source citation.", "explanation": "The score explanation and citation can themselves be unsupported. Neither demonstrates an empirical relationship between the signal and task correctness." },
+      { "text": "Evaluate the routing signal on representative adjudicated tasks, including error severity and scope limits, while retaining mandatory-review rules.", "explanation": "Representative labeled outcomes can establish whether the signal supports a useful routing decision for the stated task. Calibration evidence does not create an exception to separate mandatory controls." },
+      { "text": "Reuse a published confidence threshold from another application and monitor user complaints after automatic release begins.", "explanation": "Calibration and error consequences depend on the task and deployment distribution. Another application's cutoff and delayed complaints do not validate this signal before use." }
+    ],
+    "correct": 2,
+    "tags": ["confidence-calibration", "review-routing", "uncertainty"],
+    "sourceIds": ["gov-nist-genai-profile", "gov-official-safety-course", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-5.3-action-specific-approval",
+    "domain": 5, "objectiveId": "5.3",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A reviewer approves moving 12 specified records from workspace A to B. The action may wait in a queue or be retried; a bug can change the destination to C. Policy permits only the exact reviewed operation, requires current reviewer authority at execution, and permits it to execute at most once. Which three controls implement this approval contract? Select 3 answers.",
+    "answers": [
+      { "text": "Cache approval for the move-records tool name so retries can change the record set or destination without a second decision.", "explanation": "Tool-level approval does not identify the operation the human reviewed. It would authorize the unreviewed move to C and other record sets." },
+      { "text": "Bind the approval to the immutable record set, source, destination, and displayed evidence; require new review for a changed payload.", "explanation": "Action-specific binding preserves the scope of the actual human decision. A changed destination cannot reuse evidence and consent for the original move." },
+      { "text": "Revalidate the reviewer's current authority immediately before execution, holding the operation if that authority has been revoked.", "explanation": "Queue delay can separate approval from the policy's required current authority. Checking at execution prevents a cached decision from bypassing revocation." },
+      { "text": "Atomically claim the approved identity in durable shared state before dispatch; hold uncertain retries and retain decision, payload, and outcome records.", "explanation": "The atomic unused-to-claimed transition prevents concurrent executors from replaying one approval; an audit log alone does not. Holding uncertain dispatches avoids assuming that a timeout means no effect. These are application-owned controls, not a native Claude approval guarantee." }
+    ],
+    "correctIndices": [1, 2, 3],
+    "tags": ["approval-scope", "review-authority", "replay-prevention", "audit-evidence"],
+    "sourceIds": ["gov-transaction-authorization", "gov-idempotent-retries", "gov-official-safety-course", "gov-nist-rmf-core"]
+  }
+]
