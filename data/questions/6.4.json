@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-6.4-document-request-and-control-flow",
+    "domain": 6, "objectiveId": "6.4",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A water utility's Claude assistant reads maintenance manuals and can request a work order through an application-controlled tool. A new engineer must locate the approval check before work-order creation and understand where manuals, prompts, and results travel. Which documentation most directly meets that need?",
+    "answers": [
+      { "text": "Request, data, and control-flow views showing dependencies, storage, trust boundaries, and the approval point before the write.", "explanation": "These views expose both the information path and the application control that must authorize the consequential tool action." },
+      { "text": "A component inventory listing the model, document store, and work-order system, with product descriptions and purchasing contacts.", "explanation": "An inventory names components but does not show their interactions or where approval is enforced on the write path." },
+      { "text": "An example conversation that successfully creates a work order, accompanied by the assistant's explanation of why it considered the action appropriate.", "explanation": "A successful example and generated explanation do not establish the actual data flow or the location of enforceable approval." },
+      { "text": "A database schema and work-order field dictionary, with the application control flow left for engineers to infer from the source code.", "explanation": "Field definitions do not document the request sequence or approval boundary the engineer specifically needs to locate." }
+    ],
+    "correct": 0,
+    "tags": ["architecture-documentation", "data-flow", "control-flow"],
+    "sourceIds": ["life-google-slos", "gov-nist-playbook-govern", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-6.4-reproducible-implementation-package",
+    "domain": 6, "objectiveId": "6.4",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A receiving team must reproduce an accepted Claude warranty-analysis pilot in staging. The handoff contains the application repository and screenshots, but prompts are loaded from a mutable shared folder, the retrieval collection is unnamed, and the tool's accepted interface version is missing. What implementation guidance should be added before claiming the accepted system is reproducible?",
+    "answers": [
+      { "text": "A larger set of approved answer screenshots and a note that the receiving team may use whichever prompts and retrieval collection are newest.", "explanation": "Screenshots describe outputs, not the component versions that produced them; choosing current components can create a different system." },
+      { "text": "The model identifier and an API connectivity check, treating prompt content, retrieval data, and tool compatibility as environment-specific tuning.", "explanation": "Connectivity and a model identifier omit dependencies that determine behavior and compatibility in the accepted pilot." },
+      { "text": "A written promise from the pilot team to answer staging questions, with the missing dependency details collected only if reproduction fails.", "explanation": "Access to the original developers is not a reproducible implementation package and leaves predictable setup dependencies undocumented." },
+      { "text": "A release manifest pinning prompts, model configuration, retrieval snapshot, and tool contract, with setup steps and linked acceptance evidence.", "explanation": "The manifest and instructions identify the accepted configuration and provide a concrete path to deploy and verify that configuration." }
+    ],
+    "correct": 3,
+    "tags": ["implementation-guidance", "release-manifest", "reproducibility"],
+    "sourceIds": ["gov-nist-playbook-govern", "life-google-production-handoff", "gov-nist-genai-profile"]
+  },
+  {
+    "id": "ccarp-6.4-receiving-team-exercise",
+    "domain": 6, "objectiveId": "6.4",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A team taking over a Claude scheduling assistant has read the design and incident runbooks. During rehearsal, its on-call engineer cannot access the alert details or invoke the documented fallback using team credentials. The handoff agreement requires independent operation, not just document delivery. What is the appropriate acceptance action?",
+    "answers": [
+      { "text": "Accept the handoff once every engineer acknowledges reading the runbooks, keeping access repair as a normal post-transfer service request.", "explanation": "Reading acknowledgment does not satisfy independent operation when the receiving team's actual access prevents the documented response." },
+      { "text": "Fix the access and guidance gaps, repeat the receiving-team exercise, and transfer responsibility progressively with temporary developer backup.", "explanation": "A repeated hands-on exercise demonstrates the required capability, while progressive transfer and backup reduce transition risk." },
+      { "text": "Have the original architect demonstrate the fallback again and accept that successful demonstration as evidence of receiving-team readiness.", "explanation": "The architect's access and skill do not establish that the receiving team can operate the service with its own credentials." },
+      { "text": "Remove the alert-detail and fallback steps from the runbook so the documented procedure matches what the receiving team can currently do.", "explanation": "Deleting unavailable but necessary response steps hides the readiness gap instead of providing the agreed operating capability." }
+    ],
+    "correct": 1,
+    "tags": ["operational-handoff", "readiness-exercise", "receiving-team"],
+    "sourceIds": ["life-google-production-handoff", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-6.4-control-evidence-crosswalk",
+    "domain": 6, "objectiveId": "6.4",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A claims-correspondence assistant has three approved controls: case-level authorization before retrieval, supervisor approval before sending letters, and an owned stop path if authorization cannot be verified. The implementation guide labels one box 'AI security' and links to a provider overview. Integrators cannot determine which application component enforces each control or how to test a denial. Which replacement guidance is sufficient for this gap?",
+    "answers": [
+      { "text": "Expand the provider overview with model safety features and state that the application inherits those features for retrieval, sending, and authorization outages.", "explanation": "Provider safety descriptions do not identify the application's case authorization, supervisor approval, or failure-path enforcement." },
+      { "text": "Place the three controls in the system prompt and attach successful conversation transcripts as the implementation evidence for each requirement.", "explanation": "Prompt instructions and happy-path transcripts do not document enforceable application gates or show that denials stop the controlled action." },
+      { "text": "Map each requirement to its request-path enforcement point, responsible team, denial behavior, integration contract, and verifying acceptance test.", "explanation": "This connects the approved controls to implementable boundaries and evidence, including the required failure behavior and ownership." },
+      { "text": "Assign the application team ownership of the security box and keep its control interfaces undocumented so integrators cannot depend on internal details.", "explanation": "Ownership alone leaves integrators unable to implement and verify the required boundaries; relevant control contracts are part of the guidance." }
+    ],
+    "correct": 2,
+    "tags": ["control-documentation", "requirement-evidence", "implementation-contracts"],
+    "sourceIds": ["gov-nist-playbook-govern", "gov-nist-rmf-core", "life-official-prep-path"]
+  },
+  {
+    "id": "ccarp-6.4-compatible-rollback-runbook",
+    "domain": 6, "objectiveId": "6.4",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "Release 12 of a Claude service changes its tool response schema and retrieval metadata format; release 11 cannot read either new format. A receiving team's rollback runbook says only to redeploy the previous application image. The last accepted release-11 data snapshot and tool version remain available, and a safe manual fallback is approved. What guidance should replace the incomplete rollback step?",
+    "answers": [
+      { "text": "Document and rehearse restoring a compatible accepted application, prompt, tool, and retrieval bundle, with verification, named authority, and fallback if restoration fails.", "explanation": "The known incompatibilities require restoring and validating the relevant dependencies, not just the application image, under an owned recovery procedure." },
+      { "text": "Restore the previous application and prompt while retaining the newest retrieval data and tool service, then monitor users for compatibility complaints.", "explanation": "The scenario states that release 11 cannot read the newer formats, so this combination predictably fails before user monitoring can validate it." },
+      { "text": "Switch to the previous model identifier and leave the application, tool schema, and retrieval metadata unchanged to minimize rollback work.", "explanation": "Changing only the model does not restore the previous accepted application behavior or address the documented dependency incompatibilities." },
+      { "text": "Redeploy the previous image and temporarily disable response validation, using the current data and tool responses until the incident is resolved.", "explanation": "Disabling validation does not make incompatible formats readable and removes a check precisely when recovery needs verified compatibility." }
+    ],
+    "correct": 0,
+    "tags": ["rollback-runbook", "dependency-compatibility", "operational-guidance"],
+    "sourceIds": ["life-google-production-handoff", "gov-nist-playbook-govern", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-6.4-documentation-change-ownership",
+    "domain": 6, "objectiveId": "6.4",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "Three teams independently maintain a reservations assistant's prompt package, booking tool, and document corpus. Quarterly architecture slides now contradict the tool's approval flow and the corpus's deletion procedure. The release policy requires current control and recovery guidance before any affected change reaches production. Which documentation practices directly satisfy that policy without making the original architect a permanent coordinator? Select 2 answers.",
+    "answers": [
+      { "text": "Keep quarterly slide updates as the canonical architecture record and require on-call engineers to resolve any intervening differences from production logs.", "explanation": "Quarterly snapshots knowingly leave release-time control and recovery guidance stale, moving the documentation gap into incident response." },
+      { "text": "Assign canonical flow and runbook sections to component owners, and require affected sections and their reviewers to be updated in the change gate.", "explanation": "Named ownership and release-coupled review keep the relevant implementation guidance current when the components actually change." },
+      { "text": "Link all sections to each team's latest documentation without recording release associations, relying on independent edits to remain compatible automatically.", "explanation": "Unversioned latest links cannot establish which independently changing instructions describe the released approval and deletion behavior." },
+      { "text": "Associate approved documentation and evidence with each deployed release, preserving prior versions and checking cross-team control contracts before promotion.", "explanation": "Release associations and contract checks establish which guidance applies, support recovery, and expose inconsistent assumptions before deployment." }
+    ],
+    "correctIndices": [1, 3],
+    "tags": ["documentation-maintenance", "change-ownership", "release-gates"],
+    "sourceIds": ["gov-nist-playbook-govern", "life-google-production-handoff"]
+  }
+]

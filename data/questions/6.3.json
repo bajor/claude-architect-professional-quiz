@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-6.3-service-commitment-definitions",
+    "domain": 6, "objectiveId": "6.3",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A returns assistant measures 97% of eligible requests receiving a complete response within eight seconds over a rolling 28-day window. Its internal target is 99%. A customer agreement separately defines the promised service and notification and credit obligations when it is missed. Which description correctly distinguishes these artifacts?",
+    "answers": [
+      { "text": "The measured 97% is the service level objective; the 99% target is the service level agreement; notification and credits are service level indicators.", "explanation": "A measured service result is an indicator, while a target is an objective and agreement consequences belong to the agreement." },
+      { "text": "The measured 97% is the service level agreement; the 99% target is the service level indicator; the customer agreement is an internal service level objective.", "explanation": "This reverses measurement, target, and agreement; a dashboard result is not itself a customer agreement." },
+      { "text": "The measured ratio is a service level indicator, the 99% target is a service level objective, and the customer agreement is a service level agreement.", "explanation": "An SLI measures service behavior, an SLO sets its target, and an SLA specifies the agreed commitment and associated obligations." },
+      { "text": "The 97% result and 99% target are both service level agreements; notification and credits make the customer document a service level indicator.", "explanation": "Metrics and targets do not become agreements merely by being reported, and contractual remedies are not measurements of service behavior." }
+    ],
+    "correct": 2,
+    "tags": ["sli", "slo", "sla", "expectation-alignment"],
+    "sourceIds": ["life-google-slos", "life-official-stakeholder-course", "gov-hipaa-hhs-cloud"]
+  },
+  {
+    "id": "ccarp-6.3-breach-response-authority",
+    "domain": 6, "objectiveId": "6.3",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A freight assistant misses its agreed monthly availability commitment after a retrieval outage. The signed service agreement requires notification within one hour and activation of an owned manual fallback. The approved error-budget policy suspends feature releases while reliability is restored. The retrieval provider's own dashboard remains green. What should the service owner do first?",
+    "answers": [
+      { "text": "Wait for the retrieval provider to acknowledge an outage, then begin the notification clock and determine whether the customer agreement applies.", "explanation": "The application's measured breach and signed response obligations do not depend on the provider accepting responsibility." },
+      { "text": "Issue the monthly availability report on schedule and preserve current releases because a published miss is sufficient evidence that the team responded.", "explanation": "A report does not fulfill the explicit notification, fallback, and release-policy actions required by the agreement." },
+      { "text": "Temporarily lower the internal availability objective to match observed performance, then ask the customer whether notification is still necessary this month.", "explanation": "Changing an internal objective cannot retroactively remove an existing customer commitment or its already-triggered response obligations." },
+      { "text": "Notify on time, activate the fallback, and enforce the reliability policy while investigating the failed dependency.", "explanation": "This executes the agreed owned response immediately while allowing causal investigation to continue separately." }
+    ],
+    "correct": 3,
+    "tags": ["sla-breach", "error-budget-policy", "service-ownership"],
+    "sourceIds": ["life-official-stakeholder-course", "life-google-slos"]
+  },
+  {
+    "id": "ccarp-6.3-conflicting-user-feedback",
+    "domain": 6, "objectiveId": "6.3",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A Claude research-digest pilot receives requests from junior analysts for shorter summaries and reports from senior reviewers that important contradictory evidence is missing. Both groups use the same digest to prepare recommendations. No safety incident is alleged, and the product owner can approve changes only after the agreed evidence-completeness rubric passes. How should the architect organize this feedback?",
+    "answers": [
+      { "text": "Apply the most frequently requested shortening change and use the next satisfaction survey, rather than the evidence rubric, to decide acceptance.", "explanation": "Feedback frequency does not establish task completeness and cannot replace the product owner's existing acceptance gate." },
+      { "text": "Adjudicate examples with both groups and the product owner, turn confirmed omissions into evaluation cases, and report the decision back to users.", "explanation": "This resolves competing preferences against the actual task requirement and makes feedback actionable, testable, and accountable." },
+      { "text": "Create permanently separate prompts immediately, allowing each group to accept its own outputs without checking the shared recommendation workflow.", "explanation": "Separate prompts may eventually help, but immediate independent acceptance can preserve omissions in the common workflow without satisfying the rubric." },
+      { "text": "Ask developers to choose a middle summary length and close both requests once the average output matches that compromise.", "explanation": "An intermediate length does not demonstrate that contradictory evidence is retained or that the authorized acceptance process has been followed." }
+    ],
+    "correct": 1,
+    "tags": ["feedback-adjudication", "acceptance-gates", "stakeholder-alignment"],
+    "sourceIds": ["gov-nist-rmf-core", "life-success-evaluations"]
+  },
+  {
+    "id": "ccarp-6.3-green-gateway-empty-results",
+    "domain": 6, "objectiveId": "6.3",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A parts-identification assistant's dashboard reports 99.9% success because its indicator counts HTTP 200 responses from the model gateway. Workshops report empty final results when a later inventory lookup fails. The agreed user journey ends only when a usable parts list is displayed. The product owner wants to preserve the existing reports for audit and resolve the discrepancy before expanding usage. What is the best next action?",
+    "answers": [
+      { "text": "Tighten the gateway's HTTP success target and retain its current measurement boundary so the existing audit series remains directly comparable.", "explanation": "A stricter target on the same incomplete boundary still cannot detect the downstream lookup failures users experience." },
+      { "text": "Increase the model's response budget and ask workshops to retry empty results, using reduced complaint volume as evidence the agreement is being met.", "explanation": "Neither change establishes whether downstream failures are measured or whether users receive the agreed usable result." },
+      { "text": "Correlate complaints with the complete request path, add a usable-result indicator, and obtain approval for a versioned measurement change while preserving history.", "explanation": "This tests the known coverage gap and aligns measurement with the agreed journey without rewriting historical evidence." },
+      { "text": "Reclassify inventory failures as external to the service and close the discrepancy because the component represented on the dashboard is healthy.", "explanation": "The agreed service boundary includes the displayed parts list, so excluding the inventory dependency contradicts the user-facing commitment." }
+    ],
+    "correct": 2,
+    "tags": ["sli-coverage", "user-journeys", "feedback-discrepancy"],
+    "sourceIds": ["life-google-slos", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-6.3-feedback-export-boundary",
+    "domain": 6, "objectiveId": "6.3",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "An internal bid-analysis assistant processes confidential supplier offers under an approved inference arrangement. A proposed thumbs-down button would send the full conversation to a vendor feedback endpoint. The organization requires separate approval for any new external data flow, and that feedback path has not been assessed. The product team still needs reproducible reports of wrong comparisons. Which actions preserve a useful feedback loop within these constraints? Select 2 answers.",
+    "answers": [
+      { "text": "Map the feedback destination, data, retention, and access terms; require the appropriate data owner's approval before enabling external submission.", "explanation": "Feedback can follow a different retention and processing path from inference, so the new external flow needs its own assessment and authorization." },
+      { "text": "Enable full-conversation export because an approved inference arrangement necessarily covers feedback submitted about responses from the same model.", "explanation": "Approval of the inference path does not automatically extend to a separate feedback endpoint or its retention terms." },
+      { "text": "Automatically replace supplier names with stable aliases and treat the complete exported offers as approved because direct identifiers are absent.", "explanation": "Aliasing does not remove confidential pricing and terms or satisfy the explicit requirement for separate external-flow approval." },
+      { "text": "Use an access-controlled internal issue queue with permitted reproduction evidence and an adjudication owner while external export remains disabled.", "explanation": "Internal, authorized evidence collection supports triage and correction without making the unapproved external disclosure a prerequisite for feedback." }
+    ],
+    "correctIndices": [0, 3],
+    "tags": ["feedback-data-flow", "confidentiality", "feedback-ownership"],
+    "sourceIds": ["gov-commercial-retention", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-6.3-language-expansion-gates",
+    "domain": 6, "objectiveId": "6.3",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A port-incident briefing pilot has a signed expansion gate: at least 97% usable briefs in each supported language and no unresolved severity-one feedback, meaning a confirmed omission capable of misdirecting incident response. The overall rate is 99%, one language is at 92%, and a verified severity-one omission remains open. Availability meets its separate service level agreement (SLA). Which actions follow the agreed stakeholder process? Select 2 answers.",
+    "answers": [
+      { "text": "Approve expansion using the overall usable-brief rate because the separate availability SLA establishes that the service is operating within its commitments.", "explanation": "Aggregate quality and availability do not satisfy the explicit per-language quality gate or close the unresolved severity-one omission." },
+      { "text": "Hold expansion and inform the accountable approver that both the language-specific quality condition and the unresolved-feedback condition have failed.", "explanation": "The agreement makes these independent expansion conditions; a green availability metric cannot offset either failure." },
+      { "text": "Assign the omission to domain and product owners, add the adjudicated case to acceptance checks, and communicate evidence required for closure.", "explanation": "Owned adjudication, testable remediation, and clear closure evidence connect the confirmed feedback to the existing acceptance gate." },
+      { "text": "Replace the language-specific gate with the observed aggregate rate for this release, recording the language issue as a future optimization opportunity.", "explanation": "Retroactively substituting an easier metric bypasses the signed expansion conditions instead of resolving or formally renegotiating them." }
+    ],
+    "correctIndices": [1, 2],
+    "tags": ["governance-checkpoints", "feedback-closure", "expectation-alignment"],
+    "sourceIds": ["gov-nist-rmf-core", "life-success-evaluations", "life-official-stakeholder-course"]
+  }
+]
