@@ -1,0 +1,107 @@
+[
+  {
+    "id": "ccarp-5.1-access-grant-boundary",
+    "domain": 5, "objectiveId": "5.1",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "An internal assistant proposes repository-access grants. Company policy permits grants only when the requesting manager currently owns that repository. Input and output content screens are already enabled. Where should the application enforce the ownership requirement?",
+    "answers": [
+      { "text": "During input screening, by classifying whether the request sounds like an authorized manager's request.", "explanation": "A content classifier cannot establish current repository ownership from the wording of a request. Its verdict does not enforce the access policy at the action boundary." },
+      { "text": "At the grant boundary, check the authenticated manager's current ownership against authoritative repository records.", "explanation": "The execution boundary can compare the actual caller and target against current ownership records before creating access. Content screening remains a separate control." },
+      { "text": "During output screening, by checking that the assistant's grant confirmation names a manager and repository.", "explanation": "A plausible confirmation does not prove the manager owns the repository. Screening a confirmation also cannot prevent an already executed unauthorized grant." },
+      { "text": "During model generation, by requiring the assistant to include an ownership-verified field with each proposed grant.", "explanation": "A generated field is an assertion rather than an ownership lookup. Trusting it would let the model supply the evidence used to authorize its own action." }
+    ],
+    "correct": 1,
+    "tags": ["guardrails", "execution-boundary", "authorization"],
+    "sourceIds": ["gov-official-safety-course", "gov-prompt-injection"]
+  },
+  {
+    "id": "ccarp-5.1-screening-unavailable-state",
+    "domain": 5, "objectiveId": "5.1",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "An outbound-message service requires a positive screening verdict for each exact message before dispatch. A screen sometimes times out, refuses to classify, or returns malformed data. Policy allows delayed delivery and continued local drafting, but no unscreened dispatch. Which failure behavior meets the policy?",
+    "answers": [
+      { "text": "Reuse the last positive verdict from the conversation and dispatch while recording the screening error.", "explanation": "The previous verdict covers different content and cannot satisfy the per-message requirement. Logging the error does not make the new dispatch screened." },
+      { "text": "Remove attachments and dispatch the remaining text, then screen that text when the service recovers.", "explanation": "The remaining text is still an exact message without a positive verdict. Removing one content channel does not authorize another unscreened dispatch." },
+      { "text": "Retry screening twice and dispatch if both retries fail, so a transient outage cannot block delivery indefinitely.", "explanation": "Retry exhaustion describes availability, not safety approval. The policy permits delay, so a retry limit cannot turn an unknown verdict into permission." },
+      { "text": "Keep drafting available but delivery pending until this exact message receives a usable positive screening verdict.", "explanation": "Pending delivery fails closed without pretending the request disappeared. Local drafting can continue because it does not perform the prohibited unscreened dispatch." }
+    ],
+    "correct": 3,
+    "tags": ["fail-closed", "screening", "failure-handling"],
+    "sourceIds": ["gov-official-safety-course", "gov-prompt-injection"]
+  },
+  {
+    "id": "ccarp-5.1-untrusted-report-exfiltration",
+    "domain": 5, "objectiveId": "5.1",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A user authorizes summarizing a supplier report into a local draft, with no network uploads. The report arrives in a tool result and contains instructions to upload a private roadmap to an external verification URL. The assistant currently has broad file and HTTP tools. Which two changes directly address instruction provenance and the unauthorized-transmission path? Select 2 answers.",
+    "answers": [
+      { "text": "Preserve the report's third-party provenance in a tool-result data wrapper and instruct the model not to treat its embedded directives as user authorization.", "explanation": "This maintains the distinction between the user's task and untrusted report content. It reduces instruction confusion, but is not by itself a security boundary." },
+      { "text": "Promote the report's verification instructions into a trusted message after checking that the supplier's HTTPS certificate is valid.", "explanation": "Transport authenticity does not establish authority to change the user's task. A valid supplier endpoint can still carry malicious or unauthorized instructions." },
+      { "text": "Give the job access only to its report and draft, and block outbound uploads in the execution environment independently of generated tool arguments.", "explanation": "Least-privilege file access limits exposed information, while enforced egress restrictions prevent the prohibited transmission even if the model follows the injected text." },
+      { "text": "Retain the broad tools and inspect the final summary for private roadmap text before making the local draft visible.", "explanation": "The roadmap could be uploaded through a tool without appearing in the final summary. Final-output inspection occurs on the wrong channel and too late to stop that disclosure." }
+    ],
+    "correctIndices": [0, 2],
+    "tags": ["prompt-injection", "untrusted-tool-results", "data-exfiltration", "least-privilege"],
+    "sourceIds": ["gov-prompt-injection", "gov-nist-genai-profile"]
+  },
+  {
+    "id": "ccarp-5.1-screen-before-stream-release",
+    "domain": 5, "objectiveId": "5.1",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A support assistant streams responses to a browser. A mandatory output control must inspect the complete response for confidential identifiers before any response text is visible to the user. The complete-response screen runs only after generation finishes. Which delivery design satisfies this policy?",
+    "answers": [
+      { "text": "Buffer generated text on the server, obtain the complete-response verdict, then release approved text or an approved fallback.", "explanation": "The release boundary occurs after the required verdict, so the browser never receives unapproved response text. Buffering accepts the latency cost imposed by the stated policy." },
+      { "text": "Stream immediately and replace the browser contents with a safe fallback when the complete-response screen detects a confidential identifier.", "explanation": "Replacing displayed content cannot undo an identifier already seen or copied. The first release would occur before the mandatory complete-response check." },
+      { "text": "Screen each token independently and display it immediately, while retaining the full-response screen as a final check.", "explanation": "Token-local verdicts do not satisfy a policy requiring a verdict on the complete response. Confidential identifiers can also be recognizable only across multiple tokens." },
+      { "text": "Stream to the browser but disable copying and saving until the completed response receives a positive screening verdict.", "explanation": "Browser interface restrictions do not prevent users from seeing or capturing streamed text. Visibility itself is prohibited before the complete-response verdict." }
+    ],
+    "correct": 0,
+    "tags": ["output-screening", "streaming", "control-placement"],
+    "sourceIds": ["gov-official-safety-course", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-5.1-quote-business-invariants",
+    "domain": 5, "objectiveId": "5.1",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A quote-drafting assistant produces parseable JSON with numeric prices and discounts. Some drafts nevertheless combine discounts in ways forbidden by the company's authoritative pricing rules. A separate content screen already checks abusive language. What should be added before a quote is published?",
+    "answers": [
+      { "text": "A second JSON parser that rejects nonnumeric prices and confirms all required quote fields are present.", "explanation": "Parsing and field presence do not evaluate relationships between valid numeric values. The reported failures already pass those structural checks." },
+      { "text": "An additional model-based content screen trained to classify whether a quote appears commercially reasonable.", "explanation": "A reasonableness classifier is not the authoritative discount calculation. The policy defines exact business rules that can be checked directly rather than inferred from appearance." },
+      { "text": "Recalculate allowed discounts and block quotes that fail the authoritative pricing rules before publication.", "explanation": "The pricing rules provide a precise application-level invariant independent of fluent output or valid JSON. Checking before publication prevents an invalid quote from becoming a customer commitment." },
+      { "text": "A post-publication reconciliation job that flags inconsistent discounts for the sales team to amend.", "explanation": "Reconciliation can detect an incident but permits a forbidden quote to be published first. It does not meet the requested pre-publication control requirement." }
+    ],
+    "correct": 2,
+    "tags": ["deterministic-controls", "business-validation", "output-validation"],
+    "sourceIds": ["gov-official-safety-course", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-5.1-parser-containment",
+    "domain": 5, "objectiveId": "5.1",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A document assistant must parse arbitrary supplier attachments with a native parser. Security policy assumes a malicious attachment might exploit that parser: even then, the parse job must not read host credentials or contact the network. Only extracted text is needed. Which containment design best meets this threat model?",
+    "answers": [
+      { "text": "Run parsing in a rootless worker that mounts the application home directory read-only and shares the application's network access.", "explanation": "Read-only mounting still permits credential disclosure, and rootless execution does not remove network access. Both resources remain reachable after a parser exploit." },
+      { "text": "Run parsing on a separate worker with read-only production credentials and restrict network requests to authenticated HTTPS connections.", "explanation": "Read-only credentials are still secrets, and authenticated HTTPS can still carry exfiltrated data. A separate host does not satisfy the explicit resource restrictions." },
+      { "text": "Run parsing in the trusted application process, then screen and sanitize the extracted text before it enters the model context.", "explanation": "Text screening occurs after the native parser has processed the attachment. It cannot contain code execution that already occurred in the credential-bearing application process." },
+      { "text": "Run parsing in a disposable isolated sandbox with only the attachment mounted, no host secrets, blocked network access, and resource limits.", "explanation": "The execution environment denies the resources the attacker seeks even if the parser is compromised. Resource limits also contain excessive work without depending on a model's judgment of the attachment." }
+    ],
+    "correct": 3,
+    "tags": ["sandboxing", "least-privilege", "untrusted-input"],
+    "sourceIds": ["gov-prompt-injection", "gov-nist-genai-profile"]
+  },
+  {
+    "id": "ccarp-5.1-defense-in-depth-assurance",
+    "domain": 5, "objectiveId": "5.1",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "An adversarial test bypasses an assistant's model-based injection screen. Release policy still requires that out-of-scope actions never execute, missing mandatory verdicts block execution, and protected test data cannot leave through tools. Which three verification activities directly test these remaining controls? Use synthetic secrets and isolated test destinations. Select 3 answers.",
+    "answers": [
+      { "text": "Increase the number of benign refusal examples and use an improved average refusal rate as proof that the remaining controls hold.", "explanation": "A refusal-rate average measures model behavior, not enforcement of action scope, unavailable-verdict handling, or tool egress restrictions. It cannot establish these independent control properties." },
+      { "text": "Submit out-of-scope proposed actions directly to the execution gateway and verify rejection even when the model-based screen reports approval.", "explanation": "This isolates the action boundary from the fallible screen and tests whether unauthorized proposals can reach the underlying operation." },
+      { "text": "Inject timeouts, refusals, and malformed mandatory screening results and verify that affected operations remain pending or are denied.", "explanation": "Fault injection tests the actual fail-closed behavior for absent usable verdicts. A normal-path success test would not exercise these states." },
+      { "text": "Place exfiltration instructions in retrieved tool data and trace attempted file reads and network calls against the enforced job restrictions.", "explanation": "End-to-end adversarial tool data exercises the indirect-injection path while tracing whether resource and egress controls prevent disclosure despite model behavior." }
+    ],
+    "correctIndices": [1, 2, 3],
+    "tags": ["defense-in-depth", "adversarial-testing", "fail-closed", "data-exfiltration"],
+    "sourceIds": ["gov-prompt-injection", "gov-official-safety-course", "gov-nist-rmf-core"]
+  }
+]

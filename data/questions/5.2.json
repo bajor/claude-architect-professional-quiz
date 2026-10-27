@@ -1,0 +1,107 @@
+[
+  {
+    "id": "ccarp-5.2-fabricated-citation-check",
+    "domain": 5, "objectiveId": "5.2",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "An assistant gives a confident answer about a maintenance procedure, including a publication title, page number, and quoted instruction. The operator cannot find that quotation in the named publication. Which response best addresses the failure mode before anyone relies on the instruction?",
+    "answers": [
+      { "text": "Accept the instruction if the assistant supplies a longer explanation linking the quotation to the requested task.", "explanation": "Generated explanatory logic can be fabricated along with a citation. More detail does not establish that the instruction appears in an authoritative procedure." },
+      { "text": "Ask the same assistant to repeat the answer and accept it if the citation and page number remain consistent.", "explanation": "Repeated generation can reproduce the same unsupported claim. Consistency is not independent evidence that the quoted instruction exists." },
+      { "text": "Verify the instruction in the authoritative publication and withhold it if its quotation cannot be substantiated.", "explanation": "Confabulation can include invented citations and quotations presented confidently. Source validation and abstention prevent presentation quality from substituting for evidence." },
+      { "text": "Accept the quotation but label it AI-generated so the operator can decide how much weight to give its confident wording.", "explanation": "A disclosure does not validate a potentially false procedural instruction. The unresolved evidence gap remains before the operator relies on it." }
+    ],
+    "correct": 2,
+    "tags": ["confabulation", "citations", "evidence-validation"],
+    "sourceIds": ["gov-nist-genai-profile", "gov-hallucinations"]
+  },
+  {
+    "id": "ccarp-5.2-shared-stale-corpus",
+    "domain": 5, "objectiveId": "5.2",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "Three differently prompted review agents agree that a component may be shipped. All three cite the same indexed specification. An engineer reports that the specification changed last week, but the index's ingestion date is unknown. What is the strongest next step before treating agent agreement as assurance?",
+    "answers": [
+      { "text": "Retrieve the current specification, check index provenance, and reevaluate shipment against the verified version.", "explanation": "The agents share a potentially stale evidence dependency, so agreement can reflect a common-mode failure. Checking the authoritative version directly addresses that dependency." },
+      { "text": "Add two more reviewers with the same index and require a larger majority before accepting the shipment claim.", "explanation": "More reviewers do not remove the shared stale-source dependency. A larger vote can make the same unsupported conclusion appear more reliable." },
+      { "text": "Change the reviewers to different models while keeping the indexed specification fixed, then accept unanimous agreement.", "explanation": "Model diversity does not repair a common evidence error. All reviewers can correctly summarize an obsolete specification and still reach the wrong shipment decision." },
+      { "text": "Ask each reviewer to explain independently why last week's change would not affect its previous conclusion.", "explanation": "Without obtaining the changed source, the reviewers lack the evidence needed to assess its effect. Independently written explanations can still rely on the same obsolete information." }
+    ],
+    "correct": 0,
+    "tags": ["common-mode-failure", "source-provenance", "stale-data"],
+    "sourceIds": ["gov-nist-genai-profile", "gov-nist-rmf-core", "gov-hallucinations"]
+  },
+  {
+    "id": "ccarp-5.2-accountable-residual-risk",
+    "domain": 5, "objectiveId": "5.2",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A launch risk register lists failure modes, affected users, severity, and proposed mitigations. It does not identify who verifies controls, accepts unresolved exposure, or stops the service. Which two additions most directly close these accountability gaps? Select 2 answers.",
+    "answers": [
+      { "text": "Assign each control a responsible owner, required verification evidence, monitoring trigger, and escalation path with resources to act.", "explanation": "Named ownership linked to evidence and triggers makes control operation and failure response actionable. A mitigation description alone does not establish who maintains its effectiveness." },
+      { "text": "Assign the documentation coordinator to collect weekly updates, leaving release and shutdown decisions to whoever attends the status meeting.", "explanation": "Collecting information is useful but does not allocate decision authority. Availability at a meeting is not a defined responsibility for accepting risk or stopping the system." },
+      { "text": "Archive the model provider's safety report and treat its publication approval as acceptance of this application's remaining deployment risks.", "explanation": "A provider report is evidence about a component, not the application's decision consequences and configuration. Its publication approval cannot replace the deployer's risk-acceptance authority." },
+      { "text": "Name the accountable residual-risk approver and the operational role empowered to suspend the service under documented stop conditions.", "explanation": "Risk acceptance and operational deactivation are distinct responsibilities that must be allocated explicitly. Documented authority allows unacceptable outcomes to trigger action rather than another report." }
+    ],
+    "correctIndices": [0, 3],
+    "tags": ["risk-ownership", "residual-risk", "shutdown-authority"],
+    "sourceIds": ["gov-nist-rmf-core", "gov-nist-playbook-govern"]
+  },
+  {
+    "id": "ccarp-5.2-partial-grounding-limit",
+    "domain": 5, "objectiveId": "5.2",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A retrieval-augmented assistant recommends a repair procedure. Its citation supports the component's identity but says nothing about the recommended operating temperature. Company policy permits procedural recommendations only when every safety-critical parameter is supported by approved documentation. Which behavior best handles this evidence gap?",
+    "answers": [
+      { "text": "Publish the recommendation because the cited document is genuine and identifies the correct component family.", "explanation": "A genuine source can support one claim while leaving another unsupported. Document existence does not establish the safety-critical temperature parameter." },
+      { "text": "Withhold the procedure pending approved evidence for its temperature, or escalate the unresolved parameter.", "explanation": "Claim-level support is required by the policy, so partial grounding cannot authorize the procedure. Abstention preserves the distinction between verified identity and an unverified operating condition." },
+      { "text": "Generate several temperatures and use the median, retaining the original component citation beside the result.", "explanation": "Aggregation of generated values creates no approved documentary support. Reusing the identity citation would misleadingly imply evidence for the temperature." },
+      { "text": "Publish the recommendation with a disclaimer that retrieved documents may not contain every implementation detail.", "explanation": "A disclaimer acknowledges the gap but does not satisfy the explicit support requirement. The unsupported safety-critical parameter would still be recommended." }
+    ],
+    "correct": 1,
+    "tags": ["grounding-limitations", "claim-verification", "abstention"],
+    "sourceIds": ["gov-hallucinations", "gov-nist-genai-profile"]
+  },
+  {
+    "id": "ccarp-5.2-inaccurate-private-inference",
+    "domain": 5, "objectiveId": "5.2",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A workforce assistant infers employees' personal financial distress from attendance notes and saves those labels in manager-facing profiles. Several labels are demonstrably false. Company policy permits attendance summarization but forbids private-attribute profiling from these notes. The team argues there is no privacy risk because financial details were never supplied. What is the best risk response?",
+    "answers": [
+      { "text": "Treat the issue only as extraction accuracy, since a private attribute cannot be exposed unless it existed in the input records.", "explanation": "Generated inferences can create sensitive claims about people even when the claims are absent from the source or inaccurate. Their storage and disclosure introduce risks beyond extraction quality." },
+      { "text": "Retain the labels but require a higher model-reported confidence before displaying them to managers.", "explanation": "A generated confidence value neither validates the private inference nor permits a use prohibited by policy. High-confidence false labels could still reach consequential profiles." },
+      { "text": "Remove employee names from the labels while keeping them linked to employee IDs for use in manager-facing profiles.", "explanation": "The linkage still associates the inferred attribute with an identifiable employee. Renaming the identifier does not remove the profiling or downstream exposure." },
+      { "text": "Stop private profiling and remediate affected labels, including already distributed copies and downstream decisions.", "explanation": "Sensitive inference and inaccurate attribution are recognized risks even without true private facts in the input. The response addresses both the forbidden purpose and harm from already distributed labels." }
+    ],
+    "correct": 3,
+    "tags": ["privacy-risk", "sensitive-inference", "purpose-limitation"],
+    "sourceIds": ["gov-nist-genai-profile", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-5.2-draft-to-commitment-scope",
+    "domain": 5, "objectiveId": "5.2",
+    "difficulty": "intermediate", "type": "multiple",
+    "prompt": "A procurement assistant was assessed for drafting nonbinding comparison notes that buyers check before use. A proposal would let the same model issue supplier commitments automatically. Its prompt-quality score is unchanged. Which two updates are necessary before the original risk assessment can be considered applicable to the proposal? Select 2 answers.",
+    "answers": [
+      { "text": "Carry forward the draft-workflow risk acceptance because the underlying model and its prompt-quality score have not changed.", "explanation": "The intended use and consequences of errors have changed even if generation quality has not. Risk acceptance for checked drafts does not automatically cover autonomous commitments." },
+      { "text": "Reassess intended use, affected parties, reversibility, and the monetary and nonmonetary costs of erroneous commitments.", "explanation": "Moving from advice to binding action changes the context and impact of the same output. These changes are necessary inputs to a contextual risk assessment." },
+      { "text": "Evaluate controls and failure responses for the new action path, and obtain accountable acceptance of its remaining risk.", "explanation": "The former buyer check may no longer control errors before they take effect. The proposal needs evidence for its own controls and an authorized decision about unresolved exposure." },
+      { "text": "Replace the former review step with a user notice describing automation, then treat acknowledgement as verification of commitment accuracy.", "explanation": "Acknowledging a notice does not validate the supplier, terms, or action. Disclosure cannot substitute for controls or a risk decision about the changed operating scope." }
+    ],
+    "correctIndices": [1, 2],
+    "tags": ["intended-use", "scope-change", "consequence-analysis"],
+    "sourceIds": ["gov-nist-rmf-core", "gov-official-safety-course"]
+  },
+  {
+    "id": "ccarp-5.2-rare-harm-evidence-gap",
+    "domain": 5, "objectiveId": "5.2",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A file-management agent has made no unauthorized deletions in 400 routine pilot tasks. Production would include millions of tasks, unfamiliar archive formats, and irreversible deletion. The risk owner requires assurance for those conditions before enabling deletion, but no archive adversarial tests or recovery evidence exist. Which launch conclusion is justified?",
+    "answers": [
+      { "text": "The pilot demonstrates zero residual deletion risk, so production monitoring can replace further prelaunch assurance.", "explanation": "No observed incidents in a bounded routine sample does not establish absence of rare failures or reliability on untested formats. Monitoring also acts after an irreversible loss." },
+      { "text": "An unchanged average task-success score is sufficient, provided any unauthorized deletion is counted as one ordinary failed task.", "explanation": "A pooled success rate can conceal a severe failure mode among many harmless successes. It does not supply the condition-specific assurance required by the risk owner." },
+      { "text": "Document the unmeasured exposure, keep irreversible deletion disabled, and obtain the required control and evaluation evidence before risk acceptance.", "explanation": "The evidence does not cover the production conditions or consequences named in the acceptance requirement. Constraining the capability prevents an evidence gap from being treated as a passed risk gate." },
+      { "text": "Launch with a low numerical risk score derived from zero pilot incidents, assigning untested archive formats the same score.", "explanation": "Extending the observed rate to materially untested conditions creates unsupported precision. A score cannot replace the missing evidence or the owner's acceptance requirement." }
+    ],
+    "correct": 2,
+    "tags": ["rare-failures", "uncertainty", "risk-acceptance", "irreversible-actions"],
+    "sourceIds": ["gov-nist-rmf-core", "gov-nist-genai-profile"]
+  }
+]
