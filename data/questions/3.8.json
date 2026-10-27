@@ -1,0 +1,77 @@
+[
+  {
+    "id": "ccarp-3.8-small-always-needed-toolset",
+    "domain": 3, "objectiveId": "3.8",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "An inspection assistant has four compact tools, and every supported task needs all four. Tool selection is accurate and definition tokens are negligible. A proposed progressive-discovery design would require a search before those same tools become available. Which starting configuration is best justified by these facts?",
+    "answers": [
+      { "text": "Load the four definitions directly and introduce discovery only if measured catalog growth or selection problems justify it.", "explanation": "Direct loading is simple when the compact toolset is always relevant. Discovery would add a step without avoiding meaningful unused definition context in this workload." },
+      { "text": "Require discovery for every tool because on-demand loading always reduces total completion latency.", "explanation": "Discovery adds a search step before invocation. When all definitions are small and always needed, there is no established latency benefit to offset that step." },
+      { "text": "Split the same four tools into vendor-specific deferred groups that are discovered separately.", "explanation": "All four tools are needed for every task, so grouping does not avoid loading irrelevant capabilities. Separate discovery steps add overhead to an already small and accurate configuration." },
+      { "text": "Replace the four tools with one autonomous dispatcher that selects and invokes them through another model turn.", "explanation": "Another model-selected dispatcher adds orchestration to an already accurate, compact toolset. No catalog or selection problem in the scenario calls for that additional layer." }
+    ],
+    "correct": 0,
+    "tags": ["progressive-discovery", "tool-context", "latency"],
+    "sourceIds": ["int-tool-search", "int-advanced-tools"]
+  },
+  {
+    "id": "ccarp-3.8-core-plus-deferred-catalog",
+    "domain": 3, "objectiveId": "3.8",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A Claude Messages API 2023-06-01 application uses tool_search_tool_bm25_20251119 on a supported model. Every task uses one compact case-status tool, but only a few of the other authorized specialist tools. Loading the full catalog consumes substantial initial model context. Which configuration best balances discovery overhead and context use?",
+    "answers": [
+      { "text": "Defer the case-status tool as well as every specialist tool so all tasks begin with the same discovery step.", "explanation": "This can reduce upfront definitions but imposes search latency for an operation every task needs. Keeping the compact common operation available directly avoids that unnecessary step." },
+      { "text": "Leave every definition loaded and rely on prompt caching to remove unused definitions from the context window.", "explanation": "Caching reuses prefix processing but does not remove tokens from model context. It does not provide the relevance selection needed for the large, mostly unused catalog." },
+      { "text": "Set defer_loading on the search tool itself so no tool definitions enter initial context.", "explanation": "The documented search tool must remain non-deferred so the model has a way to discover other tools. Deferring the discovery entry point breaks that configuration." },
+      { "text": "Keep search and the common case-status tool non-deferred, and defer the authorized specialist definitions.", "explanation": "The common operation remains immediately callable while rare definitions enter model context only when discovered. Deferral changes loading strategy, not the application's authorization obligations." }
+    ],
+    "correct": 3,
+    "tags": ["progressive-discovery", "hybrid-tool-loading", "defer-loading"],
+    "sourceIds": ["int-tool-search", "eval-cache"]
+  },
+  {
+    "id": "ccarp-3.8-standard-search-request-and-execution",
+    "domain": 3, "objectiveId": "3.8",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "An application uses the documented standard server-side tool_search_tool_bm25_20251119 pattern with Claude Messages API 2023-06-01. Its catalog contains deferred application-executed tools, and no custom external catalog service is involved. Which requirements remain true after progressive discovery is enabled? Select 2 answers.",
+    "answers": [
+      { "text": "Return a client tool_result for the search's server_tool_use ID before running any discovered business tool.", "explanation": "Built-in tool search runs server-side and returns its own search-result block. The application must not invent a client result for that server-side search ID." },
+      { "text": "Supply every deferred tool's complete definition in the tools array on every request in this standard pattern.", "explanation": "defer_loading controls what initially enters model context, not whether definitions are sent to the API. The API needs the catalog to search and expand tool_reference blocks." },
+      { "text": "Execute a discovered client tool when its tool_use arrives, then continue with its matching tool_result and preserved assistant content.", "explanation": "Discovery supplies the definition but does not execute the application's operation. Ordinary client-tool execution, result correlation, and conversation continuation still apply." },
+      { "text": "Omit discovered definitions from later requests because their expanded references are a durable server-side catalog registration.", "explanation": "Inline references do not replace the standard request's required definitions. The API expands references using the tools supplied in each request, not a durable implicit catalog registration." }
+    ],
+    "correctIndices": [1, 2],
+    "tags": ["progressive-discovery", "tool-search", "api-payload", "client-tool-loop"],
+    "sourceIds": ["int-tool-search", "int-client-results"]
+  },
+  {
+    "id": "ccarp-3.8-discovery-and-prefix-cache-boundaries",
+    "domain": 3, "objectiveId": "3.8",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A team using tool_search_tool_bm25_20251119 with Claude Messages API 2023-06-01 has a stable catalog and cacheable instruction prefix. An engineer recommends loading all definitions initially, claiming that discovery must rewrite the prefix and destroy its cache reuse. Most definitions are irrelevant to each task. Which assessment matches the documented mechanism?",
+    "answers": [
+      { "text": "The engineer is right because every discovered definition replaces the initial tools prefix before the next model turn.", "explanation": "The documented design excludes deferred tools from the initial prefix and adds discovered references inline. Discovery therefore does not inherently replace that stable prefix." },
+      { "text": "Discovery adds references inline without mutating the initial prefix, so it can complement prefix caching while reducing initial definition context.", "explanation": "The API expands discovered references inline rather than rewriting the prefix. Caching and discovery address different costs, and their net latency and quality should still be measured on the workload." },
+      { "text": "Loading every definition is equivalent to discovery after a cache hit because cached definitions no longer occupy context.", "explanation": "Cache reuse changes prompt processing and accounting, not whether cached text occupies model context. It does not remove irrelevant definitions from a monolithic loaded catalog." },
+      { "text": "Reorder the loaded tool definitions by recent invocation frequency on every request to maximize identical-prefix cache reuse.", "explanation": "Changing prefix order changes its content and can undermine exact-prefix cache matching. Recency-based reordering is not the mechanism that preserves a stable cacheable prefix." }
+    ],
+    "correct": 1,
+    "tags": ["progressive-discovery", "prompt-caching", "context-management"],
+    "sourceIds": ["int-tool-search", "eval-cache"]
+  },
+  {
+    "id": "ccarp-3.8-discoverability-before-model-upgrade",
+    "domain": 3, "objectiveId": "3.8",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "With tool_search_tool_bm25_20251119 on Claude Messages API 2023-06-01, users ask for freight-delay forecasts, but discovery returns no matching tool. The authorized tool exists as ops_17 with description 'fetch data' and similarly generic argument descriptions. When its definition is loaded explicitly, tool execution and task quality pass. Which change most directly fixes progressive discovery without loading the full catalog?",
+    "answers": [
+      { "text": "Upgrade the answer model while retaining the same generic names and descriptions in the searchable catalog.", "explanation": "Explicitly loaded execution already passes the task-quality test. A model upgrade does not directly repair the missing domain terms in the catalog fields used for discovery." },
+      { "text": "Increase the search result limit while leaving names and descriptions without freight-related terms.", "explanation": "A larger result limit can expose more matching candidates but does not add the missing vocabulary to this definition. Correcting the searchable fields targets the observed discovery gap directly." },
+      { "text": "Add precise operation names and domain terms to searchable descriptions, then test discovery on representative freight queries.", "explanation": "Tool search covers names, descriptions, and argument names and descriptions. Adding accurate freight-delay terminology addresses the observed vocabulary gap, while discovery tests verify that the tool becomes findable." },
+      { "text": "Add an example forecast only to the tool's runtime result while leaving all searchable definition fields generic.", "explanation": "A runtime result appears only after the tool has been selected and executed. It cannot help the search stage discover a definition that is currently missing from its results." }
+    ],
+    "correct": 2,
+    "tags": ["progressive-discovery", "tool-descriptions", "discovery-recall"],
+    "sourceIds": ["int-tool-search", "int-advanced-tools"]
+  }
+]
