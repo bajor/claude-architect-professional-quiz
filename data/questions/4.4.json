@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-4.4-required-answer-causes-unsupported-date",
+    "domain": 4, "objectiveId": "4.4",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "An assistant invents a product retirement date. Its retrieved authoritative notice explicitly says that no date has been announced, while the prompt requires a calendar date for every answer and provides no unknown-value rule. Which first change most directly addresses the observed failure?",
+    "answers": [
+      { "text": "Increase retrieval depth while keeping the mandatory-date instruction unchanged.", "explanation": "The authoritative evidence is already present and explicitly states that the date is unknown. More retrieved text does not resolve an instruction that demands an unsupported date." },
+      { "text": "Allow an unknown result and require claims to match the supplied notice.", "explanation": "The prompt currently pressures the assistant to fill a value absent from the evidence. Allowing uncertainty and requiring source support directly addresses that conflict, although the revised behavior still needs evaluation." },
+      { "text": "Add a calendar parser that rejects dates with an invalid format.", "explanation": "A fabricated retirement date can be perfectly valid calendar syntax. Format validation does not establish that an announcement supports the value." },
+      { "text": "Use a larger model while retaining the requirement to always supply a date.", "explanation": "Changing the model leaves the contradictory output requirement intact. The observed evidence supports correcting the prompt before attributing the failure to model capacity." }
+    ],
+    "correct": 1,
+    "tags": ["prompt-failure", "hallucinations", "uncertainty"],
+    "sourceIds": ["eval-hallucinations", "eval-agent-evals"]
+  },
+  {
+    "id": "ccarp-4.4-stale-grader-reference",
+    "domain": 4, "objectiveId": "4.4",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "After a test-fixture upgrade, an agent's stock answer changes from 5 to 12 and the exact-value grader fails it. The captured fixture, tool result, and task requirement all establish 12 as the available count; the grader still compares with a hardcoded 5 from the earlier fixture. Which correction should be tested before changing the agent?",
+    "answers": [
+      { "text": "Add a demonstration returning 5 so the agent's output again agrees with the existing exact-value grader.", "explanation": "That would optimize the agent for an obsolete answer rather than the current task state. The demonstrated discrepancy is in the grader's expected value, not the evidence available to the agent." },
+      { "text": "Replace the exact-value check with a fluency score so fixture changes no longer cause numerical failures.", "explanation": "The task still requires a correct exact stock count. A fluency score removes a valid requirement instead of repairing its stale reference." },
+      { "text": "Version the expected count with the fixture, verify the grader on known outcomes, and rerun the cases.", "explanation": "The observed failure comes from mismatched evaluation inputs and expectations. Validating the repaired grader on known passing and failing outcomes checks the harness without assuming the agent must change." },
+      { "text": "Repeat the unchanged run until the agent returns 5, then use that successful trial as the regression baseline.", "explanation": "Repeated trials cannot make the outdated value correct for this fixture. Selecting a passing trial would conceal the grading defect and reward an incorrect stock answer." }
+    ],
+    "correct": 2,
+    "tags": ["diagnostics", "grader-defects", "fixture-versioning"],
+    "sourceIds": ["eval-agent-evals"]
+  },
+  {
+    "id": "ccarp-4.4-parallel-tool-result-misattribution",
+    "domain": 4, "objectiveId": "4.4",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "An assistant queries two regions concurrently and sometimes assigns the regions each other's totals. Tool execution logs show correct values. The adapter pairs results arriving in completion order with tool_use IDs kept in request order. Which correction addresses the demonstrated fault?",
+    "answers": [
+      { "text": "Carry each originating call ID through execution and attach its result to that ID.", "explanation": "Concurrent calls can finish in a different order from issuance. Preserving each call's identity lets tool_use_id bind the value to the correct request instead of relying on arrival position." },
+      { "text": "Add region-specific reasoning examples while preserving the current result adapter.", "explanation": "Examples cannot reliably recover data that the application has mislabeled as belonging to another tool call. The incorrect association occurs before the model receives the results." },
+      { "text": "Increase the model's output budget to accommodate a separate paragraph for each region.", "explanation": "The evidence shows swapped tool-result identities, not truncated output. More generation space does not correct the application's association between a value and its request." },
+      { "text": "Retry the faster region's lookup until both calls have similar response times.", "explanation": "Similar timings do not guarantee a fixed completion order and introduce unnecessary calls. Correlation must remain correct regardless of which region responds first." }
+    ],
+    "correct": 0,
+    "tags": ["tool-diagnostics", "tool-result-correlation", "concurrency"],
+    "sourceIds": ["int-client-results", "int-client-loop"]
+  },
+  {
+    "id": "ccarp-4.4-distinguish-instructions-from-model-capability",
+    "domain": 4, "objectiveId": "4.4",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "On multi-step allocation tasks, generated plans violate constraints despite verified evidence, correct tool fixtures, and a validated constraint checker. Output limits are not reached. Unclear instructions and a model capability mismatch remain plausible. Which controlled comparisons help distinguish these explanations? Select 2 answers.",
+    "answers": [
+      { "text": "Keep the model and fixtures fixed while testing a clearer constraint-focused prompt.", "explanation": "A prompt-only comparison tests whether clearer instructions resolve the failures without changing model capability or evidence. The same cases and checker make its outcome interpretable." },
+      { "text": "Replace the model, planner prompt, retrieval pipeline, and checker in one experiment.", "explanation": "Changing every component can yield a better system but cannot attribute the improvement to instructions or model capability. Replacing the validated checker also changes the meaning of success." },
+      { "text": "Raise the output limit and compare only each model's best-looking completed plan.", "explanation": "The limit is not implicated, and selecting best-looking outputs changes the comparison criterion. This does not isolate either instruction clarity or constraint-solving reliability." },
+      { "text": "Compare candidate models on the same clear prompt, fixtures, cases, and constraint checker.", "explanation": "Holding those factors fixed tests whether model choice changes constraint satisfaction under the same well-specified task. It provides evidence for or against a capability mismatch rather than assuming a stronger model is the remedy." }
+    ],
+    "correctIndices": [0, 3],
+    "tags": ["model-mismatch", "controlled-diagnosis", "prompt-evaluation"],
+    "sourceIds": ["eval-agent-evals", "eval-criteria"]
+  },
+  {
+    "id": "ccarp-4.4-diagnose-versioned-sampling-rejection",
+    "domain": 4, "objectiveId": "4.4",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "After an SDK upgrade, requests to the required Claude API version 2026-10-21 fail with HTTP 400 before generation. A saved request still contains temperature=0 from a legacy request template. The application must remain on the new API version. What should the maintainer test first?",
+    "answers": [
+      { "text": "Apply exponential backoff and resend the same request after the delay.", "explanation": "The saved request contains a field rejected by this API version. Retrying the unchanged invalid request does not address the validation error." },
+      { "text": "Replace temperature with top_p while keeping the new API version.", "explanation": "API 2026-10-21 also removes top_p and top_k. Substituting another removed sampling field would preserve the request-validation problem." },
+      { "text": "Select a different model while retaining the legacy temperature field.", "explanation": "The failure is a versioned request-contract rejection before generation, not demonstrated model incapacity. Keeping the removed field does not repair that contract." },
+      { "text": "Remove the unsupported sampling fields and rerun integration checks on that version.", "explanation": "API 2026-10-21 rejects temperature, top_p, and top_k, including default-valued fields. Removing them addresses the concrete migration incompatibility while preserving the required API version." }
+    ],
+    "correct": 3,
+    "tags": ["api-migration", "invalid-requests", "version-scoping"],
+    "sourceIds": ["int-api-version", "int-errors"]
+  },
+  {
+    "id": "ccarp-4.4-diagnose-request-template-binding",
+    "domain": 4, "objectiveId": "4.4",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A draft-invoice assistant applies the wrong customer's discount ceiling. Retrieved policy and the validated request both identify customer B's 8% ceiling. The saved compiled system prompt instead inserts customer A's 15% ceiling from the template assembler's mutable cached binding, and the output follows 15%. What should the first targeted correction address?",
+    "answers": [
+      { "text": "Increase retrieval depth and retain the compiled system prompt, testing whether additional policy passages outweigh its ceiling.", "explanation": "The correct policy is already retrieved. Adding lower-trust evidence does not repair the assembler that puts the wrong customer's value into trusted instructions." },
+      { "text": "Add more invoice demonstrations to the template while retaining the cached customer binding across requests.", "explanation": "Examples leave the wrong request-specific instruction in place. They do not fix the established association between customer identity and the compiled ceiling." },
+      { "text": "Bind policy values from each validated request; inspect compiled prompts and test alternating-customer cases.", "explanation": "The trace locates the defect in application prompt assembly. Request-scoped binding and alternating-customer regressions target stale substitutions rather than attributing compliance with the supplied wrong ceiling to model capability." },
+      { "text": "Compare stronger generation models using identical compiled prompts and choose the one that most often ignores the 15% instruction.", "explanation": "The application still sends the wrong trusted policy value. Choosing a model that sometimes disregards it would mask the integration defect rather than establish correct per-customer instructions." }
+    ],
+    "correct": 2,
+    "tags": ["prompt-assembly", "request-scoped-bindings", "component-isolation"],
+    "sourceIds": ["eval-agent-evals", "prompting"]
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-4.3-stateful-workspace-assignment",
+    "domain": 4, "objectiveId": "4.3",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "Two assistant variants update a shared workspace memory used by all members of that workspace in later sessions. Workspaces do not share memory. An A/B test should prevent one variant's memory updates from affecting the other's outcomes. What is the appropriate assignment unit?",
+    "answers": [
+      { "text": "Randomize each model request independently within a workspace.", "explanation": "Request-level assignment lets both variants read memory changed by the other. Their outcomes would no longer reflect separate treatments." },
+      { "text": "Randomize each user and keep that user's assignment across sessions.", "explanation": "User-level persistence does not isolate memory shared with other workspace members. Users in different arms could still change one another's treatment environment." },
+      { "text": "Alternate variants by day while keeping the same workspace memory.", "explanation": "Daily switching retains memory effects from earlier days and introduces time-related differences. It does not separate the stateful treatments." },
+      { "text": "Randomize workspaces and keep each workspace on one variant.", "explanation": "The workspace is the stated shared-state boundary, so persistent cluster assignment prevents cross-arm memory updates within it. This is an application of cluster randomization, not a complete statistical design; analysis and power must still respect the assignment unit." }
+    ],
+    "correct": 3,
+    "tags": ["ab-testing", "assignment-unit", "stateful-agents"],
+    "sourceIds": ["eval-cluster-randomization", "eval-agent-evals", "eval-criteria"]
+  },
+  {
+    "id": "ccarp-4.3-enforce-precommitted-rollback",
+    "domain": 4, "objectiveId": "4.3",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "An A/B rollout defines task completion as its primary outcome and requires immediate rollback after any verified unauthorized write by the candidate. The candidate improves completion, but an investigation confirms one unauthorized write. What should the experiment owner do?",
+    "answers": [
+      { "text": "Continue until the completion improvement reaches the planned confidence target.", "explanation": "The security guardrail explicitly requires immediate rollback and is independent of the primary outcome's statistical maturity. Waiting exposes users after the stopping condition has already been met." },
+      { "text": "Roll back the candidate and investigate the write before any renewed rollout.", "explanation": "The verified event triggers the experiment's precommitted safety condition. An improvement in completion does not override a separate unauthorized-write gate." },
+      { "text": "Exclude the unauthorized-write workflow and declare the candidate the winner.", "explanation": "Removing the failing slice after observing it changes the eligibility and acceptance rules retrospectively. It does not establish safety for the rollout that was actually tested." },
+      { "text": "Combine the write rate with completion improvement in a weighted final score.", "explanation": "A weighted score would replace the explicit rollback rule with a compensating trade-off. The experiment owner has not been authorized to average away an unauthorized write." }
+    ],
+    "correct": 1,
+    "tags": ["ab-testing", "guardrails", "rollback"],
+    "sourceIds": ["eval-agent-evals", "eval-criteria"]
+  },
+  {
+    "id": "ccarp-4.3-capability-gains-with-regression-protection",
+    "domain": 4, "objectiveId": "4.3",
+    "difficulty": "intermediate", "type": "multiple",
+    "prompt": "A tool-planning change fixes several difficult tasks in a capability suite. The product already supports a large set of simpler workflows, and the team wants an iterative release process rather than optimizing only for the new cases. Which actions support that goal? Select 2 answers.",
+    "answers": [
+      { "text": "Run the established regression suite alongside the new capability cases.", "explanation": "Capability improvements do not show that previously supported workflows still work. The regression suite checks that existing behavior survives the planning change." },
+      { "text": "Promote reproducibly solved capability cases into ongoing regression coverage.", "explanation": "Once a difficult behavior is reliably supported, keeping it in regression coverage protects the improvement during later iterations. This turns a demonstrated capability into a maintained contract." },
+      { "text": "Remove older successful cases so the suite concentrates on remaining failures.", "explanation": "Removing supported cases loses the ability to detect regressions in them. A capability-focused backlog and a regression suite answer different questions and should coexist." },
+      { "text": "Use the new capability pass rate as the release score for all workflows.", "explanation": "A suite selected for difficult new tasks is not evidence about every existing workflow. Its score cannot substitute for checking the behavior the product already promises." }
+    ],
+    "correctIndices": [0, 1],
+    "tags": ["regression-evaluation", "capability-evaluation", "iterative-improvement"],
+    "sourceIds": ["eval-agent-evals"]
+  },
+  {
+    "id": "ccarp-4.3-isolate-prompt-effect-from-calendar-changes",
+    "domain": 4, "objectiveId": "4.3",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A team ran the baseline prompt last week and a revised prompt this week. The search index and support staffing also changed between weeks, and user task completion increased. The team needs evidence that the prompt itself caused the improvement. Which next comparison is most informative?",
+    "answers": [
+      { "text": "Randomize concurrent eligible traffic between prompts with the other configuration held fixed.", "explanation": "A concurrent controlled comparison reduces calendar and staffing confounds while holding retrieval and other configuration constant. It is designed to estimate the prompt change rather than the combined weekly changes." },
+      { "text": "Run the baseline on the old index and the revised prompt on the new index for longer.", "explanation": "Longer observation does not separate prompt effects from index effects when those factors remain tied to different arms. The comparison still tests two bundled configurations." },
+      { "text": "Add more historical baseline sessions until both weeks have the same session count.", "explanation": "Equal sample counts do not make the weeks comparable in task mix, staffing, or retrieval state. A larger historical comparison can preserve the same causal ambiguity." },
+      { "text": "Normalize each week's completion rate by its total model-token consumption.", "explanation": "Token normalization changes the metric but does not control the changed index or staffing. It cannot identify which of the simultaneous changes produced the completion improvement." }
+    ],
+    "correct": 0,
+    "tags": ["ab-testing", "confounding", "controlled-comparisons"],
+    "sourceIds": ["eval-agent-evals", "eval-criteria"]
+  },
+  {
+    "id": "ccarp-4.3-match-attempt-budgets",
+    "domain": 4, "objectiveId": "4.3",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "Production permits one attempt per task. A candidate's reported pass@3 counts a task as solved if any of three isolated attempts succeeds; the baseline was scored with one attempt. The candidate's number is higher. What comparison is needed before claiming a production improvement?",
+    "answers": [
+      { "text": "Compare the candidate's pass@3 with the baseline's all-three-attempt success rate.", "explanation": "Success at least once and success in every trial are different events. Comparing pass@3 with pass^3 would make the candidate and baseline face incompatible reliability criteria." },
+      { "text": "Allow three candidate attempts in production and retain the one-attempt baseline score.", "explanation": "This violates the stated one-attempt operating constraint and changes the candidate's resource budget. It would not support the claimed improvement for the permitted deployment." },
+      { "text": "Compare single-attempt outcomes on matched tasks and report repeated-trial consistency separately.", "explanation": "Matched attempt budgets test the production contract fairly. Repeated isolated trials can additionally expose variability, without treating best-of-three opportunity as one-attempt reliability." },
+      { "text": "Divide the candidate's pass@3 percentage by three to estimate its one-attempt score.", "explanation": "The probability of at least one success over three attempts is not three times single-attempt success. Task difficulty and dependence also prevent that arithmetic from recovering a valid matched score." }
+    ],
+    "correct": 2,
+    "tags": ["attempt-budgets", "pass-at-k", "reliability"],
+    "sourceIds": ["eval-agent-evals"]
+  },
+  {
+    "id": "ccarp-4.3-mature-outcomes-and-stopping-policy",
+    "domain": 4, "objectiveId": "4.3",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "An A/B test's primary outcome is successful completion within seven days. The arms started at different times, traffic is low, and the dashboard labels unfinished cases as failures. An operator proposes promoting the candidate at the first favorable hourly result. Which controls are needed for a credible comparison? Select 2 answers.",
+    "answers": [
+      { "text": "Use the latest partial completion rate as the final seven-day outcome estimate.", "explanation": "Cases without a full outcome window are not comparable with mature cases. Treating pending work as final failure can bias the arms differently because their observation periods differ." },
+      { "text": "Compare cohorts after both have had their full seven-day outcome windows.", "explanation": "Equivalent mature observation windows make the defined outcome comparable. The test should distinguish pending outcomes from observed seven-day failures." },
+      { "text": "Set a stopping policy that accounts for required information and repeated dashboard looks.", "explanation": "Stopping at the first favorable noisy result can overstate an effect, especially with little traffic. A planned analysis and stopping policy should address observation needs and repeated looks rather than inventing a universal test duration." },
+      { "text": "Increase candidate exposure until its raw completion count matches the baseline's.", "explanation": "Changing exposure to match raw success counts does not correct immature outcomes or opportunistic stopping. Counts alone also ignore the number and mix of eligible tasks assigned to each arm." }
+    ],
+    "correctIndices": [1, 2],
+    "tags": ["ab-testing", "delayed-outcomes", "stopping-rules"],
+    "sourceIds": ["eval-longitudinal-outcomes", "eval-repeated-looks", "eval-agent-evals", "eval-criteria"]
+  }
+]
