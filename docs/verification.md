@@ -2,7 +2,7 @@
 type: Verification
 title: Release verification
 timestamp: "2026-10-27"
-status: verified
+status: workflow-followup
 ---
 
 # Release verification
@@ -17,8 +17,10 @@ match the allocation in the [blueprint](exam-blueprint.md); difficulty counts ar
 
 Final independent engineering acceptance on **2026-10-27 UTC** identified the exact
 question, source, runtime, workflow, test, and tooling bytes with SHA-256. The coordinator
-compared every file with that manifest after the final build; all matched. Commit-only
-publication does not extend this acceptance to later content or runtime edits.
+compared every file with that manifest after the original reviewed build; all matched.
+The later workflow-only pin update is qualified separately below. It changes neither
+question/source inputs nor runtime assets. Publication does not extend acceptance to
+later content or runtime edits.
 
 ```text
 Independent manifest SHA-256:
@@ -105,8 +107,8 @@ only. Pages uses `build_type=workflow`, with HTTPS enforced.
 
 The tested application revision is
 [`24979ce0f0ece664af11873c85ae988386c081a4`](https://github.com/bajor/claude-architect-professional-quiz/commit/24979ce0f0ece664af11873c85ae988386c081a4).
-Subsequent release slices update documentation only, not the reviewed question,
-source, workflow, test, or runtime bytes.
+The following release slices update documentation only. A subsequent workflow-only
+follow-up updates three Pages Action pins, not question, source, test, or runtime bytes.
 
 | Remote observation | Evidence |
 | --- | --- |
@@ -129,6 +131,22 @@ Local deployment evidence is retained in `/tmp/opencode/ccarp-live-assets.json`,
 `/tmp/opencode/ccarp-remote-artifact.json`, and `/tmp/opencode/ccarp-live/` screenshots.
 The workflow links and pinned application revision above provide public release
 references; temporary local evidence paths are not public download links.
+
+### Pages Action runtime follow-up
+
+The final documentation-only revision `f350f779903933cbceaf1c431b2485f59e4800dc`
+passed [CI](https://github.com/bajor/claude-architect-professional-quiz/actions/runs/40465618321)
+and [Pages](https://github.com/bajor/claude-architect-professional-quiz/actions/runs/40465618442).
+The deployment nevertheless reported deprecated Node.js 20 runtimes in its older
+official Pages Actions. A small follow-up replaces those pins with verified official
+releases: configure-pages 6.0.0, upload-pages-artifact 5.0.0, and deploy-pages 5.0.1.
+The JavaScript actions and the uploader's pinned upload-artifact 7.0.0 use Node.js 24.
+Application validation/build tooling still uses Node.js 22. Default dotfile exclusion,
+the static allowlist, gating, and permissions remain unchanged.
+
+Updated workflow deployment and annotation checks must be observed before this
+follow-up is reported complete. The earlier application/browser acceptance remains
+valid for its unchanged runtime files, but its old workflow hash is not the new hash.
 
 ## Review-tool limitation
 
