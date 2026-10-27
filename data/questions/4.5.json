@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-4.5-delay-tolerant-batch-processing",
+    "domain": 4, "objectiveId": "4.5",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A supported API deployment generates independent nightly document classifications. Results are needed the next morning, and no user waits for interactive output. The current model meets the quality requirement. Which cost optimization should the team evaluate first without changing that model?",
+    "answers": [
+      { "text": "Use asynchronous batch processing and verify completion before the morning deadline.", "explanation": "Batch processing offers discounted processing for delay-tolerant work on supported deployments. These independent jobs fit that use case, provided measured completion meets the actual deadline." },
+      { "text": "Stream every classification so the first result becomes visible more quickly.", "explanation": "Streaming addresses perceived responsiveness rather than the unit processing cost. Nobody is waiting for early tokens in this nightly workload." },
+      { "text": "Reduce the hard output limit below the longest valid classification record.", "explanation": "A limit below valid output size risks truncated records and violates the quality requirement. It is not a safe substitute for a processing mode suited to deferred jobs." },
+      { "text": "Send the classifications through additional synchronous worker processes.", "explanation": "More synchronous workers may improve throughput, but do not by themselves obtain batch-processing rates. They also add concurrency management without addressing the requested unit-cost optimization." }
+    ],
+    "correct": 0,
+    "tags": ["batch-processing", "cost-optimization"],
+    "sourceIds": ["eval-pricing", "int-latency"]
+  },
+  {
+    "id": "ccarp-4.5-stabilize-cache-prefix",
+    "domain": 4, "objectiveId": "4.5",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "An assistant repeatedly sends the same long policy and unchanged tools within a supported cache lifetime. The policy meets the model's cache-length requirement, but every request prepends a unique correlation ID to the system text and cache reads remain zero. What should be changed first?",
+    "answers": [
+      { "text": "Choose a longer cache lifetime while keeping the unique ID before the policy.", "explanation": "A longer lifetime does not make different prefixes identical. The unique early value prevents reuse even though calls already occur within the supported lifetime." },
+      { "text": "Put the cache breakpoint after the entire message, including its unique user question.", "explanation": "A breakpoint after varying content does not create a stable reusable prefix. It leaves the correlation ID and changing question inside the material expected to match." },
+      { "text": "Lower the output budget and retain the existing system-text and cache layout.", "explanation": "Output generation settings do not repair an input-prefix mismatch. They can reduce generation length but will not turn the reported misses into policy-prefix hits." },
+      { "text": "Move the ID to the varying suffix, mark the stable prefix, and verify cache counters.", "explanation": "Caching requires an identical eligible prefix, ordered through tools, system, and messages. Keeping variable data after the stable policy boundary enables reuse, and usage counters verify whether it actually occurs." }
+    ],
+    "correct": 3,
+    "tags": ["prompt-caching", "cache-prefixes", "cache-diagnostics"],
+    "sourceIds": ["eval-cache"]
+  },
+  {
+    "id": "ccarp-4.5-optimize-generation-dominated-latency",
+    "domain": 4, "objectiveId": "4.5",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "Profiling shows an assistant spends little time processing its already-cached input, but most completion time generating a long explanation. Users need only a compact decision and two reasons, and the current answers contain repeated material. Which change targets the measured bottleneck without relying on truncation?",
+    "answers": [
+      { "text": "Extend the input-cache lifetime and leave the response format unchanged.", "explanation": "The observed input processing is already small and the cache is hitting. Extending its lifetime does not reduce the dominant output-generation work." },
+      { "text": "Request the compact decision format and verify completeness on the quality suite.", "explanation": "Removing unnecessary generated material targets the dominant latency component. Testing the compact contract checks that shorter answers retain the decision and required reasons rather than merely cutting output off." },
+      { "text": "Enable streaming and keep the same repeated explanation as the final output.", "explanation": "Streaming can improve time to visible content, but does not establish reduced total generation time. The unnecessary output remains on the completion path." },
+      { "text": "Set a hard output cap below the current answer length and accept any stopped response.", "explanation": "A hard cap can interrupt the decision or one of its required reasons. Accepting a stopped response without completeness checks trades away the stated output contract." }
+    ],
+    "correct": 1,
+    "tags": ["latency-optimization", "output-tokens", "quality-gates"],
+    "sourceIds": ["int-latency", "eval-cache"]
+  },
+  {
+    "id": "ccarp-4.5-parallelize-and-filter-tool-work",
+    "domain": 4, "objectiveId": "4.5",
+    "difficulty": "intermediate", "type": "multiple",
+    "prompt": "An assistant reads three independent inventory systems sequentially. Each returns a large record list, but the answer needs only validated counts and totals. Raw records must remain available in a restricted audit store, not necessarily in model context. Which changes directly reduce unnecessary latency or model-token work? Select 2 answers.",
+    "answers": [
+      { "text": "Run the independent read calls concurrently within their service limits.", "explanation": "No call depends on another's output, so overlapping the reads can shorten the serial waiting path. Service limits and failure handling still need to be respected." },
+      { "text": "Place all changing inventory records inside the supposedly shared cache prefix.", "explanation": "Changing result content prevents an identical reusable prefix and can add cache writes. Caching is not a substitute for reducing bulky intermediate data that the model does not need." },
+      { "text": "Compute validated aggregates in code and pass those while preserving raw audit records.", "explanation": "Deterministic filtering and aggregation can keep the required information while avoiding large intermediate lists in model context. The separate restricted store preserves the specified audit access." },
+      { "text": "Stream every raw result through the model before it calculates the same aggregates.", "explanation": "Streaming the lists does not remove their token volume or the model work required to process them. The stated task allows aggregation before the data reaches the model." }
+    ],
+    "correctIndices": [0, 2],
+    "tags": ["tool-orchestration", "parallelism", "context-filtering"],
+    "sourceIds": ["int-advanced-tools", "int-latency"]
+  },
+  {
+    "id": "ccarp-4.5-reranking-overhead-versus-token-savings",
+    "domain": 4, "objectiveId": "4.5",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A retrieval experiment adds reranking and reduces generation-context tokens while preserving grounded-answer quality. On the same workload, total cost per acceptable answer including reranker charges and application p95 completion time both exceed their approved ceilings. The existing path meets both limits. What is the justified optimization decision?",
+    "answers": [
+      { "text": "Adopt the reranker because fewer generation-context tokens establish a cheaper pipeline.", "explanation": "The measured total cost already includes reranker charges and is higher. A decrease in one token category is not proof that the complete pipeline is cheaper." },
+      { "text": "Adopt the reranker with streaming and use first-token latency for the existing ceiling.", "explanation": "Streaming does not establish a reduction in complete application time. Replacing the completion-time metric with first-token latency would change the approved requirement." },
+      { "text": "Retain the current path while testing leaner reranking settings against the full limits.", "explanation": "The candidate does not meet the stated cost and latency constraints despite its context savings. Further candidate-set or reranking experiments should recheck answer quality and end-to-end measurements rather than assume a universal optimal setting." },
+      { "text": "Adopt the reranker if retrieval recall improves, retaining the observed cost and latency.", "explanation": "A retrieval-stage improvement does not override the approved application limits, especially when grounded-answer quality is unchanged. Selection must account for the additional runtime step and its total cost." }
+    ],
+    "correct": 2,
+    "tags": ["retrieval-optimization", "reranking", "end-to-end-cost"],
+    "sourceIds": ["int-contextual-retrieval", "eval-pricing", "eval-agent-evals"]
+  },
+  {
+    "id": "ccarp-4.5-cache-write-amortization-by-reuse",
+    "domain": 4, "objectiveId": "4.5",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "For a hypothetical supported deployment, processing a particular eligible prefix normally costs 1 budget unit, a cache write costs 1.4, and a cache read costs 0.2. One workload class uses each prefix once; another uses each identical prefix five times within its valid cache window. Suffix costs and quality are equal. Which policy minimizes these prefix-processing costs?",
+    "answers": [
+      { "text": "Cache both classes because the cache-read price is below the ordinary-input price.", "explanation": "The one-use class never earns a read saving and costs 1.4 rather than 1 unit when cached. Read pricing alone omits the write that must first be amortized." },
+      { "text": "Cache the five-use class and leave the one-use class uncached.", "explanation": "Five uncached uses cost 5 units; one write plus four reads costs 1.4 + 4 × 0.2 = 2.2. One-use prefixes cost less uncached, so this workload-specific policy minimizes both classes under the supplied hypothetical rates." },
+      { "text": "Cache the one-use class and leave the five-use class uncached.", "explanation": "This pays an unrecovered write premium for one-use prefixes and misses reusable-prefix savings on five-use prefixes. It selects the more expensive treatment for both classes." },
+      { "text": "Cache neither class because a cache write costs more than ordinary processing.", "explanation": "The write premium is real, but four inexpensive reads more than recover it in the five-use class. Comparing only the first use ignores the measured reuse within the valid cache lifetime." }
+    ],
+    "correct": 1,
+    "tags": ["cache-economics", "workload-reuse", "cost-accounting"],
+    "sourceIds": ["eval-cache", "eval-pricing"]
+  }
+]
