@@ -1,0 +1,934 @@
+{
+  "method": "HTTP content-retrieval snapshot only. Primary-source relevance is checked separately in question review. Text proxies are explicitly secondary retrieval.",
+  "records": [
+    {
+      "ids": [
+        "int-a2a"
+      ],
+      "url": "https://a2a-protocol.org/latest/blog/2026/03/12/a2a-protocol-ships-v10-production-ready-standard-for-agent-to-agent-communication/",
+      "verifiedAt": "2026-10-27T01:40:05.883Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://a2a-protocol.org/latest/blog/2026/03/12/a2a-protocol-ships-v10-production-ready-standard-for-agent-to-agent-communication/",
+      "bytes": 74283,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "d667e5f1f1316bae1f1a35bda24e9e7adef16e0f061a818a8f12a72b61f59ca2"
+    },
+    {
+      "ids": [
+        "gov-nist-rmf-core"
+      ],
+      "url": "https://airc.nist.gov/airmf-resources/airmf/5-sec-core/",
+      "verifiedAt": "2026-10-27T01:40:01.126Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://airc.nist.gov/airmf-resources/airmf/5-sec-core/",
+      "bytes": 80236,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "3c6ac915c08ca2fbe74e25f71fafd77ba3e22f528ea0d2fe06b9d30cff1a7928"
+    },
+    {
+      "ids": [
+        "gov-nist-playbook-govern"
+      ],
+      "url": "https://airc.nist.gov/airmf-resources/playbook/govern/",
+      "verifiedAt": "2026-10-27T01:40:01.344Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://airc.nist.gov/airmf-resources/playbook/govern/",
+      "bytes": 189184,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "9226f80ac0e0cfb3207c312352930e72567eadef05bd13045f38e06d5c528020"
+    },
+    {
+      "ids": [
+        "life-official-prep-path"
+      ],
+      "url": "https://anthropic-partners.skilljar.com/path/claude-certified-architect-professional",
+      "verifiedAt": "2026-10-27T01:40:02.379Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://anthropic-partners.skilljar.com/path/claude-certified-architect-professional",
+      "bytes": 1612706,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "17c02b83a337aeab2dd6d58a69bfad2202307272692d9de12bf50754d978356c"
+    },
+    {
+      "ids": [
+        "gov-official-safety-course"
+      ],
+      "url": "https://anthropic-partners.skilljar.com/path/claude-certified-architect-professional/responsible-ai-safety-risk-for-architects",
+      "verifiedAt": "2026-10-27T01:40:02.391Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://anthropic-partners.skilljar.com/path/claude-certified-architect-professional/responsible-ai-safety-risk-for-architects",
+      "bytes": 1606747,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "24cb450e3996ef86fdace76bea75106d6fd19ce8e787045abc0d040035c48646"
+    },
+    {
+      "ids": [
+        "life-official-stakeholder-course"
+      ],
+      "url": "https://anthropic-partners.skilljar.com/path/claude-certified-architect-professional/stakeholder-engagement-lifecycle-gtm",
+      "verifiedAt": "2026-10-27T01:40:02.539Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://anthropic-partners.skilljar.com/path/claude-certified-architect-professional/stakeholder-engagement-lifecycle-gtm",
+      "bytes": 1608040,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "e9dddd9020a33f094f79a28e6397346b26fc311f1a11d79f228fb6b2333dcaf4"
+    },
+    {
+      "ids": [
+        "gov-idempotent-retries"
+      ],
+      "url": "https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/",
+      "verifiedAt": "2026-10-27T01:40:03.759Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/",
+      "bytes": 456055,
+      "contentType": "text/html;charset=utf-8",
+      "sha256": "dcf035def76334e08080f89622736c09ab3badfe5b0b7d8c66400d26d89cfe3c"
+    },
+    {
+      "ids": [
+        "gov-transaction-authorization"
+      ],
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Transaction_Authorization_Cheat_Sheet.html",
+      "verifiedAt": "2026-10-27T01:40:03.657Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://cheatsheetseries.owasp.org/cheatsheets/Transaction_Authorization_Cheat_Sheet.html",
+      "bytes": 95540,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "3333fd1fb8d55cbc61371b460a88036eefc478597e06d3185d1f8b478bff69e5"
+    },
+    {
+      "ids": [
+        "deployment"
+      ],
+      "url": "https://code.claude.com/docs/en/agent-sdk/hosting",
+      "verifiedAt": "2026-10-27T01:40:00.030Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://code.claude.com/docs/en/agent-sdk/hosting",
+      "bytes": 617135,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "5bef7be8efc0160af46103c8b71ac3914fb9b912fbdb1be7c730d812b89a88ac"
+    },
+    {
+      "ids": [
+        "code-best-practices"
+      ],
+      "url": "https://code.claude.com/docs/en/best-practices",
+      "verifiedAt": "2026-10-27T01:40:00.860Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://code.claude.com/docs/en/best-practices",
+      "bytes": 706414,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "d5c34229c8398138e94dd78f1fb46fa6084bb43a14345316769d4ff012c9b597"
+    },
+    {
+      "ids": [
+        "code-github-actions"
+      ],
+      "url": "https://code.claude.com/docs/en/github-actions",
+      "verifiedAt": "2026-10-27T01:40:00.825Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://code.claude.com/docs/en/github-actions",
+      "bytes": 587919,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "ebc71b316430588fb06c5e1acc8791e53ed4e6fe3841ac44de12aeed25548c5f"
+    },
+    {
+      "ids": [
+        "code-headless"
+      ],
+      "url": "https://code.claude.com/docs/en/headless",
+      "verifiedAt": "2026-10-27T01:40:00.781Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://code.claude.com/docs/en/headless",
+      "bytes": 648507,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "f30ae868794536d3e1a82624df1fa7a767085aa5c28591839bf307af7b3e8688"
+    },
+    {
+      "ids": [
+        "code-hooks"
+      ],
+      "url": "https://code.claude.com/docs/en/hooks",
+      "verifiedAt": "2026-10-27T01:40:00.614Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://code.claude.com/docs/en/hooks",
+      "bytes": 2819999,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "382a8255c58d8fc055d7ad5fd871ada403a050b00c4a4f85cb8a5a827431d12b"
+    },
+    {
+      "ids": [
+        "code-mcp"
+      ],
+      "url": "https://code.claude.com/docs/en/mcp",
+      "verifiedAt": "2026-10-27T01:40:00.680Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://code.claude.com/docs/en/mcp",
+      "bytes": 1473346,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "723c5f4654a554c3b0d388bd1a4bb9cda4d765ce79ab99c02aa7458378ba92f2"
+    },
+    {
+      "ids": [
+        "code-memory"
+      ],
+      "url": "https://code.claude.com/docs/en/memory",
+      "verifiedAt": "2026-10-27T01:40:00.439Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://code.claude.com/docs/en/memory",
+      "bytes": 737295,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "099826a00e3f7a6d0f5d804f245ec14d0201f1e593bd7231454e95979950b55d"
+    },
+    {
+      "ids": [
+        "code-monitoring"
+      ],
+      "url": "https://code.claude.com/docs/en/monitoring-usage",
+      "verifiedAt": "2026-10-27T01:40:00.938Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://code.claude.com/docs/en/monitoring-usage",
+      "bytes": 1252992,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "439579d3f4b11779bb1c223a9ceaa61f847e53d4d540764e67a3bb28085ecee2"
+    },
+    {
+      "ids": [
+        "code-sandboxing"
+      ],
+      "url": "https://code.claude.com/docs/en/sandboxing",
+      "verifiedAt": "2026-10-27T01:40:00.703Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://code.claude.com/docs/en/sandboxing",
+      "bytes": 979191,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "712eb9aec8dcd40543da66fb60aeada6a6a10529ed7dfb957cc538dcf9f17690"
+    },
+    {
+      "ids": [
+        "code-settings"
+      ],
+      "url": "https://code.claude.com/docs/en/settings",
+      "verifiedAt": "2026-10-27T01:40:00.506Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://code.claude.com/docs/en/settings",
+      "bytes": 672782,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "6326ced6bf9e48ecd34c8a4b6aebeee22c30d6eb53afacbf08975ef0fe6923b7"
+    },
+    {
+      "ids": [
+        "code-skills"
+      ],
+      "url": "https://code.claude.com/docs/en/skills",
+      "verifiedAt": "2026-10-27T01:40:00.669Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://code.claude.com/docs/en/skills",
+      "bytes": 1120582,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "46f84c10b1eb5ebb12333e1e956b2260902fe79ae84937f4d6f8e1feb97b848c"
+    },
+    {
+      "ids": [
+        "eval-longitudinal-outcomes"
+      ],
+      "url": "https://engineering.atspotify.com/2023/7/bringing-sequential-testing-to-experiments-with-longitudinal-data-part-1-the-peeking-problem-2-0",
+      "verifiedAt": "2026-10-27T01:40:03.988Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://engineering.atspotify.com/2023/7/bringing-sequential-testing-to-experiments-with-longitudinal-data-part-1-the-peeking-problem-2-0",
+      "bytes": 315788,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "97ea5d276f78d28204432455eda16fe51673d637079db9fdbbe97f23936a229e"
+    },
+    {
+      "ids": [
+        "gov-gdpr-eurlex"
+      ],
+      "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679",
+      "verifiedAt": "2026-10-27T01:40:01.582Z",
+      "directFailure": "HTTP 202, 0 bytes",
+      "retrieval": "secondary-text-proxy",
+      "retrievalUrl": "https://r.jina.ai/https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679",
+      "status": 200,
+      "finalUrl": "https://r.jina.ai/https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679",
+      "bytes": 357062,
+      "contentType": "text/plain; charset=utf-8",
+      "sha256": "f6e4ef9fa8fe65a1b49d3f2876c1924103df117c0716a6ea0274d7a42cb5e6e2"
+    },
+    {
+      "ids": [
+        "official-exam-guide"
+      ],
+      "url": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542810%2FClaude+Certified+Architect+%E2%80%93+Professional+Exam+Guide.pdf",
+      "verifiedAt": "2026-10-27T01:40:06.573Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542810%2FClaude+Certified+Architect+%E2%80%93+Professional+Exam+Guide.pdf",
+      "bytes": 358335,
+      "contentType": "application/pdf",
+      "sha256": "19a111ae61a07066ebe26f7f2b87744f8266cfc0d47093a1d5bbf61e12dd4221"
+    },
+    {
+      "ids": [
+        "int-mcp-auth"
+      ],
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization",
+      "verifiedAt": "2026-10-27T01:40:05.135Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization",
+      "bytes": 465850,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "9648b6e1a253c7a09bac91faee45b109e45a56b2a95e082bff97c6a0239490d3"
+    },
+    {
+      "ids": [
+        "int-mcp-security"
+      ],
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations",
+      "verifiedAt": "2026-10-27T01:40:05.221Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations",
+      "bytes": 331842,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "fb27a7a733c6f1c4c95c4de73cae2e8c18cb56619c0df318e108789dcff3a035"
+    },
+    {
+      "ids": [
+        "int-mcp-transports"
+      ],
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports",
+      "verifiedAt": "2026-10-27T01:40:05.316Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports",
+      "bytes": 303411,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "849ce5fb17d2611c1e0f48556ca68752e9bdd03e99b1293897de2f98c518872a"
+    },
+    {
+      "ids": [
+        "gov-nist-genai-profile"
+      ],
+      "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+      "verifiedAt": "2026-10-27T01:40:01.562Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+      "bytes": 1174643,
+      "contentType": "application/pdf",
+      "sha256": "6e73620ab6b64e90ef2c04bf0e0d6246185a2f4b1b13cab0df494496cff89b6a"
+    },
+    {
+      "ids": [
+        "eval-context-propagation"
+      ],
+      "url": "https://opentelemetry.io/docs/concepts/context-propagation/",
+      "verifiedAt": "2026-10-27T01:40:04.914Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://opentelemetry.io/docs/concepts/context-propagation/",
+      "bytes": 415165,
+      "contentType": "text/html; charset=UTF-8",
+      "sha256": "02b7d24405237f9fe261ee84cfbabc06d0b252463840cab52325b2baa19143c0"
+    },
+    {
+      "ids": [
+        "model-choice"
+      ],
+      "url": "https://platform.claude.com/docs/en/about-claude/models/choosing-a-model",
+      "verifiedAt": "2026-10-27T01:39:58.855Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/about-claude/models/choosing-a-model",
+      "bytes": 461194,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "da5a8790b3c26e77be13fc5fdba36daeb3337018ff1a3e28e0108cd29970c85d"
+    },
+    {
+      "ids": [
+        "eval-pricing"
+      ],
+      "url": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "verifiedAt": "2026-10-27T01:40:06.372Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "bytes": 1342301,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "1c3c5d72a9451a54a5c94ee56adc2371e8544dcd6b59bf61f07d9dc408736716"
+    },
+    {
+      "ids": [
+        "skills"
+      ],
+      "url": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+      "verifiedAt": "2026-10-27T01:39:59.758Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+      "bytes": 650402,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "478b2e6c53f9238d743d2b27f4a80542c0af91045b59accc4c4ed2d5e72527b5"
+    },
+    {
+      "ids": [
+        "int-client-results"
+      ],
+      "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
+      "verifiedAt": "2026-10-27T01:40:05.047Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
+      "bytes": 558294,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "af77ad7bb59cce56a38a5f2e988d9b897a21bf9b92d7fd0c807b51e2edfb8382"
+    },
+    {
+      "ids": [
+        "int-client-loop"
+      ],
+      "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works",
+      "verifiedAt": "2026-10-27T01:40:04.971Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works",
+      "bytes": 491531,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "646c10e692eb7085c6988dd323b9a6e1979799d6293d56d4d9126e161813c3bd"
+    },
+    {
+      "ids": [
+        "int-tool-search"
+      ],
+      "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool",
+      "verifiedAt": "2026-10-27T01:40:05.325Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool",
+      "bytes": 1172088,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "8ff5c2ad52af6431aac853605c271dbda4774e4573a7e0db999f766f8aef99be"
+    },
+    {
+      "ids": [
+        "int-errors"
+      ],
+      "url": "https://platform.claude.com/docs/en/api/errors",
+      "verifiedAt": "2026-10-27T01:40:05.851Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/api/errors",
+      "bytes": 797317,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "137beead84b0816b1c463948b0b5e8bce58abd707e5a519f5a7812071e0bd8a8"
+    },
+    {
+      "ids": [
+        "int-api-version"
+      ],
+      "url": "https://platform.claude.com/docs/en/api/migration-2026-10-21",
+      "verifiedAt": "2026-10-27T01:40:06.065Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/api/migration-2026-10-21",
+      "bytes": 1024512,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "d3a19316574e7271f137b2b74f1a836fb67089193dc2374dd1d78112fb96cee2"
+    },
+    {
+      "ids": [
+        "api-overview"
+      ],
+      "url": "https://platform.claude.com/docs/en/api/overview",
+      "verifiedAt": "2026-10-27T01:40:00.143Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/api/overview",
+      "bytes": 559090,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "67e37d037dca07f69aca182229b6446e5189a80a67f387cc6f44bb5276bd3ded"
+    },
+    {
+      "ids": [
+        "compaction"
+      ],
+      "url": "https://platform.claude.com/docs/en/build-with-claude/compaction",
+      "verifiedAt": "2026-10-27T01:39:59.694Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/build-with-claude/compaction",
+      "bytes": 451422,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "6563648d6e3606dd644c49ce7a5a5dc5e540d173a9fe1e67511a36496ec1582a"
+    },
+    {
+      "ids": [
+        "context-editing"
+      ],
+      "url": "https://platform.claude.com/docs/en/build-with-claude/context-editing",
+      "verifiedAt": "2026-10-27T01:39:59.674Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/build-with-claude/context-editing",
+      "bytes": 2726720,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "27dfc6cb75fea472056bc68e2e2fb5e56d54cc2cb8504b725c87cf7a59a4fad2"
+    },
+    {
+      "ids": [
+        "context-windows"
+      ],
+      "url": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+      "verifiedAt": "2026-10-27T01:39:59.483Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+      "bytes": 748061,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "101224decc04e840b592ce52cfbf54c4d0f1d831fd62f472af9f2417aa7652b9"
+    },
+    {
+      "ids": [
+        "extended-thinking"
+      ],
+      "url": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
+      "verifiedAt": "2026-10-27T01:39:59.080Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
+      "bytes": 750474,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "89923f306ca769b8380cbaf43f444282427ead4852a108d0dfbc820f69ae2e15"
+    },
+    {
+      "ids": [
+        "caching",
+        "eval-cache"
+      ],
+      "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+      "verifiedAt": "2026-10-27T01:39:59.220Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+      "bytes": 3289237,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "aeb406df40be3acbc4d1dc511897c9966f6cffb6647d160489cf2eca9999848d"
+    },
+    {
+      "ids": [
+        "prompting"
+      ],
+      "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices",
+      "verifiedAt": "2026-10-27T01:39:59.073Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices",
+      "bytes": 1085216,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "929285525dbd9aef6174d400b7284f45b9f5139a0b63193f8d96be52e95ad1d6"
+    },
+    {
+      "ids": [
+        "prompt-overview"
+      ],
+      "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
+      "verifiedAt": "2026-10-27T01:39:58.857Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
+      "bytes": 411360,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "8e15d3e346af9ee4d2a9a43f1c5fac8a51c7a931d204e8acb66ab15e3e2f8a46"
+    },
+    {
+      "ids": [
+        "int-streaming"
+      ],
+      "url": "https://platform.claude.com/docs/en/build-with-claude/streaming",
+      "verifiedAt": "2026-10-27T01:40:05.793Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/build-with-claude/streaming",
+      "bytes": 2047154,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "2dfbf91a6cca6d4cb51cb85bb89a1ffe26e13a35a12219b8631372abc375403f"
+    },
+    {
+      "ids": [
+        "structured"
+      ],
+      "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+      "verifiedAt": "2026-10-27T01:39:59.871Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+      "bytes": 2635669,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "1d972c3244c1ed6b74cda9e7b59296d5c207132a5741b4bec7337d2009a926c8"
+    },
+    {
+      "ids": [
+        "thinking"
+      ],
+      "url": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+      "verifiedAt": "2026-10-27T01:39:59.204Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+      "bytes": 1334636,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "94f53596b6fd81b82ced5f3e6341a18da6998914c1379ce9b82800a906b3dbbe"
+    },
+    {
+      "ids": [
+        "token-counting"
+      ],
+      "url": "https://platform.claude.com/docs/en/build-with-claude/token-counting",
+      "verifiedAt": "2026-10-27T01:40:00.263Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/build-with-claude/token-counting",
+      "bytes": 1536698,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "ddca917ecfe45c3f2490db7f6ca453cbbd7d898fec19ece6225d182cbb789d63"
+    },
+    {
+      "ids": [
+        "gov-api-data-retention"
+      ],
+      "url": "https://platform.claude.com/docs/en/manage-claude/api-and-data-retention",
+      "verifiedAt": "2026-10-27T01:40:00.958Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/manage-claude/api-and-data-retention",
+      "bytes": 676474,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "b7303d2cfabd65232780ac66f0d510fb6bf4dd55ef42e7601a94b611888a95bf"
+    },
+    {
+      "ids": [
+        "eval-otel"
+      ],
+      "url": "https://platform.claude.com/docs/en/manage-claude/opentelemetry",
+      "verifiedAt": "2026-10-27T01:40:06.287Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/manage-claude/opentelemetry",
+      "bytes": 666967,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "90b509e2c913406460cadbe5ee05b9efcfe9d25a392e39e663d0eec9aa133a1a"
+    },
+    {
+      "ids": [
+        "eval-usage-cost"
+      ],
+      "url": "https://platform.claude.com/docs/en/manage-claude/usage-cost-api",
+      "verifiedAt": "2026-10-27T01:40:06.421Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/manage-claude/usage-cost-api",
+      "bytes": 624431,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "060034bd7eb99e4ecced6861de6c1091e765a656da89ced4511d8d77f8b7ab34"
+    },
+    {
+      "ids": [
+        "life-success-evaluations",
+        "eval-criteria"
+      ],
+      "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+      "verifiedAt": "2026-10-27T01:40:02.817Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+      "bytes": 3777132,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "d7b4cf4270af920555582c9adf6672c380b3f9087370f1bdbd4ca0f2b9b8533f"
+    },
+    {
+      "ids": [
+        "guardrails",
+        "gov-prompt-injection"
+      ],
+      "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
+      "verifiedAt": "2026-10-27T01:40:00.248Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
+      "bytes": 481627,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "c9d999c9e0e8ead01bd522f96b0399af1eb213731cff377de02e794939f0d973"
+    },
+    {
+      "ids": [
+        "gov-hallucinations",
+        "eval-hallucinations"
+      ],
+      "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations",
+      "verifiedAt": "2026-10-27T01:40:00.954Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations",
+      "bytes": 416738,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "5140bd97ad638577afd29c75802b06f5d268a5d3425677389e1815467f4b640b"
+    },
+    {
+      "ids": [
+        "int-latency"
+      ],
+      "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency",
+      "verifiedAt": "2026-10-27T01:40:05.685Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency",
+      "bytes": 487637,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "d3decb4bedd71aed6c1be38fb37094b36521f66681b51df17d201fc1fa04edaa"
+    },
+    {
+      "ids": [
+        "gov-commercial-retention"
+      ],
+      "url": "https://privacy.claude.com/en/articles/7996866-how-long-do-you-store-my-organization-s-data",
+      "verifiedAt": "2026-10-27T01:40:00.985Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://privacy.claude.com/en/articles/7996866-how-long-do-you-store-my-organization-s-data",
+      "bytes": 107453,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "72220679b5895aa93614a7e3e4f66a073cf393962e33de5490593f4a548819be"
+    },
+    {
+      "ids": [
+        "eval-grouped-splits"
+      ],
+      "url": "https://scikit-learn.org/stable/modules/cross_validation.html#cross-validation-iterators-for-grouped-data",
+      "verifiedAt": "2026-10-27T01:40:03.864Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://scikit-learn.org/stable/modules/cross_validation.html",
+      "bytes": 169672,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "78d7587fa92ba3b3e480c9d841b50fedc14ac29d571ccb319d4068235154f0e2"
+    },
+    {
+      "ids": [
+        "life-google-production-handoff"
+      ],
+      "url": "https://sre.google/sre-book/evolving-sre-engagement-model/",
+      "verifiedAt": "2026-10-27T01:40:03.839Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://sre.google/sre-book/evolving-sre-engagement-model/",
+      "bytes": 80188,
+      "contentType": "text/html",
+      "sha256": "c130a6110ba19bd20793ca6931c0cc4f3ff2af368017681640ecd8dc4b4ef777"
+    },
+    {
+      "ids": [
+        "life-google-slos"
+      ],
+      "url": "https://sre.google/workbook/implementing-slos/",
+      "verifiedAt": "2026-10-27T01:40:03.401Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://sre.google/workbook/implementing-slos/",
+      "bytes": 104090,
+      "contentType": "text/html",
+      "sha256": "1b02c7f3f640d92ca4357ba3e088fdbd6766274118afac934bede95ea9ea23e9"
+    },
+    {
+      "ids": [
+        "int-advanced-tools"
+      ],
+      "url": "https://www.anthropic.com/engineering/advanced-tool-use",
+      "verifiedAt": "2026-10-27T01:40:05.372Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://www.anthropic.com/research/advanced-tool-use",
+      "bytes": 315892,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "7d6faed995af6e331ad77aa894d01471a253c5646d1aa69ff696f7ea1db2c157"
+    },
+    {
+      "ids": [
+        "eval-agent-evals"
+      ],
+      "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "verifiedAt": "2026-10-27T01:40:06.106Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://www.anthropic.com/research/demystifying-evals-for-ai-agents",
+      "bytes": 359224,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "5cb565fa3d858ea21f9ec14e06f80d62707f147fffa509c46f799923de72a7a5"
+    },
+    {
+      "ids": [
+        "int-contextual-retrieval"
+      ],
+      "url": "https://www.anthropic.com/news/contextual-retrieval",
+      "verifiedAt": "2026-10-27T01:40:05.393Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://www.anthropic.com/research/contextual-retrieval",
+      "bytes": 243467,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "24177600ff2ffacddd4c964143845bf115e204523fa1e7415af74e2e8eb3ac94"
+    },
+    {
+      "ids": [
+        "agents"
+      ],
+      "url": "https://www.anthropic.com/research/building-effective-agents",
+      "verifiedAt": "2026-10-27T01:39:58.803Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://www.anthropic.com/research/building-effective-agents",
+      "bytes": 259353,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "2ef2002656a8a6bdf3c42661edbd757b3df5f32294c21b462b9d0a881caaf13a"
+    },
+    {
+      "ids": [
+        "context-engineering"
+      ],
+      "url": "https://www.anthropic.com/research/effective-context-engineering-for-ai-agents",
+      "verifiedAt": "2026-10-27T01:39:59.507Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://www.anthropic.com/research/effective-context-engineering-for-ai-agents",
+      "bytes": 242586,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "c87e78529b74a1cb9487e067c205eba63118807f787d0287a7410d3f44e4e220"
+    },
+    {
+      "ids": [
+        "multiagent"
+      ],
+      "url": "https://www.anthropic.com/research/multi-agent-research-system",
+      "verifiedAt": "2026-10-27T01:39:58.854Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://www.anthropic.com/research/multi-agent-research-system",
+      "bytes": 244351,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "e1bdf10948d6b4617c105fc2ea15e899abd9e430de762a709008be3da8cf41db"
+    },
+    {
+      "ids": [
+        "gov-fedramp-agency-use"
+      ],
+      "url": "https://www.fedramp.gov/2026/agencies/use",
+      "verifiedAt": "2026-10-27T01:40:02.066Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://www.fedramp.gov/2026/agencies/use/",
+      "bytes": 65168,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "669bec2cf3b9a5a4441e495719997de1a98882fe9413f879dc593036b27c4317"
+    },
+    {
+      "ids": [
+        "gov-fedramp-scope"
+      ],
+      "url": "https://www.fedramp.gov/2026/scope",
+      "verifiedAt": "2026-10-27T01:40:02.038Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://www.fedramp.gov/2026/scope/",
+      "bytes": 96387,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "006a89ab84e612853f6c998fff7d89e817133010b767837e5da74fc3cb450cdb"
+    },
+    {
+      "ids": [
+        "gov-fedramp-timeline"
+      ],
+      "url": "https://www.fedramp.gov/2026/timeline/",
+      "verifiedAt": "2026-10-27T01:40:02.110Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://www.fedramp.gov/2026/timeline/",
+      "bytes": 61678,
+      "contentType": "text/html; charset=utf-8",
+      "sha256": "16e55b964fccccf0f09cb9e093ab83f7f32f1c26e0afa6172dc6491bbb1faba3"
+    },
+    {
+      "ids": [
+        "eval-move-semantics"
+      ],
+      "url": "https://www.gnu.org/software/coreutils/manual/html_node/mv-invocation.html",
+      "verifiedAt": "2026-10-27T01:40:04.560Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://www.gnu.org/software/coreutils/manual/html_node/mv-invocation.html",
+      "bytes": 18321,
+      "contentType": "text/html",
+      "sha256": "e106679f5f8f8d44cc6cec38e8f13e1d0e369d1d2b9f855e4d0f81be1d145847"
+    },
+    {
+      "ids": [
+        "gov-hipaa-hhs-cloud"
+      ],
+      "url": "https://www.hhs.gov/hipaa/for-professionals/special-topics/health-information-technology/cloud-computing/index.html",
+      "verifiedAt": "2026-10-27T01:40:01.597Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://www.hhs.gov/hipaa/for-professionals/special-topics/health-information-technology/cloud-computing/index.html",
+      "bytes": 239396,
+      "contentType": "text/html; charset=UTF-8",
+      "sha256": "b872e21f86d28c4f049ccae069c181f0ade59fa1907d4aa767deef41c3c105e0"
+    },
+    {
+      "ids": [
+        "eval-repeated-looks"
+      ],
+      "url": "https://www.microsoft.com/en-us/research/group/experimentation-platform-exp/articles/patterns-of-trustworthy-experimentation-during-experiment-stage/",
+      "verifiedAt": "2026-10-27T01:40:03.945Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://www.microsoft.com/en-us/research/articles/patterns-of-trustworthy-experimentation-during-experiment-stage/",
+      "bytes": 201365,
+      "contentType": "text/html; charset=UTF-8",
+      "sha256": "2835c517d2235eba70ffb82503496b7fe9b5a789ca09230f008cac40dd80aabf"
+    },
+    {
+      "ids": [
+        "eval-cluster-randomization"
+      ],
+      "url": "https://www.microsoft.com/en-us/research/group/experimentation-platform-exp/articles/why-tenant-randomized-a-b-test-is-challenging-and-tenant-pairing-may-not-work/",
+      "verifiedAt": "2026-10-27T01:40:03.893Z",
+      "retrieval": "primary-direct",
+      "status": 200,
+      "finalUrl": "https://www.microsoft.com/en-us/research/articles/why-tenant-randomized-a-b-test-is-challenging-and-tenant-pairing-may-not-work/",
+      "bytes": 204412,
+      "contentType": "text/html; charset=UTF-8",
+      "sha256": "48a1d69d1fcdf9b850df0e194dc10b57f13cdbb708aa5f7acd8defa5e0b550b5"
+    }
+  ]
+}
