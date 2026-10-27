@@ -1,0 +1,72 @@
+[
+  {
+    "id": "ccarp-7.3-effective-settings-diagnosis", "domain": 7, "objectiveId": "7.3",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "An unattended Claude Code run exits successfully after a team changes a permission entry in ordinary project settings, but the intended restriction is absent. Another developer's interactive session behaves differently. Its /status view lists the project settings as loaded. Before changing prompts or permissions, what investigation is most useful?",
+    "answers": [
+      { "text": "Strengthen CLAUDE.md wording first, because a loaded settings source means the remaining difference must be model adherence.", "explanation": "Listing a settings source does not prove that every value in it was accepted or supplied the effective rule. Rewriting model guidance does not diagnose a dropped or conflicting permission entry." },
+      { "text": "Treat /status as per-key provenance and compare model outputs only after ruling out the shared file as a cause.", "explanation": "/status identifies active settings sources, not the source and validity of each key. It cannot by itself rule out a rejected value or interaction with other applicable settings." },
+      { "text": "Use the zero process exit to certify the project settings, then investigate tool-server availability rather than configuration loading.", "explanation": "A non-interactive run can skip broken ordinary settings or individual values and still continue successfully. Process success therefore does not certify that the intended restriction loaded." },
+      { "text": "Record versions and active setting sources, inspect rejected entries with claude doctor, and safely reproduce the restriction using the applicable rules.", "explanation": "This checks what the client actually accepted and which other sources may affect the outcome. A controlled reproduction verifies the restriction instead of inferring enforcement from a file listing or successful run." }
+    ],
+    "correct": 3,
+    "tags": ["debugging", "effective-configuration", "settings-validation"],
+    "sourceIds": ["code-settings"]
+  },
+  {
+    "id": "ccarp-7.3-mcp-saved-versus-connected", "domain": 7, "objectiveId": "7.3",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "An onboarding script prints Added for a remote MCP server. A session displays its tool names, but the first actual operation fails. The team wants to distinguish configuration, approval, authentication, and transport problems without exposing credentials. What should the support runbook do next?",
+    "answers": [
+      { "text": "Inspect /mcp or claude mcp get for status and failure detail, resolve the identified layer, and retry a safe operation using redacted diagnostics.", "explanation": "Added confirms configuration was saved, not that a connection or authentication succeeded. Tool names can come from a discovery cache, so live status and a safe operation provide stronger evidence without publishing credential-bearing URLs." },
+      { "text": "Repeat the registration until Added appears again, then consider the endpoint healthy and return the first-operation failure to the application team.", "explanation": "Repeating a successful configuration write does not test server transport or credentials. The first-operation failure still needs connection and authentication diagnosis." },
+      { "text": "Use the displayed tool list as the connection-health check and investigate only whether the model selected the correct tool arguments.", "explanation": "A cached tool list can be available before the server connects on first use. Visible tool definitions do not exclude an approval, authentication, or transport failure." },
+      { "text": "Reset project-server approval only, because approving a saved remote server also establishes its authentication session.", "explanation": "Approval to use a project server and authentication to that server are separate states. Resetting approval alone does not establish valid credentials or repair a transport error." }
+    ],
+    "correct": 0,
+    "tags": ["mcp", "connection-health", "authentication", "runbooks"],
+    "sourceIds": ["code-mcp"]
+  },
+  {
+    "id": "ccarp-7.3-headless-acceptance-metadata", "domain": 7, "objectiveId": "7.3",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A CI job using Claude Code 2.1.304 and stream-json requires a named MCP server and a schema-constrained final report. Some runs exit 0 after an invalid MCP entry is skipped; downstream code also assumes structured_output is always present. Which acceptance checks address these two failure modes? Select 2 answers.",
+    "answers": [
+      { "text": "Accept a zero exit and a plausible final text response as proof that required integrations loaded and the report is consumable.", "explanation": "The agent can finish without an invalid server entry, and a text response does not guarantee a structured result exists. This would accept both observed failure modes." },
+      { "text": "Check system/init for the required server and fail on its absence or a relevant mcp_server_errors entry.", "explanation": "Initialization metadata exposes entries skipped by MCP configuration validation even when the run continues. The mcp_server_errors field requires v2.1.219 or later and is within the stated version scope." },
+      { "text": "Use captured stderr startup warnings as the sole integration gate, treating an empty stderr stream as proof of successful loading.", "explanation": "The documented human startup warning can be omitted when stderr is captured. Structured initialization errors remain the appropriate machine-readable evidence of skipped MCP entries." },
+      { "text": "Inspect the final result's success or error state and require a present, valid structured_output before consuming the report.", "explanation": "A structured result is not guaranteed when no valid result was produced. Checking its presence and validity prevents downstream code from treating missing output as a usable report." }
+    ],
+    "correctIndices": [1, 3],
+    "tags": ["ci", "headless", "initialization-errors", "structured-output"],
+    "sourceIds": ["code-headless"]
+  },
+  {
+    "id": "ccarp-7.3-api-versus-tool-outcomes", "domain": 7, "objectiveId": "7.3",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A fleet runs Claude Code 2.1.304 with verified OpenTelemetry event export. For one user prompt, model API requests succeed, but a requested connector operation has no tool_result event. Support must distinguish a permission rejection from API or tool-execution failure without depending on newer CLI fields. Which investigation is best?",
+    "answers": [
+      { "text": "Use api_request duration as connector execution time and treat a successful model request as evidence that the connector ran.", "explanation": "The API request event describes model-request duration, cost, and tokens, not connector execution. A successful model response does not prove that a proposed tool call received permission or ran." },
+      { "text": "Require request_id on every tool_result and tool_decision before investigating, since those fields are guaranteed in 2.1.304.", "explanation": "The rolling documentation qualifies request_id on those tool events as v2.1.310 or later. Requiring it on 2.1.304 creates an unsupported correlation dependency and still does not explain an unexecuted call." },
+      { "text": "Inspect tool_decision for acceptance or rejection and api_error for API failures, correlating by prompt.id and available tool_use_id values.", "explanation": "Permission decisions and API errors describe different failure layers. Rejected calls do not emit tool_result, while prompt.id and tool_use_id support correlation without requiring the newer tool-event request_id field." },
+      { "text": "Search only failed tool_result events for permission denials; if none exist, extend the connector timeout before examining permissions.", "explanation": "A rejected call never executes and therefore does not generate a failed tool_result. A timeout change is not justified until the permission decision and any actual execution are identified." }
+    ],
+    "correct": 2,
+    "tags": ["opentelemetry", "debugging", "permission-decisions", "version-scope"],
+    "sourceIds": ["code-monitoring"]
+  },
+  {
+    "id": "ccarp-7.3-privacy-aware-telemetry", "domain": 7, "objectiveId": "7.3",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "An enterprise wants centralized Claude Code telemetry for request latency, error categories, and tool permission trends. Source text, prompts, and conversation bodies must not be collected. Privacy review also requires deliberate handling of developer identities. Using the rolling monitoring documentation retrieved on 2026-10-26, which collection plan is appropriate?",
+    "answers": [
+      { "text": "Commit exporter endpoint and activation variables to project settings so every repository branch establishes the central export path.", "explanation": "Repository settings cannot enable or redirect the documented telemetry exporter variables. The export path must be configured through an allowed user, shell, or managed source rather than trusted to repository changes." },
+      { "text": "Configure the required exporters centrally through managed settings, keep content and raw-body collection off, and minimize identity metadata with controlled access and retention.", "explanation": "Managed configuration can establish the intended collector without enabling conversation capture. Default content exclusions do not anonymize attributes such as user.email or account/session identifiers, so identity handling still requires explicit controls." },
+      { "text": "Use the default content exclusions as evidence that all exported metadata is anonymous and needs no developer-identity review.", "explanation": "Content collection being off does not remove all identifying attributes. Standard telemetry can still contain email and account or session identifiers, which fall within the stated privacy review." },
+      { "text": "Enable raw API body logging for richer diagnostics while leaving prompt and tool-content flags off to redact conversation text automatically.", "explanation": "Raw API bodies can expose the entire conversation, not just timing metadata. Disabling the narrower content flags does not make raw-body collection satisfy the no-conversation requirement." }
+    ],
+    "correct": 1,
+    "tags": ["opentelemetry", "privacy", "managed-configuration", "data-minimization"],
+    "sourceIds": ["code-monitoring"]
+  }
+]
