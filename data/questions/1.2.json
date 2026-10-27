@@ -1,0 +1,107 @@
+[
+  {
+    "id": "ccarp-1.2-confirm-business-end-state",
+    "domain": 1, "objectiveId": "1.2",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A Claude assistant submits a request to move a delivery. The tool first returns 'queued'; a separate status lookup later reports whether the move succeeded. The assistant must tell the user that the delivery moved only after success. What should drive that final response?",
+    "answers": [
+      { "text": "The submission tool's queued acknowledgement, which proves the requested operation reached the scheduling service.", "explanation": "Acceptance into a queue proves submission, not completion. The scheduling service can still reject or fail the move after acknowledging it." },
+      { "text": "Claude's final plan, provided it contains the correct delivery identifier and requested replacement time.", "explanation": "A plan describes intended behavior but is not environmental evidence that the scheduling state changed." },
+      { "text": "A scheduling-service status lookup confirming the delivery identifier and committed replacement time match the user's request.", "explanation": "The observed business end state supplies ground truth for the completion claim. A pending or failed status requires a different user-facing response." },
+      { "text": "A second model's review of whether the first model supplied valid scheduling arguments to the tool.", "explanation": "Argument review can detect a malformed request but cannot determine whether an asynchronous external operation completed." }
+    ],
+    "correct": 2,
+    "tags": ["environmental-feedback", "end-to-end-completion"],
+    "sourceIds": ["agents", "multiagent"]
+  },
+  {
+    "id": "ccarp-1.2-structured-output-release-gate",
+    "domain": 1, "objectiveId": "1.2",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "An extraction service uses schema-constrained JSON responses to feed a purchase-order importer. Orders must also pass catalog and quantity checks. Refusals and output-limit termination are possible. Which processing-to-output boundary is appropriate?",
+    "answers": [
+      { "text": "Handle completion exceptions, validate the returned record, and apply business checks before importing an order.", "explanation": "Structured generation does not eliminate documented refusal or truncation cases, and schema validity does not establish catalog membership or acceptable quantities." },
+      { "text": "Import every response that parses as JSON, then use the importer's error report to identify invalid business content.", "explanation": "Parsing alone does not enforce the expected structure or business rules. Deferring validation can allow a malformed or unauthorized business record into the downstream system." },
+      { "text": "Use strict tool inputs instead of JSON responses and treat matching tool arguments as approval to create the order.", "explanation": "Constrained tool inputs regulate structure, not catalog correctness or authorization to import. Moving the schema boundary does not remove the business validation requirement." },
+      { "text": "Retry interrupted generations and import the first complete response without repeating catalog or quantity validation.", "explanation": "A retry can restore a complete response but does not establish semantic validity. Each candidate order still needs the required business checks." }
+    ],
+    "correct": 0,
+    "tags": ["output-contracts", "failure-paths", "business-validation"],
+    "sourceIds": ["structured", "guardrails"]
+  },
+  {
+    "id": "ccarp-1.2-document-to-action-trust-boundary",
+    "domain": 1, "objectiveId": "1.2",
+    "difficulty": "intermediate", "type": "multiple",
+    "prompt": "A procurement assistant ingests supplier attachments, compares offers, and drafts a reply. Sending requires an employee's approval. Attachments can contain instructions to export internal pricing. Which architectural boundaries should be present along the input-to-action path? Select 2 answers.",
+    "answers": [
+      { "text": "Pass attachment contents as untrusted evidence with provenance, separate from application instructions.", "explanation": "Supplier documents are external data even when they contain imperative text. Keeping their origin and trust status explicit prevents the architecture from intentionally granting them instruction authority." },
+      { "text": "Place recognized supplier instructions into the system prompt after confirming that the attachment came from a registered vendor.", "explanation": "Vendor registration authenticates a source, not its authority to instruct the application. Promoting document text crosses the trust boundary and enables indirect injection." },
+      { "text": "Let the assistant send the reply immediately and rely on a downstream text classifier to detect unauthorized disclosures.", "explanation": "Screening after transmission cannot prevent the disclosure or preserve the required employee approval. The control must precede the action it constrains." },
+      { "text": "Enforce allowed data access and approved send operations outside the model's document interpretation.", "explanation": "Permission and approval checks must constrain executable actions even if document interpretation is compromised. A prompt policy is not an independent authorization boundary." }
+    ],
+    "correctIndices": [0, 3],
+    "tags": ["trust-boundaries", "input-processing-output", "action-controls"],
+    "sourceIds": ["guardrails", "gov-official-safety-course"]
+  },
+  {
+    "id": "ccarp-1.2-transcript-workspace-recovery",
+    "domain": 1, "objectiveId": "1.2",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A self-hosted Agent SDK application produces spreadsheets in each session's working directory. Session transcripts are mirrored to durable storage, but working directories are ephemeral. After a container is rescheduled, the resumed agent refers to files that no longer exist. Which architecture change addresses the actual state gap?",
+    "answers": [
+      { "text": "Increase the transcript retention period and resume each session from its latest mirrored conversation turn.", "explanation": "Retaining conversation records longer does not persist files outside those records. The agent can remember a file path while the referenced artifact remains absent." },
+      { "text": "Recreate the working directory by asking Claude to infer each file's contents from its prior completion messages.", "explanation": "Completion messages need not contain complete, exact file data. Regeneration from descriptions cannot establish recovery of the original artifacts." },
+      { "text": "Keep the container stateless and disable resumption so users restart any interrupted artifact-producing task.", "explanation": "Restarting avoids a misleading resume but sacrifices the stated session continuity and can repeat costly work. It does not solve durable artifact recovery." },
+      { "text": "Persist workspace artifacts independently, preserving their session association, and restore them together with the conversation state.", "explanation": "The self-hosted subprocess has both transcript state and filesystem state. Recovering both, with the correct session mapping, restores the artifacts referenced by the resumed conversation." }
+    ],
+    "correct": 3,
+    "tags": ["state-persistence", "agent-sdk-hosting", "artifact-recovery"],
+    "sourceIds": ["deployment"]
+  },
+  {
+    "id": "ccarp-1.2-uncertain-write-recovery",
+    "domain": 1, "objectiveId": "1.2",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "An agent requests a refund, then its tool connection times out before returning a result. A checkpoint contains the operation's idempotency key. The refund service supports status lookup by that key and guarantees that retries with the same key do not create another refund. How should the recovery path use this contract?",
+    "answers": [
+      { "text": "Restart the task with a new operation key and let the refund service process the replacement request normally.", "explanation": "A new key identifies a different operation. If the timed-out request already succeeded, this recovery can create a duplicate refund." },
+      { "text": "Look up the recorded refund key, reconcile its outcome, and resume under the service's same-key retry guarantee.", "explanation": "A timeout leaves the external effect uncertain. Status reconciliation and the explicitly provided deduplication contract allow recovery without assuming that missing output means no effect." },
+      { "text": "Resume from the last user message and ask Claude whether its previous refund attempt probably completed successfully.", "explanation": "Model inference about its own attempt cannot establish external service state. Recovery needs the operation record and service evidence." },
+      { "text": "Mark the refund failed and notify the user, leaving the original operation unreconciled until a later complaint.", "explanation": "The refund may already exist despite the timeout. Reporting failure without reconciling it creates an inaccurate outcome and leaves a potentially consequential effect unmanaged." }
+    ],
+    "correct": 1,
+    "tags": ["state-reliability", "retries", "external-effects"],
+    "sourceIds": ["multiagent", "agents"]
+  },
+  {
+    "id": "ccarp-1.2-adjudicated-feedback-loop",
+    "domain": 1, "objectiveId": "1.2",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "Employees can flag incorrect recommendations in a Claude-based benefits assistant. Some flags are valid corrections; others are preference disagreements or attempts to change company policy. The product team wants a feedback loop that improves future releases without turning every submission into system behavior. Which components belong in that loop? Select 3 answers.",
+    "answers": [
+      { "text": "An accountable review step that distinguishes confirmed failures from disputed preferences and policy-change requests.", "explanation": "Feedback needs adjudication against the intended use and authorized policy. This prevents unverified submissions from silently redefining correct behavior." },
+      { "text": "A path from confirmed failures to representative regression cases and evaluation of the proposed revision.", "explanation": "Reproducible cases connect observed failures to measurable improvement. Evaluating the revision before release checks that a local fix preserves other required behavior." },
+      { "text": "An automatic rule that appends each employee's correction to the trusted instructions for subsequent requests.", "explanation": "Raw feedback can be incorrect, conflicting, or malicious. Automatically promoting it bypasses adjudication and grants submitters unintended policy authority." },
+      { "text": "A tracked disposition linking each accepted issue to its responsible owner, change, and release outcome.", "explanation": "Ownership and a recorded outcome close the loop between collection and action. A feedback inbox alone cannot establish whether confirmed defects were addressed." }
+    ],
+    "correctIndices": [0, 1, 3],
+    "tags": ["feedback-loops", "adjudication", "release-gates"],
+    "sourceIds": ["gov-nist-rmf-core", "life-success-evaluations", "guardrails"]
+  },
+  {
+    "id": "ccarp-1.2-tenant-state-isolation",
+    "domain": 1, "objectiveId": "1.2",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A consulting platform self-hosts the Agent SDK for several client organizations. Inbound requests are authenticated and transcripts are keyed by tenant, but all sessions share a working directory, memory files, and CLI configuration. Each client must be isolated from the others. What is the missing architectural boundary?",
+    "answers": [
+      { "text": "Give each tenant an isolated runtime with its own workspace, memory, configuration, and outbound credential inputs.", "explanation": "Authentication and transcript labels do not isolate the subprocess's other state sources. Tenant separation must cover the filesystem, configuration, and access paths the agent can actually use." },
+      { "text": "Add the authenticated tenant name to every system prompt while retaining the shared runtime environment.", "explanation": "A prompt label guides behavior but does not prevent the runtime from exposing another tenant's files, memory, settings, or credentials." },
+      { "text": "Store transcripts in separate database tables while preserving the shared workspace to simplify artifact retrieval.", "explanation": "Separating transcript storage addresses only one state store. The shared filesystem and configuration still permit cross-tenant context or capability leakage." },
+      { "text": "Filter tenant names from final answers and use response monitoring to detect any residual cross-client references.", "explanation": "Output filtering cannot reliably undo unauthorized reads or tool actions. The isolation requirement must be enforced before shared state reaches the agent." }
+    ],
+    "correct": 0,
+    "tags": ["tenant-isolation", "runtime-state", "agent-sdk-hosting"],
+    "sourceIds": ["deployment", "guardrails"]
+  }
+]
