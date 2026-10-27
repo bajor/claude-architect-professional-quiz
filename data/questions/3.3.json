@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-3.3-first-token-versus-finished-answer",
+    "domain": 3, "objectiveId": "3.3",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A service's answers already meet its accuracy requirement. Users see nothing until a complete answer arrives, and complain that the interface appears frozen. The team enables streaming while keeping the model, retrieval, and generated content unchanged. Which conclusion is justified?",
+    "answers": [
+      { "text": "Streaming establishes that retrieval and tool execution now finish sooner.", "explanation": "Streaming changes when generated output is delivered, not the execution time of retrieval or external tools. Those stages require their own measurements." },
+      { "text": "The first visible token can serve as the completion timestamp for the answer-quality service level.", "explanation": "A first token is not a completed answer and cannot demonstrate that the final response meets quality requirements. Completion must be measured at the application's actual outcome boundary." },
+      { "text": "Streaming can improve perceived responsiveness, but total completion latency still needs measurement.", "explanation": "Delivering output before generation finishes can reduce the visible wait. It does not establish a reduction in time from the user request to a complete acceptable answer." },
+      { "text": "Streaming permits lowering the accuracy gate because users can inspect partial answers sooner.", "explanation": "Earlier visibility does not change the application's accuracy requirement. Partial content may still be revised, interrupted, or insufficient for the user's task." }
+    ],
+    "correct": 2,
+    "tags": ["latency", "streaming", "ttft"],
+    "sourceIds": ["int-latency", "eval-agent-evals"]
+  },
+  {
+    "id": "ccarp-3.3-quality-and-tail-latency-gates",
+    "domain": 3, "objectiveId": "3.3",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A document-comparison service requires at least 98% task accuracy and p95 end-to-end completion latency no greater than 6 seconds. On the same representative test set, configuration A achieves 99.2% and 8.1 seconds, B achieves 97.4% and 4.3 seconds, C achieves 98.6% and 5.8 seconds, and D achieves 98.9% and 6.7 seconds. Which configuration meets both stated gates?",
+    "answers": [
+      { "text": "Configuration C, because its measured accuracy and p95 completion time both satisfy the requirements.", "explanation": "Its 98.6% task accuracy exceeds the 98% minimum and its 5.8-second p95 is below the 6-second ceiling. No trade-off against either acceptance gate is needed." },
+      { "text": "Configuration A, because the highest task accuracy should take precedence over the latency ceiling.", "explanation": "Its 8.1-second p95 violates the explicit latency requirement. Higher accuracy does not authorize ignoring a separate mandatory service-level gate." },
+      { "text": "Configuration B, because the fastest p95 compensates for its slightly lower task accuracy.", "explanation": "Its 97.4% task accuracy is below the required 98%. The requirements are independent gates rather than a score in which speed can offset incorrect answers." },
+      { "text": "Configuration D, because a p95 over the limit can be accepted if the median is likely to be lower.", "explanation": "The stated requirement concerns p95, not an inferred median. Its 6.7-second p95 fails that requirement even if most individual requests are faster." }
+    ],
+    "correct": 0,
+    "tags": ["latency", "quality-gates", "tail-latency"],
+    "sourceIds": ["eval-criteria", "int-latency", "eval-agent-evals"]
+  },
+  {
+    "id": "ccarp-3.3-output-cap-truncation",
+    "domain": 3, "objectiveId": "3.3",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A Claude Messages API integration using version 2026-10-21 lowers max_tokens to shorten latency. Responses now stop with max_tokens before returning all required checklist fields, although the earlier configuration completed them correctly. What is the most appropriate next configuration change?",
+    "answers": [
+      { "text": "Lower temperature to zero so the current output cap is used more efficiently.", "explanation": "API version 2026-10-21 rejects temperature rather than applying this tuning. It also would not establish enough output space for the required fields." },
+      { "text": "Keep the cap and mark any syntactically complete prefix as a successful checklist.", "explanation": "A well-formed prefix can still omit mandatory fields. Changing the success definition would conceal the quality regression rather than solve it." },
+      { "text": "Enable streaming and retain the cap, since streamed responses are not subject to output truncation.", "explanation": "Streaming does not remove max_tokens or guarantee complete content. It can deliver the same truncated checklist in smaller pieces." },
+      { "text": "Request a concise checklist explicitly, allow enough output tokens, and retest complete-field accuracy and latency.", "explanation": "max_tokens is a hard ceiling, not an instruction to produce a shorter complete answer. Concise output instructions and an adequate ceiling can reduce unnecessary text without accepting missing fields." }
+    ],
+    "correct": 3,
+    "tags": ["latency", "max-tokens", "api-version"],
+    "sourceIds": ["int-latency", "int-api-version"]
+  },
+  {
+    "id": "ccarp-3.3-reranking-complete-tradeoff",
+    "domain": 3, "objectiveId": "3.3",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A RAG service considers reranking a broad candidate set and sending fewer chunks to generation. Initial experiments improve retrieval recall, but the product owner requires grounded final answers and a p95 completion-time limit. Which evaluations are necessary to justify this configuration rather than assume reranking is a free accuracy improvement? Select 2 answers.",
+    "answers": [
+      { "text": "Compare end-to-end completion-time distributions with the reranking stage and reduced generation context included.", "explanation": "Reranking adds runtime work while a smaller final context can reduce later work. Only the complete path shows the net effect on the required tail latency." },
+      { "text": "Accept the configuration if initial retrieval recall improves, without grading the generated answers.", "explanation": "Retrieval recall measures whether evidence enters a candidate set, not whether the final answer is grounded and correct. Reranking and generation can introduce different failures after initial retrieval." },
+      { "text": "Assume a lower final chunk count proves both faster completion and unchanged answer quality.", "explanation": "Fewer chunks can reduce generation input but may omit necessary evidence. The extra reranking cost and final-answer quality still require measurement." },
+      { "text": "Grade final-answer correctness and grounding on representative queries, including cases needing evidence from several chunks.", "explanation": "A smaller selected context can lose dependencies even when initial candidate recall is high. Final-answer checks test the accuracy requirement at the boundary that users actually consume." }
+    ],
+    "correctIndices": [0, 3],
+    "tags": ["latency", "reranking", "rag", "grounding"],
+    "sourceIds": ["int-contextual-retrieval", "eval-criteria"]
+  },
+  {
+    "id": "ccarp-3.3-parallel-independent-tool-latency",
+    "domain": 3, "objectiveId": "3.3",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A scheduling assistant must obtain both staffing availability and room availability, then validate the combined plan. Both lookups are read-only, independently authorized, and depend only on the original request. Sequential lookup spans dominate completion latency. The final validation requires both results. Which changes preserve this quality constraint while addressing latency? Select 2 answers.",
+    "answers": [
+      { "text": "Use whichever lookup returns first as the final evidence and cancel the slower lookup.", "explanation": "Both staffing and room availability are required to validate the plan. A first-response strategy trades away necessary evidence rather than preserving the stated quality constraint." },
+      { "text": "Run the independent lookups concurrently, then perform final validation after both results are available.", "explanation": "These reads have no dependency on each other, so their waiting time can overlap. The dependent validation still waits for the complete evidence set." },
+      { "text": "Compare completed-plan correctness and p95 request-to-validated-plan time under representative load.", "explanation": "Concurrency can change contention and tail behavior, so isolated span savings are insufficient. Measuring the completed validated plan verifies both the latency benefit and the preserved outcome contract." },
+      { "text": "Start validation with a default value for the slower lookup and keep its late result only for logging.", "explanation": "A default is not the missing availability evidence. Treating the late result as observability data prevents it from correcting an invalid plan." }
+    ],
+    "correctIndices": [1, 2],
+    "tags": ["latency", "parallel-tools", "tool-dependencies"],
+    "sourceIds": ["int-advanced-tools", "eval-agent-evals"]
+  },
+  {
+    "id": "ccarp-3.3-route-specific-model-tradeoffs",
+    "domain": 3, "objectiveId": "3.3",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "An authenticated work_type field reliably distinguishes routine equipment checks from exception investigations. Routine checks require 98% accuracy and p95 at most 3 seconds; investigations require 95% and p95 at most 10 seconds. On held-out slices, a fast configuration scores 99%/2 seconds for routine work but 81%/2 seconds for investigations. A stronger configuration scores 99%/9 seconds and 97%/9 seconds respectively. Which routing decision meets the measured requirements?",
+    "answers": [
+      { "text": "Use the fast configuration for every request because routine work dominates the aggregate accuracy score.", "explanation": "The fast configuration fails the investigation accuracy gate by a wide margin. Traffic-weighted aggregate accuracy would hide that explicit slice failure." },
+      { "text": "Route routine checks to the fast configuration and investigations to the stronger configuration using work_type.", "explanation": "Each selected path satisfies its own measured quality and p95 gate. The trusted routing field supplies a dependable distinction rather than relying on an unevaluated confidence guess." },
+      { "text": "Use the stronger configuration for every request because it meets both accuracy thresholds.", "explanation": "The stronger configuration's 9-second routine p95 violates the 3-second routine limit. Meeting accuracy alone does not satisfy the complete routine contract." },
+      { "text": "Randomly divide each work type equally between the configurations to balance their latency and accuracy.", "explanation": "Random assignment sends investigations to a configuration that fails their quality gate and routine work to a path that fails its latency gate. It ignores the reliable routing information already available." }
+    ],
+    "correct": 1,
+    "tags": ["latency", "model-routing", "quality-slices"],
+    "sourceIds": ["model-choice", "eval-criteria"]
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-3.4-stream-terminal-state-monitoring",
+    "domain": 3, "objectiveId": "3.4",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A Claude Messages API 2026-10-21 service uses server-sent events. Its dashboard records success when HTTP 200 arrives, but some streams later emit an overload error and never deliver a complete answer. Which monitoring change best exposes this reliability gap?",
+    "answers": [
+      { "text": "Record the first content event as success instead of recording the HTTP response status.", "explanation": "An early content event still precedes possible stream errors or incomplete generation. Moving the success marker slightly later does not establish a completed answer." },
+      { "text": "Count a request as successful whenever at least one output token is reported in usage.", "explanation": "A failed stream can generate billable tokens before interruption. Token production is not evidence that the user received a complete acceptable response." },
+      { "text": "Exclude streaming requests from error-rate monitoring and compare only their time to first token.", "explanation": "Time to first token measures responsiveness, not stream reliability. Excluding these requests hides the failures rather than accounting for their terminal state." },
+      { "text": "Track stream error events, normal completion, final stop reason, and application outcome with the provider request ID.", "explanation": "Streaming errors can occur after HTTP status is committed. Terminal stream state and application outcome distinguish a delivered answer from an interrupted attempt, while the request ID supports investigation." }
+    ],
+    "correct": 3,
+    "tags": ["observability", "streaming", "request-correlation"],
+    "sourceIds": ["int-errors", "int-streaming", "eval-agent-evals"]
+  },
+  {
+    "id": "ccarp-3.4-application-operation-correlation",
+    "domain": 3, "objectiveId": "3.4",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A single user operation can involve retrieval, several Claude API requests, one provider retry, and client tools executed manually without an SDK tool runner. API tracing is enabled, but incidents cannot be connected to the slow client-tool call. Which instrumentation design fills the missing visibility?",
+    "answers": [
+      { "text": "Use an application operation trace, retain provider request IDs per attempt, and add retrieval and manual client-tool spans.", "explanation": "The application trace provides the operation-wide boundary, while provider IDs identify individual API attempts. Manually executed work needs application instrumentation because API-side spans cannot observe its internal execution." },
+      { "text": "Use the last provider request ID as the only identifier for retrieval, prior attempts, and all tool executions.", "explanation": "A provider request ID identifies one API request, not the full multi-step user operation. Replacing earlier identities with the final one loses retry and tool relationships." },
+      { "text": "Enable only API-side tool tracing and infer manual tool duration from the model's narrated intent.", "explanation": "API-side tool visibility covers tools executed by the API, not arbitrary application code. Narrated intent provides neither an execution span nor a trustworthy duration." },
+      { "text": "Record aggregate tool-call counts and remove request identifiers to avoid storing redundant correlation data.", "explanation": "Counts can reveal frequency but cannot associate a particular slow tool with a failed user operation. Correlation data is necessary to reconstruct this multi-request incident." }
+    ],
+    "correct": 0,
+    "tags": ["observability", "distributed-tracing", "client-tools"],
+    "sourceIds": ["eval-otel", "int-errors"]
+  },
+  {
+    "id": "ccarp-3.4-trace-content-privacy-controls",
+    "domain": 3, "objectiveId": "3.4",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A contract-analysis service uses the Claude OpenTelemetry export beta documented on 2026-10-26. Central telemetry must not contain confidential customer text. Some dynamically generated agent and tool descriptions include customer names; approved redacted diagnostic examples may be stored separately with restricted access. Which monitoring decisions satisfy these constraints? Select 2 answers.",
+    "answers": [
+      { "text": "Review and sanitize names and descriptions before metadata-only export, not just prompt and response attributes.", "explanation": "Metadata-only mode still includes chosen descriptive text. Sensitive values in those fields can violate the policy even when complete prompts and responses are excluded." },
+      { "text": "Treat metadata-only mode as a guarantee that no customer text can reach the telemetry destination.", "explanation": "The documented metadata mode can include agent and tool names and descriptions. Its mode name is not a substitute for reviewing the actual exported attributes." },
+      { "text": "Collect only policy-approved, redacted diagnostic samples in the separate store with explicit access and retention controls.", "explanation": "Selective diagnostics can support investigation without enabling unrestricted transcript capture centrally. Redaction, destination access, and retention must satisfy the stated data-handling policy." },
+      { "text": "Export unredacted full content for a small random sample because low sampling rates satisfy the confidentiality rule.", "explanation": "Sampling reduces volume but still exports confidential text for sampled requests. A prohibition on such content is not converted into permission by lowering the sample rate." }
+    ],
+    "correctIndices": [0, 2],
+    "tags": ["observability", "trace-privacy", "data-retention"],
+    "sourceIds": ["eval-otel"]
+  },
+  {
+    "id": "ccarp-3.4-sampled-traces-versus-accounting",
+    "domain": 3, "objectiveId": "3.4",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A finance team needs historical organization-wide Claude API usage reconciliation. Its observability destination intentionally samples traces, occasionally loses exports, and sometimes receives duplicate spans. Administrative Usage and Cost API access is available for this deployment. Which design is appropriate?",
+    "answers": [
+      { "text": "Multiply sampled trace totals by the inverse sample rate and treat the result as an exact billing ledger.", "explanation": "Sampling estimates cannot reconstruct every missing request exactly, and export loss or duplicate delivery can introduce additional error. The resulting total is not a complete accounting record." },
+      { "text": "Turn off intentional sampling and use delivered trace totals as authoritative because export then becomes lossless.", "explanation": "Best-effort export can still lose spans even when intentional sampling is disabled. Removing one source of incompleteness does not create a guaranteed ledger." },
+      { "text": "Reconcile historical Usage and Cost API reports, allowing for reporting delay and scope, while using deduplicated traces for diagnosis.", "explanation": "The administrative reports include usage for requests absent from traces and support reconciliation. Their documented delay and platform or cost-category limitations still need to be respected." },
+      { "text": "Sum all client and server span token totals so missing sampled requests are offset by repeated usage on other spans.", "explanation": "Double counting observed requests does not recover missing ones. Combining repeated usage levels produces a biased total with no accounting relationship to the omitted requests." }
+    ],
+    "correct": 2,
+    "tags": ["observability", "usage-accounting", "trace-sampling"],
+    "sourceIds": ["eval-otel", "eval-usage-cost"]
+  },
+  {
+    "id": "ccarp-3.4-usage-aggregation-semantics",
+    "domain": 3, "objectiveId": "3.4",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A collector combines Claude Messages API 2026-10-21 streaming usage with the OpenTelemetry export beta documented on 2026-10-26. It sees duplicate span deliveries, usage on both client and server request spans, and multiple message_delta usage snapshots per stream. No compaction or fallback model is used. Which aggregation rules prevent overcounting? Select 3 answers.",
+    "answers": [
+      { "text": "Deduplicate span deliveries using the trace ID and span ID before aggregation.", "explanation": "A retried export can deliver the same span more than once. Counting each trace-ID/span-ID pair once removes delivery duplicates without discarding distinct requests." },
+      { "text": "Choose one appropriate usage source and span level for each request instead of summing both client and server totals.", "explanation": "The same request's token usage can appear on multiple span levels and sources. Aggregating one appropriate level avoids treating repeated measurements as additional consumption." },
+      { "text": "Use the final observed cumulative streaming usage value rather than summing successive message_delta snapshots.", "explanation": "Each message_delta usage update is cumulative rather than an incremental token charge. Summing snapshots counts earlier tokens repeatedly; an interrupted stream's last snapshot may still be incomplete." },
+      { "text": "Add cache-read and cache-write attributes to gen_ai.usage.input_tokens to obtain OpenTelemetry total input.", "explanation": "The OpenTelemetry input total already includes cache tokens, so this addition counts them twice. The separate Messages API input breakdown has different semantics and must not be applied to this total." }
+    ],
+    "correctIndices": [0, 1, 2],
+    "tags": ["observability", "token-accounting", "streaming-usage"],
+    "sourceIds": ["eval-otel", "int-streaming", "eval-cache"]
+  },
+  {
+    "id": "ccarp-3.4-quality-monitoring-without-transcript-export",
+    "domain": 3, "objectiveId": "3.4",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "An engineering assistant's API success rate and aggregate latency remain stable, but users report incorrect repair recommendations in one workflow after a configuration rollout. Full transcripts cannot leave the service's controlled environment. Which monitoring strategy best detects the affected quality slice while preserving that restriction?",
+    "answers": [
+      { "text": "Increase uptime probes and alert only if the provider's HTTP error rate rises.", "explanation": "Uptime and transport errors do not measure recommendation correctness. A workflow-specific quality regression can occur while every API request succeeds technically." },
+      { "text": "Grade a representative sample inside the controlled environment and export permitted outcome metrics by workflow and configuration.", "explanation": "Outcome grading measures the reported failure without exporting prohibited transcripts. Workflow and configuration dimensions help expose a regression hidden by aggregate operational metrics." },
+      { "text": "Use the model's completion claim as the quality score and export only its confidence label.", "explanation": "An agent's claim or confidence does not independently verify the correctness of a repair recommendation. Grounded grading or verified outcomes are needed for the quality signal." },
+      { "text": "Export full transcripts only for the failing workflow so that centralized tracing can determine correctness.", "explanation": "Restricting the workflow does not satisfy the prohibition on transcripts leaving the controlled environment. Quality evaluation must respect the stated processing boundary." }
+    ],
+    "correct": 1,
+    "tags": ["observability", "quality-monitoring", "privacy", "quality-slices"],
+    "sourceIds": ["eval-agent-evals", "eval-otel"]
+  }
+]
