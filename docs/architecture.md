@@ -91,4 +91,4 @@ verified separately from local success. See [verification](verification.md).
 1. BAJOR. [Reference quiz repository](https://github.com/bajor/gcp-ml-quiz). Inspected revision above. Accessed on: 2026-10-26 UTC.
 2. [Question authoring](question-authoring.md), [official blueprint](exam-blueprint.md), and [research log](research-log.md).
 3. GITHUB. [Using custom workflows with GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages). Accessed on: 2026-10-26 UTC.
-4. GITHUB. [Pinned upload-pages-artifact action](https://github.com/actions/upload-pages-artifact/blob/7b1f4a764d45c48632c6b24a0339c27f5614fb0b/action.yml). Dotfile exclusion in the archive step. Accessed on: 2026-10-27 UTC.
+4. GITHUB. [Pinned upload-pages-artifact action](https://github.com/actions/upload-pages-artifact/blob/fc324d3547104276b827a68afc52ff2a11cc49c9/action.yml). Dotfile exclusion remains enabled by default in the archive step. Accessed on: 2026-10-27 UTC.
