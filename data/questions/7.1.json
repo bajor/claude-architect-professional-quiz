@@ -1,0 +1,86 @@
+[
+  {
+    "id": "ccarp-7.1-team-configuration-ownership", "domain": 7, "objectiveId": "7.1",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A team starts Claude Code at the repository root and wants every clone to receive the same project settings and MCP server definitions. Developers also need private preferences for this project. Credentials are provisioned separately. Which file layout matches these ownership boundaries?",
+    "answers": [
+      { "text": "Commit .claude/settings.local.json and .mcp.json; put private project preferences in ~/.claude/settings.json.", "explanation": "The local settings file is for one developer's project overrides, not the shared baseline. User settings also apply across projects rather than only this repository." },
+      { "text": "Commit project settings and MCP definitions together in .claude/settings.json; keep private overrides in .claude/settings.local.json.", "explanation": "The settings files have the intended shared and private scopes, but shared MCP server definitions belong in the separate project-root .mcp.json file." },
+      { "text": "Commit .claude/settings.json and .mcp.json; keep private project overrides in an untracked .claude/settings.local.json.", "explanation": "Committed project settings and .mcp.json distribute the team baseline. An untracked local settings file holds one developer's project-specific preferences without changing teammates' configuration." },
+      { "text": "Commit .claude/settings.json; distribute MCP definitions through each developer's ~/.claude.json and keep private overrides in .claude/settings.local.json.", "explanation": "Local and user MCP definitions can reside in ~/.claude.json, but that machine-local file does not distribute a repository baseline to every clone. Project MCP scope uses .mcp.json." }
+    ],
+    "correct": 2,
+    "tags": ["team-configuration", "settings-scopes", "mcp"],
+    "sourceIds": ["code-settings", "code-mcp"]
+  },
+  {
+    "id": "ccarp-7.1-guidance-versus-enforced-policy", "domain": 7, "objectiveId": "7.1",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "An organization manages its developers' Claude Code installations and registers a production-deployment tool. A managed CLAUDE.md says never to invoke that tool from developer laptops. Auditors require a client-enforced prohibition, not merely improved instruction adherence. Which change meets that requirement?",
+    "answers": [
+      { "text": "Keep the explanatory guidance and deny the deployment capability through centrally administered client permission policy.", "explanation": "CLAUDE.md supplies model context, while managed permission settings provide a technical restriction on the registered tool. Keeping both separates the reason for the rule from its enforcement." },
+      { "text": "Repeat the prohibition in each nested CLAUDE.md so the nearest instruction always replaces organization guidance.", "explanation": "Instruction files contribute context rather than providing an authorization boundary. Nested instructions do not turn a prose prohibition into a client-enforced denial." },
+      { "text": "Put deployment procedures in a skill whose allowed-tools lists only testing tools, leaving the deployment tool registered.", "explanation": "A skill's allowed-tools grants pre-approval rather than defining an exclusive capability list. Omitting the deployment tool from that field does not prohibit its use." },
+      { "text": "Retain only the managed CLAUDE.md because administrator ownership makes every instruction in it mandatory at execution time.", "explanation": "Administrator ownership controls distribution of the instruction file, not guaranteed model compliance. Managed instructions remain distinct from enforced permission settings." }
+    ],
+    "correct": 0,
+    "tags": ["claude-md", "managed-policy", "tool-permissions"],
+    "sourceIds": ["code-memory", "code-settings", "code-skills"]
+  },
+  {
+    "id": "ccarp-7.1-skill-context-and-authority", "domain": 7, "objectiveId": "7.1",
+    "difficulty": "intermediate", "type": "multiple",
+    "prompt": "A team is packaging a long repository-review playbook as an ordinary Claude Code skill, not a skill preloaded into a subagent. It wants low idle-context usage and a technically read-only review workflow even though other session tools exist. Which design statements are valid? Select 2 answers.",
+    "answers": [
+      { "text": "Place the full playbook in the skill description so discovery can load all procedures and references before invocation.", "explanation": "Descriptions are discovery context, so putting the whole playbook there defeats the idle-context requirement. Normal skill loading reserves the body for invocation and supporting references for when they are needed." },
+      { "text": "Keep discovery metadata concise, put the procedure in SKILL.md, and link detailed references for loading when needed.", "explanation": "Normal progressive loading exposes the skill's name and description before invocation, then loads its body and any needed supporting material. This avoids making a long playbook permanent discovery context." },
+      { "text": "Set allowed-tools to Read and rely on that field to remove all write-capable tools for the remainder of the session.", "explanation": "The field pre-approves listed tools during the invoking turn; it neither removes unlisted tools nor lasts as a session-wide grant. It cannot by itself enforce read-only operation." },
+      { "text": "Enforce read-only operation separately through tool permissions; treat allowed-tools as invoking-turn pre-approval, not a capability boundary.", "explanation": "Permission policy must restrict write-capable operations independently of the skill's guidance. The allowed-tools grant clears on the next user message even though the skill text remains in context." }
+    ],
+    "correctIndices": [1, 3],
+    "tags": ["skills", "progressive-loading", "permission-boundaries"],
+    "sourceIds": ["code-skills", "code-settings"]
+  },
+  {
+    "id": "ccarp-7.1-mcp-shadowed-server-entry", "domain": 7, "objectiveId": "7.1",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A repository's .mcp.json defines an issues server at an approved endpoint. One developer also has an ordinary local-scope server named issues pointing to a test endpoint. There is no managed server definition. Updating the shared entry's URL and authentication configuration does not change that developer's target. The team wants the shared definition used normally, with experiments explicitly named. What is the best diagnosis and correction?",
+    "answers": [
+      { "text": "The two scopes merge server fields; keep the local entry and add the approved URL again to the shared entry.", "explanation": "Duplicate ordinary MCP server names select an entire entry rather than merging its fields. Repeating a field in the lower-priority project entry does not change the selected local server." },
+      { "text": "General user settings supply missing MCP fields; copy the approved server's authentication configuration into ~/.claude/settings.json.", "explanation": "MCP scope selection is separate from general settings precedence. Adding server properties to user settings does not repair a local MCP entry shadowing the project entry." },
+      { "text": "User-wide MCP definitions always outrank local and project definitions; delete any user-wide issues entry first.", "explanation": "For ordinary duplicate server names, local outranks project and project outranks user. A user-wide entry is not the higher-priority cause described in this scenario." },
+      { "text": "The local issues entry shadows the whole shared entry; verify its target, then remove or rename the local override and give experiments distinct names.", "explanation": "The local entry wins as a complete server definition. Removing that collision lets the project definition apply, while a separate experiment name avoids silently redirecting the shared server name." }
+    ],
+    "correct": 3,
+    "tags": ["mcp", "configuration-precedence", "environment-consistency"],
+    "sourceIds": ["code-mcp", "code-settings"]
+  },
+  {
+    "id": "ccarp-7.1-whole-session-isolation", "domain": 7, "objectiveId": "7.1",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "An architecture review uses Claude Code's rolling sandbox documentation retrieved on 2026-10-26. A proposed environment enables the Bash sandbox but also uses built-in file/web tools, a local MCP server, and command hooks. The requirement is a file and network boundary covering the entire session, not only shell commands. Which statements should guide the redesign? Select 3 answers.",
+    "answers": [
+      { "text": "Place the Claude Code process and its child processes inside an outer container or VM with the required filesystem and network restrictions.", "explanation": "An appropriately configured outer process boundary can cover components that the Bash sandbox excludes. Its mounts, network policy, and credentials must actually implement the required restrictions." },
+      { "text": "Apply client permission controls to built-in file and web tools rather than assuming Bash sandbox rules govern those tools.", "explanation": "The documented Bash boundary does not constrain Read or WebFetch. Separate tool permissions complement outer isolation instead of inheriting sandbox denyRead or allowedDomains rules." },
+      { "text": "Use stricter sandbox denyRead and allowedDomains entries as the common boundary for built-in tools, local MCP servers, and hooks.", "explanation": "Those entries restrict sandboxed shell activity, not every process or built-in tool in the session. Tightening them does not extend their scope to the excluded components." },
+      { "text": "Review local MCP and command-hook code as separately privileged execution because both run outside the Bash sandbox.", "explanation": "These processes retain the user's access unless another boundary restricts them. Enabling the Bash sandbox is therefore not evidence that their file or network access is isolated." }
+    ],
+    "correctIndices": [0, 1, 3],
+    "tags": ["sandboxing", "process-isolation", "mcp", "hooks"],
+    "sourceIds": ["code-sandboxing", "code-hooks"]
+  },
+  {
+    "id": "ccarp-7.1-merged-permission-rules", "domain": 7, "objectiveId": "7.1",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "In an already trusted Claude Code repository, a shared project ask rule matches a routine test command. A developer saves an allow for the same command in project-local settings, but approval is still requested. There are no managed rules or hook decisions involved. The team now wants to consider automatic approval for that command. What should the architect recommend?",
+    "answers": [
+      { "text": "Restart the session so the higher-precedence project-local permission list replaces the shared ask list.", "explanation": "Permission lists combine across scopes rather than following scalar replacement. A restart does not make the matching local allow override the shared ask." },
+      { "text": "Review the matching shared ask through the team's configuration process; a local allow does not override it merely by being local.", "explanation": "The documented permission-rule combination preserves an ask despite a local allow. If automatic approval is authorized, the team must address the actual matching policy rather than assume ordinary settings precedence removes it." },
+      { "text": "Move the local allow to user settings so its machine-wide scope grants more authority than the project ask.", "explanation": "Wider applicability is not greater permission authority. Moving the allow to user scope does not defeat an ask that still applies from the project." },
+      { "text": "Add a more specific local allow and retain the shared ask, relying on command-pattern specificity to make the local rule authoritative.", "explanation": "A local allow is not an exception mechanism for a matching project ask. Changing its specificity does not establish that the remaining ask can be bypassed." }
+    ],
+    "correct": 1,
+    "tags": ["tool-permissions", "settings-precedence", "team-policy"],
+    "sourceIds": ["code-settings"]
+  }
+]
