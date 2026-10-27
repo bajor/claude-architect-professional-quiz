@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-3.2-tenant-object-authorization",
+    "domain": 3, "objectiveId": "3.2",
+    "difficulty": "foundational", "type": "single",
+    "prompt": "A multi-tenant assistant authenticates users before allowing a client tool to fetch project records. The tool accepts project_id and tenant_id from model-generated arguments, and its service credential can read every tenant. A signed-in user requests a project belonging to another customer. Which missing control is most important?",
+    "answers": [
+      { "text": "Require another model turn to confirm that the requested tenant name matches the user's request.", "explanation": "Matching the user's wording does not establish entitlement to another tenant's records. Model-generated confirmation cannot replace an authorization check at the data boundary." },
+      { "text": "Require fresh multifactor authentication before the lookup while retaining model-selected tenant access.", "explanation": "A fresh authentication challenge can strengthen confidence in identity but does not establish entitlement to another tenant's records. The broadly privileged handler still lacks the required access check." },
+      { "text": "Bind access to the authenticated user's tenant and check project-level permission before returning data.", "explanation": "Authentication identifies the caller, while tenant and object checks determine which records that caller may access. Model-provided identifiers must not override the trusted authorization context." },
+      { "text": "Hide tenant_id from the visible tool description while leaving the lookup handler unchanged.", "explanation": "Hiding a parameter does not enforce ownership of project_id. The handler still needs a trusted tenant boundary and an object-level permission decision." }
+    ],
+    "correct": 2,
+    "tags": ["authorization", "tenant-isolation", "client-tools"],
+    "sourceIds": ["guardrails", "int-client-loop", "int-mcp-security"]
+  },
+  {
+    "id": "ccarp-3.2-protected-resource-discovery",
+    "domain": 3, "objectiveId": "3.2",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A protected HTTP MCP deployment implements the authorization specification for MCP 2026-07-28. An integrator assumes the authorization server must be hosted at the MCP endpoint's origin and rejects a separately hosted identity service. What discovery design should replace this assumption?",
+    "answers": [
+      { "text": "Use the MCP server's OAuth Protected Resource Metadata to discover its advertised authorization server.", "explanation": "This version requires the protected MCP resource to implement RFC 9728 metadata and the client to use it for authorization-server discovery. The authorization server can be hosted separately from the resource." },
+      { "text": "Try the user's existing identity-provider token against the MCP endpoint and infer the issuer from success.", "explanation": "A token for another resource is not a discovery mechanism and must not be accepted merely because its signature is valid. Discovery should precede requesting a token for the intended MCP resource." },
+      { "text": "Read the authorization-server URL from the description of the first tool returned by the server.", "explanation": "Tool descriptions are not the specified authorization discovery channel. A protected endpoint may require authorization before it returns tools at all." },
+      { "text": "Require Dynamic Client Registration at the MCP endpoint's origin before considering any other issuer.", "explanation": "Dynamic Client Registration is optional compatibility support in this version, not a mandatory same-origin bootstrap. Protected Resource Metadata supplies the required discovery boundary." }
+    ],
+    "correct": 0,
+    "tags": ["mcp", "oauth", "authorization-discovery"],
+    "sourceIds": ["int-mcp-auth"]
+  },
+  {
+    "id": "ccarp-3.2-pkce-metadata-gap",
+    "domain": 3, "objectiveId": "3.2",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A public HTTP MCP client follows MCP 2026-07-28 authorization. Its selected OpenID Connect discovery document omits code_challenge_methods_supported. The identity team says TLS and exact redirect registration make the authorization-code exchange safe enough. What should the MCP client do under this specification?",
+    "answers": [
+      { "text": "Continue without PKCE because exact redirect registration authenticates the party redeeming the code.", "explanation": "Redirect validation does not replace proof that the redeemer holds the original PKCE verifier. This specification requires the client to verify PKCE support before authorization." },
+      { "text": "Send a plain code challenge and assume the provider supports it because the field is optional in OpenID Connect.", "explanation": "MCP adds an explicit requirement to verify this metadata field, even when using OpenID Connect discovery. Guessing support does not satisfy that requirement, and capable clients must use S256." },
+      { "text": "Complete authorization first and test whether the issued access token has an acceptable audience.", "explanation": "Audience validation protects resource access but does not repair an unprotected authorization-code flow. The missing PKCE capability must be addressed before proceeding." },
+      { "text": "Refuse to proceed until metadata verifies PKCE support, using S256 when technically capable.", "explanation": "MCP 2026-07-28 requires refusal when code_challenge_methods_supported is absent from either supported discovery mechanism. Its code-protection requirements are not waived by TLS or redirect checks." }
+    ],
+    "correct": 3,
+    "tags": ["mcp", "oauth", "pkce"],
+    "sourceIds": ["int-mcp-security"]
+  },
+  {
+    "id": "ccarp-3.2-resource-and-upstream-token-separation",
+    "domain": 3, "objectiveId": "3.2",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "An HTTP MCP server follows MCP 2026-07-28 authorization and calls an upstream engineering API. It accepts any signed token from the corporate issuer, including tokens intended only for the engineering API, and forwards the received token upstream. Which changes close the two token-boundary gaps? Select 2 answers.",
+    "answers": [
+      { "text": "Accept an upstream-audience token if its scope string also names the requested MCP tool.", "explanation": "A matching scope string does not make the MCP server an intended token recipient. Tokens intended only for another resource must still be rejected." },
+      { "text": "Validate that an inbound token is specifically intended for this MCP resource before processing it.", "explanation": "The resource server must validate audience or otherwise establish that it is the intended recipient. A trusted issuer and valid signature alone do not establish this boundary." },
+      { "text": "Keep forwarding the client's token but remove unused scopes from the outgoing HTTP header.", "explanation": "Changing a header cannot safely change a signed token's grants or intended recipient. More importantly, this version explicitly prohibits passing the received MCP token through to an upstream API." },
+      { "text": "Use a separately issued upstream access token through the upstream API's authorization flow.", "explanation": "The MCP server can act as an OAuth client to the upstream API using a separate token issued by its authorization server. The token received from the MCP client must not be passed through." }
+    ],
+    "correctIndices": [1, 3],
+    "tags": ["mcp", "token-audience", "token-passthrough"],
+    "sourceIds": ["int-mcp-security", "int-mcp-auth"]
+  },
+  {
+    "id": "ccarp-3.2-sdk-credential-header-migration",
+    "domain": 3, "objectiveId": "3.2",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A direct Claude API integration upgrades the Python SDK to 2.0.0 and API version 2026-10-21. Its gateway forwards and redacts X-Api-Key but strips Authorization. New SDK requests fail authentication, while a manual X-Api-Key request using the same key succeeds. Which production fix best addresses the integration and secret-handling gap?",
+    "answers": [
+      { "text": "Rotate the API key and leave the gateway's credential-header rules unchanged.", "explanation": "The manual request shows that the existing key is accepted. A new key sent in the stripped header would encounter the same forwarding problem." },
+      { "text": "Update forwarding and secret redaction for Authorization: Bearer, retaining safe handling for accepted legacy headers.", "explanation": "These SDK releases send API keys in Authorization rather than X-Api-Key, and the direct API accepts either. Forwarding must preserve the credential while logging filters prevent the newly used header from leaking it." },
+      { "text": "Add broader workspace permissions to the existing key to compensate for the authentication failure.", "explanation": "Broader permissions do not repair a missing credential at the API boundary. The evidence points to header handling rather than a valid identity being denied an operation." },
+      { "text": "Temporarily log complete outbound headers and retry until the gateway recognizes the new SDK.", "explanation": "Complete headers can expose the bearer credential, and retries do not change a deterministic stripping rule. A controlled forwarding and redaction update addresses both problems directly." }
+    ],
+    "correct": 1,
+    "tags": ["api-version", "authentication", "secret-redaction"],
+    "sourceIds": ["int-api-version", "int-errors"]
+  },
+  {
+    "id": "ccarp-3.2-initial-scope-and-resource-binding",
+    "domain": 3, "objectiveId": "3.2",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "During initial authorization with no previously granted scopes, an HTTP MCP 2026-07-28 server challenges for a tenant-specific scope not listed in its scopes_supported metadata. The client is using this version's protected-resource OAuth flow. Which implementation decisions conform to its scope and token-binding requirements? Select 3 answers.",
+    "answers": [
+      { "text": "Treat the challenge's scope set as authoritative for the current operation rather than assuming it is a subset of scopes_supported.", "explanation": "The specification permits challenged scopes to have no fixed subset relationship with scopes_supported. An unlisted tenant-specific scope is not automatically invalid for the operation." },
+      { "text": "Intersect the challenged scopes with scopes_supported and authorize only the intersection.", "explanation": "Intersection can remove a scope the server requires for this operation. The client must not assume that scopes_supported exhaustively lists every dynamically challenged scope." },
+      { "text": "Include the canonical MCP resource identifier in both the authorization request and token request.", "explanation": "The resource parameter is mandatory at both stages in this version's flow. It identifies the resource for which the client is requesting the access token." },
+      { "text": "Send the resulting bearer token in Authorization on each HTTP request, not in a URL query parameter.", "explanation": "Authorization accompanies every client-to-server HTTP request under this flow. The specification prohibits access tokens in URI query strings, where they can leak through URL handling." }
+    ],
+    "correctIndices": [0, 2, 3],
+    "tags": ["mcp", "oauth-scopes", "resource-binding"],
+    "sourceIds": ["int-mcp-auth"]
+  }
+]
