@@ -2,7 +2,7 @@
 type: Verification
 title: Release verification
 timestamp: "2026-10-27"
-status: workflow-followup
+status: verified
 ---
 
 # Release verification
@@ -72,6 +72,8 @@ Reports and exact review manifests are retained locally in
 `/home/ubuntu/research_notes/CCAR Professional evidence/`: `review-domain-*.md`, their
 `*-followup.md` records, and `engineering-review-final.md`. These are independent
 OpenCode/GPT-6.1 Sol reviews, not official certification validation or human expert review.
+The packaging qualification is in `engineering-review-deployment.md`; the later
+three-pin workflow change is accepted in `engineering-review-actions-node24.md`.
 
 ## Browser and engineering acceptance
 
@@ -107,8 +109,9 @@ only. Pages uses `build_type=workflow`, with HTTPS enforced.
 
 The tested application revision is
 [`24979ce0f0ece664af11873c85ae988386c081a4`](https://github.com/bajor/claude-architect-professional-quiz/commit/24979ce0f0ece664af11873c85ae988386c081a4).
-The following release slices update documentation only. A subsequent workflow-only
-follow-up updates three Pages Action pins, not question, source, test, or runtime bytes.
+Documentation-only slices after that revision left application bytes unchanged. A
+subsequent workflow-only follow-up updates three Pages Action pins, not question,
+source, test, or runtime bytes.
 
 | Remote observation | Evidence |
 | --- | --- |
@@ -134,7 +137,7 @@ references; temporary local evidence paths are not public download links.
 
 ### Pages Action runtime follow-up
 
-The final documentation-only revision `f350f779903933cbceaf1c431b2485f59e4800dc`
+The release-record revision `f350f779903933cbceaf1c431b2485f59e4800dc`
 passed [CI](https://github.com/bajor/claude-architect-professional-quiz/actions/runs/40465618321)
 and [Pages](https://github.com/bajor/claude-architect-professional-quiz/actions/runs/40465618442).
 The deployment nevertheless reported deprecated Node.js 20 runtimes in its older
@@ -144,17 +147,42 @@ The JavaScript actions and the uploader's pinned upload-artifact 7.0.0 use Node.
 Application validation/build tooling still uses Node.js 22. Default dotfile exclusion,
 the static allowlist, gating, and permissions remain unchanged.
 
-Updated workflow deployment and annotation checks must be observed before this
-follow-up is reported complete. The earlier application/browser acceptance remains
-valid for its unchanged runtime files, but its old workflow hash is not the new hash.
+Independent review accepted [PR #34](https://github.com/bajor/claude-architect-professional-quiz/pull/34)
+without substantive findings. It confirmed all 63 other accepted source files remain
+byte-identical. The new accepted deployment-workflow SHA-256 is:
+
+```text
+4fafcf528085023d02d7273b5766dbc6a3773d833e32ece4345cdbd01fd8304d
+```
+
+The updated workflow was deployed at
+[`1095145e54c6484dfea5ee09901e4100fca94f14`](https://github.com/bajor/claude-architect-professional-quiz/commit/1095145e54c6484dfea5ee09901e4100fca94f14).
+[Main CI](https://github.com/bajor/claude-architect-professional-quiz/actions/runs/40466998613)
+and [gated Pages deployment](https://github.com/bajor/claude-architect-professional-quiz/actions/runs/40466998802)
+both succeeded. Post-deployment checks at **2026-10-27 07:26:22 UTC** confirmed:
+
+1. The deployed workflow has the newly accepted hash above.
+2. Its Pages archive contains exactly the seven accepted runtime files, with no
+   extra files or links. Every archived and served runtime SHA-256 still matches.
+3. All four remote check runs completed successfully with **zero warning or failure
+   annotations**. Four informational Ubuntu runner-migration notices remain; the
+   Node.js 20 deprecation warnings are gone.
+4. A fresh live Chromium run passed all 228 questions at desktop/mobile sizes in
+   ordinary and forced-colors modes, including keyboard, held Enter, explanations,
+   sources, persistence, reset, overflow, and page-error checks.
+
+Evidence is retained in `/tmp/opencode/ccarp-release-40466998802.json` and
+`/tmp/opencode/ccarp-live-node24/`. This completes the workflow follow-up; the earlier
+application/browser acceptance remains valid for unchanged runtime bytes, while the
+new workflow is identified by its separate accepted hash and observed deployment.
 
 ## Review-tool limitation
 
-A fresh Claude process attempted `/review` before repository recreation, and another
-attempt against the current workflow PR #30 failed with the same authentication error:
+Fresh Claude `/review` attempts before repository recreation and against workflow
+PRs #30 and #34 failed with the same authentication error:
 `Failed to authenticate: OAuth session expired and could not be refreshed`.
-No successful Claude review is claimed. Independent review sessions and executable
-checks are the fallback. No authenticated Claude review is claimed.
+Independent review sessions and executable checks are the fallback. No authenticated
+Claude review is claimed.
 
 ## Remaining limitations
 
