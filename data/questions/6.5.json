@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ccarp-6.5-provider-model-replacement",
+    "domain": 6, "objectiveId": "6.5",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A provider announces that it will replace the model version behind a Claude service endpoint. The application contract and output schema are unchanged. The organization's release policy requires task-quality, safety, and response-time acceptance checks for behavior-changing dependencies. What lifecycle response is appropriate before the replacement serves the full workload?",
+    "answers": [
+      { "text": "Treat the replacement as routine maintenance because the schema is unchanged, and rely on the next quarterly satisfaction survey to identify regressions.", "explanation": "Schema compatibility does not establish unchanged task behavior, safety, or timing, and the policy requires acceptance evidence before full exposure." },
+      { "text": "Assess affected requirements, run the relevant acceptance checks, and approve a staged transition with owned monitoring and a tested rollback or safe fallback.", "explanation": "The changed model dependency needs lifecycle revalidation and a controlled response if the replacement fails the agreed conditions." },
+      { "text": "Repeat only the JSON parser tests and approve the replacement if they pass, keeping prior quality and safety results as the new version's evidence.", "explanation": "Parser tests verify format handling, not the new model's task quality, safety, or response time under deployment conditions." },
+      { "text": "Retain the old endpoint label in the inventory so acceptance evidence remains continuous, then update the model version after the transition completes.", "explanation": "Concealing the changed dependency breaks evidence traceability and does not satisfy the required pre-transition checks." }
+    ],
+    "correct": 1,
+    "tags": ["model-change", "lifecycle-revalidation", "staged-release"],
+    "sourceIds": ["gov-nist-rmf-core", "life-official-prep-path", "gov-nist-genai-profile"]
+  },
+  {
+    "id": "ccarp-6.5-corpus-expansion-revalidation",
+    "domain": 6, "objectiveId": "6.5",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A technical-support assistant's approved corpus contains public installation guides. A department wants to add internal incident reports containing restricted customer details and superseded procedures. The model and prompts will not change. Existing acceptance evidence covers only public guides, and policy forbids disclosing customer-specific reports to unrelated users. What should happen before the expanded index is promoted?",
+    "answers": [
+      { "text": "Treat indexing as a data-only refresh and retain the existing approval because no model, prompt, or application code changes.", "explanation": "The new data changes access and correctness risks even without a model or code change, so prior public-guide evidence is insufficient." },
+      { "text": "Index the reports for all users and rely on a disclaimer that incident procedures may be outdated and customer details may be present.", "explanation": "A disclaimer does not enforce the stated disclosure boundary or establish which procedures are authoritative." },
+      { "text": "Reassess source authority, access and retention constraints, test the changed retrieval behavior, and obtain owner approval with a recovery plan.", "explanation": "The corpus expansion changes information dependencies and risks, requiring relevant control and acceptance evidence before promotion." },
+      { "text": "Check ingestion counts and embedding completion, then approve the expanded corpus if the new records are searchable without indexing errors.", "explanation": "Ingestion success does not establish authorized retrieval, correct use of current procedures, or compliance with the customer-data boundary." }
+    ],
+    "correct": 2,
+    "tags": ["corpus-change", "data-lifecycle", "revalidation"],
+    "sourceIds": ["gov-nist-rmf-core", "gov-nist-playbook-govern"]
+  },
+  {
+    "id": "ccarp-6.5-after-action-closure",
+    "domain": 6, "objectiveId": "6.5",
+    "difficulty": "intermediate", "type": "single",
+    "prompt": "A production Claude assistant used stale policy documents after a failed refresh. The team rolled back safely and notified affected users. Its lifecycle policy says incidents close only when recurrence controls and response improvements have owned verification evidence. What work remains before this incident can close?",
+    "answers": [
+      { "text": "Keep the rollback indefinitely and close the incident because the previous accepted version has restored service and affected users have been notified.", "explanation": "Restoration and notification satisfy response needs but not the explicit requirement for verified recurrence controls and response improvements." },
+      { "text": "Add the incident to a lessons-learned slide and schedule a general awareness session, using attendance as proof that recurrence has been addressed.", "explanation": "Awareness alone does not verify a freshness control or a corrected operational response to a failed refresh." },
+      { "text": "Open a prompt-tuning task and close the incident now, allowing its owner to decide later whether source-refresh monitoring needs modification.", "explanation": "The observed source-refresh failure needs an owned, verified response; an unverified future tuning task does not meet the closure policy." },
+      { "text": "Complete an after-action review, verify owned freshness and alerting fixes, add the failure to acceptance checks, and update the recovery guidance.", "explanation": "This converts the incident into verified prevention and response changes, linking operational lessons to future release and recovery behavior." }
+    ],
+    "correct": 3,
+    "tags": ["after-action-review", "incident-learning", "lifecycle-closure"],
+    "sourceIds": ["gov-nist-genai-profile", "gov-nist-rmf-core"]
+  },
+  {
+    "id": "ccarp-6.5-iterate-versus-change-action-boundary",
+    "domain": 6, "objectiveId": "6.5",
+    "difficulty": "advanced", "type": "single",
+    "prompt": "A campus assistant is moving from purchase recommendations to supervisor-approved supplier orders. Every candidate plan enforces approval before sending. The supplier API lacks idempotency and offers no reliable lookup after an ambiguous timeout. A draft-only fallback is available. The release must prevent duplicate binding orders, including after rollback, while preserving unresolved operation records for reconciliation. Which transition plan meets these recovery constraints?",
+    "answers": [
+      { "text": "Rehearse stop-and-reconcile recovery: disable dispatch, retain unresolved records without resending, and restore draft-only service while owners resolve supplier status.", "explanation": "A timeout cannot establish whether the non-idempotent supplier action committed. Stopping new dispatch and preserving uncertain records avoids blind replay while the approved fallback maintains a useful bounded service." },
+      { "text": "Rehearse rollback of the prompt and model, retaining approved queued requests so the restored release automatically retries every timed-out order.", "explanation": "Prompt/model rollback does not reverse supplier effects. A previously committed but unacknowledged order can be duplicated by automatic replay even though its original approval remains valid." },
+      { "text": "Rehearse per-order supervisor reapproval after each timeout, then resend the unchanged order using the new approval as its recovery identity.", "explanation": "A fresh approval does not determine whether the original order committed. With no supplier idempotency or reliable lookup, reauthorization alone cannot make resending duplicate-safe." },
+      { "text": "Rehearse restoring the last accepted queue snapshot and resuming dispatch, keeping later unresolved records only in a separate read-only audit export.", "explanation": "An older queue snapshot can omit a post-snapshot send and resend the same business order. Preserving an audit copy without consulting unresolved operations in dispatch does not prevent duplication." }
+    ],
+    "correct": 0,
+    "tags": ["lifecycle-transition", "uncertain-side-effects", "safe-recovery"],
+    "sourceIds": ["life-official-stakeholder-course", "gov-nist-rmf-core", "gov-idempotent-retries"]
+  },
+  {
+    "id": "ccarp-6.5-prompt-tool-third-party-change",
+    "domain": 6, "objectiveId": "6.5",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A claims-summary release keeps the Claude model fixed but changes the prompt to call a new external delivery tool and adds uploaded scanned attachments to retrieval. The prior design read only approved internal records and produced drafts without external sending. The change policy requires revalidation of affected data and action boundaries, authorized release ownership, and a safe recovery path. Which activities are required before promotion? Select 2 answers.",
+    "answers": [
+      { "text": "Review the delivery party, transmitted data, contract and permission scope, approval enforcement, and failure behavior with the responsible owners.", "explanation": "A new external action and processor path change the system boundary; the unchanged model does not carry forward the old design's authorization evidence." },
+      { "text": "Retest summary wording on the old internal-record set and reuse prior boundary approvals because prompt and tool changes are not model replacements.", "explanation": "The old set omits both new attachment risks and external sending, so wording tests cannot validate the changed boundaries." },
+      { "text": "Test attachment-related access, retrieval, and injection failures, then approve a staged release with stop controls that also disable new external sends.", "explanation": "Uploaded content changes the untrusted-data path, and recovery must contain the new action rather than only restoring the previous draft prompt." },
+      { "text": "Promote the release with prompt-only rollback, leaving the delivery tool enabled so pending sends can drain even if unauthorized behavior is detected.", "explanation": "A recovery path that leaves the changed external action running cannot reliably stop the very boundary failure the policy requires it to contain." }
+    ],
+    "correctIndices": [0, 2],
+    "tags": ["prompt-change", "tool-change", "third-party-risk", "change-revalidation"],
+    "sourceIds": ["gov-nist-rmf-core", "gov-prompt-injection", "life-official-prep-path"]
+  },
+  {
+    "id": "ccarp-6.5-controlled-decommissioning",
+    "domain": 6, "objectiveId": "6.5",
+    "difficulty": "advanced", "type": "multiple",
+    "prompt": "A distributor is retiring a Claude contract-search service when its supplier agreement ends. Scheduled jobs and two downstream applications still use it. The approved retention schedule requires preserving selected decision and evaluation evidence while deleting expired confidential payloads; indefinite retention is not authorized. Which activities belong in the decommissioning plan? Select 2 answers.",
+    "answers": [
+      { "text": "Disable the web interface at contract end but leave background jobs and service credentials active until downstream users independently stop sending requests.", "explanation": "Retiring only the interface leaves active dependencies and access paths outside the intended service shutdown and contract boundary." },
+      { "text": "Delete all indexes, evaluation records, and decision history immediately, treating a clean storage account as sufficient evidence of safe retirement.", "explanation": "Indiscriminate deletion violates the stated evidence-retention requirement and can obstruct investigations or understanding of downstream decisions." },
+      { "text": "Inventory callers and jobs, notify owners, verify replacement or fallback cutover, then stop processing and revoke service access under an assigned owner.", "explanation": "Managing dependencies and authority prevents abandoned callers, background processing, and credentials from outliving the retired service." },
+      { "text": "Apply the approved retention and deletion schedule across owned and third-party stores, preserving required evidence and verifying disposal of expired payloads.", "explanation": "Deliberate handling of retained evidence and expired data meets both continuity and confidentiality constraints without blanket deletion or indefinite retention." }
+    ],
+    "correctIndices": [2, 3],
+    "tags": ["decommissioning", "dependency-cutover", "retention-and-deletion"],
+    "sourceIds": ["gov-nist-playbook-govern", "gov-nist-rmf-core", "gov-nist-genai-profile"]
+  }
+]
